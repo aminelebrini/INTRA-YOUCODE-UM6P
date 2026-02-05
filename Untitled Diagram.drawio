@@ -104,7 +104,7 @@
           <mxGeometry height="60" width="30" x="80" y="2810" as="geometry" />
         </mxCell>
         <mxCell id="aIrQuxlh3lBcRC8lfZiK-1" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" value="Student" vertex="1">
-          <mxGeometry height="60" width="30" x="80" y="2960" as="geometry" />
+          <mxGeometry height="60" width="30" x="50" y="3430" as="geometry" />
         </mxCell>
         <mxCell id="pmoWwEyWc37vnSaUAzTr-1" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Login" vertex="1">
           <mxGeometry height="40" width="70" x="1210" y="2710" as="geometry" />
