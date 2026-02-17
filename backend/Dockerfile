@@ -1,39 +1,39 @@
-FROM php:8.2-fpm-alpine
+FROM php:8.2-apache
 
-ARG UID=1000
-ARG GID=1000
+ARG UID
+ARG GID
 
 WORKDIR /var/www/html
 
-# 1. Utiliser 'apk' à la place de 'apt-get'
-RUN apk update && apk add --no-cache \
-    git \
-    unzip \
-    curl \
+RUN apt-get update && apt-get install -y \
     libpq-dev \
-    libzip-dev \
-    zlib-dev \
-    oniguruma-dev \
-    bash \
-    sudo \
-    postgresql-dev
+    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+    && docker-php-ext-install pdo pdo_pgsql pgsql \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# 2. Installer les extensions PHP
-RUN docker-php-ext-install pdo pdo_pgsql pgsql zip mbstring
+RUN a2enmod rewrite
 
-# 3. Installer Composer
+#docker build --network=host --no-cache -t youcode-sprint .
+
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
-# 4. Créer l'utilisateur (Commandes Alpine)
-RUN addgroup -g ${GID} laravel && \
-    adduser -G laravel -u ${UID} -h /home/laravel -D laravel && \
-    echo "laravel ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 COPY . /var/www/html/
 
-RUN chown -R laravel:laravel /var/www/html
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-USER laravel
+RUN groupadd -g ${GID} laravel && \
+    useradd -u ${UID} -g laravel -m -s /bin/bash laravel
 
-EXPOSE 8000
-CMD ["php-fpm"]
+RUN usermod -aG www-data laravel
+
+COPY . /var/www/html/
+
+RUN chown -R laravel:www-data /var/www/html \
+    && find /var/www/html -type d -exec chmod 775 {} \; \
+    && find /var/www/html -type f -exec chmod 664 {} \; \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+
+EXPOSE 80
