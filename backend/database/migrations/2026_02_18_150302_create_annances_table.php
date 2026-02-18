@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('students', function (Blueprint $table) {
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->integer('points');
-            $table->string('promotion');
-            $table->string('annee');
-            $table->foreignId('classe_id')->constrained();
+        Schema::create('annances', function (Blueprint $table) {
+            $table->id();
+            $table->titre();
+            $table->text('description');
+            $table->status();
+            $table->enum('categorie',['cme','workshop','evenement','information']);
+            $table->enum('cible', ['A1','A2','tout']);
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('students');
+        Schema::dropIfExists('annances');
     }
 };
