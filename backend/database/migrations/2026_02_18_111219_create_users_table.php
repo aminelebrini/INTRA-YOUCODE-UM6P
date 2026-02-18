@@ -20,6 +20,7 @@ return new class extends Migration
             $table->password();
             $table->role();
             $table->ville();
+            $table->string('campus');
             $table->status();
             $table->etat();
             $table->timestamps();
