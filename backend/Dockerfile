@@ -2,11 +2,20 @@ FROM php:8.4-fpm
 
 # Installer les dépendances et extensions PHP nécessaires
 RUN apt-get update && apt-get install -y \
-    zip unzip git curl libpng-dev libonig-dev libxml2-dev libpq-dev
+    libpq-dev \
+    zip unzip git curl libpng-dev libonig-dev libxml2-dev \
+  && docker-php-ext-install \
+    pdo \
+    pdo_pgsql \
+    pgsql \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd
-
-# Installer composer
+# Installer Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
