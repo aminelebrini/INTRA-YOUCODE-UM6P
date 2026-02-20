@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('annances', function (Blueprint $table) {
             $table->id();
-            $table->titre();
+            $table->string('titre');
             $table->text('description');
-            $table->status();
+            $table->string('status');
             $table->enum('categorie',['cme','workshop','evenement','information']);
             $table->enum('cible', ['A1','A2','tout']);
             $table->timestamps();
