@@ -13,16 +13,19 @@ return new class extends Migration
     {
         Schema::create('activites', function (Blueprint $table) {
             $table->id();
-            $table->nom();
+            $table->string('nom');
             $table->text('description');
             $table->enum('type',['veille','live-coding','brief','workshop','diebrifing','daily-standup']);
-            $table->foreignId('binome_id')->constrained('students')->onDelete('cascade');
-            $table->enum('status',['individuel','collective']);
+            $table->unsignedBigInteger('binome_id');
+            $table->foreign('binome_id')
+              ->references('user_id')
+              ->on('students')
+              ->cascadeOnDelete();
             $table->string('ressource')->nullable();
             $table->enum('etat',['abonnée', 'non abonné']);
-            $table->timestamps('date_debut');
-            $table->timestamps('date_fin');
-            $table->timestamps('created_at');
+            $table->date('date_debut');
+            $table->date('date_fin');
+            $table->timestamps();
         });
     }
 

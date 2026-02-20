@@ -13,10 +13,9 @@ return new class extends Migration
     {
         Schema::create('liens', function (Blueprint $table) {
             $table->id();
-            $table->nom();
-            $table->lien();
-            $table->timestamps('created_at');
-            $table->timestamps('updated_at');
+            $table->string('nom');
+            $table->string('lien');
+            $table->timestamps();
         });
     }
 

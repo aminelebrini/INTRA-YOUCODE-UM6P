@@ -11,15 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('livrable', function (Blueprint $table) {
+        Schema::create('squades', function (Blueprint $table) {
             $table->id();
             $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
-            $table->foreignId('activite_id')->constrained('activites')->onDelete('cascade');
-            $table->string('lien_githb');
-            $table->string('lien_deploiment')->nullable();
-            $table->string('commentaire');
-            $table->timestamps('date_soumission');
-            $table->timestamps('created_at');
+            $table->foreignId('classe_id')->constrained('classes')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('livrable');
+        Schema::dropIfExists('squades');
     }
 };
