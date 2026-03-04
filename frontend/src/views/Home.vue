@@ -41,6 +41,7 @@
             </label>
             <input 
               type="email" 
+              v-model="email"
               required
               placeholder="votre-login@student.youcode.ma" 
               class="w-full bg-[#1d1d21] border-b-2 border-transparent p-4 text-white focus:border-[#00babc] focus:bg-[#25252a] outline-none transition-all duration-300 placeholder:text-gray-700"
@@ -56,13 +57,14 @@
             </div>
             <input 
               type="password" 
+              v-model="password"
               required
               placeholder="••••••••" 
               class="w-full bg-[#1d1d21] border-b-2 border-transparent p-4 text-white focus:border-[#00babc] focus:bg-[#25252a] outline-none transition-all duration-300 placeholder:text-gray-700"
             >
           </div>
 
-          <button class="w-full bg-[#00babc] text-[#0f0f12] font-black py-5 uppercase tracking-[0.3em] text-xs hover:bg-white hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] transition-all duration-500 transform active:scale-95">
+          <button type="submit" class="w-full bg-[#00babc] text-[#0f0f12] font-black py-5 uppercase tracking-[0.3em] text-xs hover:bg-white hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] transition-all duration-500 transform active:scale-95">
             Authenticate
           </button>
         </form>
@@ -77,13 +79,48 @@
 </template>
 
 <script>
+
+import api from '@/services/api'
 export default {
-  name: "HomePage",
-  // methods: {
-  //   handleLogin() {
-  //     console.log("Tentative de connexion...");
+  name: "Home",
+  data() {
+    return {
+      email: '',
+      password: ''
+    }
+  },
+  methods: {
+    async handleLogin() {
+  try {
+    const response = await api.post('http://localhost:8000/api/login', {
+      email: this.email,
+      password: this.password
+    });
+
+    // On vérifie d'abord si on a bien reçu des données
+    if (!response || !response.data) {
+        console.error("Réponse vide du serveur");
+        return;
+    }
+
+    const { token, user } = response.data;
+
+    if (token) {
+      localStorage.setItem('token', token);
       
-  //   }
-  // }
+      // On vérifie que 'user' existe AVANT de lire 'user.role'
+      if (user && user.role === 'admin') {
+        this.$router.push('/admin/dashboard');
+      } else {
+        this.$router.push('/dashboard');
+      }
+    }
+  } catch (error) {
+    // Si l'erreur est un 502, elle tombera ici
+    console.error('Erreur de connexion au serveur (502) ou identifiants :', error.message);
+    alert("Le serveur Laravel ne répond pas. Vérifiez qu'il est lancé.");
+  }
+}
+    }
 }
 </script>
