@@ -97,7 +97,6 @@ export default {
       password: this.password
     });
 
-    // On vérifie d'abord si on a bien reçu des données
     if (!response || !response.data) {
         console.error("Réponse vide du serveur");
         return;
@@ -108,7 +107,6 @@ export default {
     if (token) {
       localStorage.setItem('token', token);
       
-      // On vérifie que 'user' existe AVANT de lire 'user.role'
       if (user && user.role === 'admin') {
         this.$router.push('/admin/dashboard');
       } else {
@@ -116,7 +114,6 @@ export default {
       }
     }
   } catch (error) {
-    // Si l'erreur est un 502, elle tombera ici
     console.error('Erreur de connexion au serveur (502) ou identifiants :', error.message);
     alert("Le serveur Laravel ne répond pas. Vérifiez qu'il est lancé.");
   }
