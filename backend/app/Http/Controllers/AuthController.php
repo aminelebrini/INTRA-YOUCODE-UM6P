@@ -3,38 +3,40 @@
 namespace App\Http\Controllers;
 
 use App\Http\Services\AuthService;
-
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    private $AuthService;
+    private AuthService $authService;
 
-    public function __construct(AuthService $AuthService)
+    public function __construct(AuthService $authService)
     {
-        $this->AuthService = $AuthService;
+        $this->authService = $authService;
     }
 
     public function login(Request $request)
     {
         $request->validate([
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'required'
         ]);
-        $user = $this->AuthService->login($request->email, $request->password);
 
-        Auth::login($user);
+        $user = $this->authService->login(
+            $request->email,
+            $request->password
+        );
 
-        if ($user) {
+        if (!$user) {
             return response()->json([
-                'message' => 'Login successful',
-                'user' => $user,
-            ], 200);
-        } else {
-            return response()->json([
-                'message' => 'Invalid credentials',
+                'message' => 'Invalid credentials'
             ], 401);
         }
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'user' => $user,
+            'token' => $token
+        ], 200);
     }
 }
