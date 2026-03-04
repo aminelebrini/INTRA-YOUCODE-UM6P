@@ -2,6 +2,7 @@
 
     namespace App\Http\Repository;
     use App\Models\User;
+    use Illuminate\Support\Facades\Hash;
 
     class AuthRepository
     {
@@ -9,11 +10,11 @@
         {
             $user = User::where('email', $email)->first();
 
-            if ($user && password_verify($password, $user->password)) {
-                return $user;
+            if (!Hash::check($password, $user->password)) {
+                return null;
             }
 
-            return null;
+            return $user;
         }
     }
 ?>

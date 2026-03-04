@@ -16,6 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth' => \App\Http\Middleware\Authenticate::class,
             'role' => \App\Http\Middleware\CheckRole::class,
         ]);
+
+         $middleware->statefulApi();
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
