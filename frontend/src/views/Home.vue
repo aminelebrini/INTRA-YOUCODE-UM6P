@@ -8,12 +8,12 @@
           <img src="@/assets/logo-white.png" alt="Logo YouCode" class="w-40 drop-shadow-2xl opacity-90">
       </div>        
 
-      <div class="relative z-10 text-center space-y-6">
-        <h1 class="text-white text-7xl font-black tracking-tighter uppercase leading-[0.9]">
+      <div class="relative z-10 text-start space-y-6">
+        <h1 class="text-white text-4xl font-black tracking-tighter uppercase leading-[0.9]">
           Welcome to <br>
           <span class="text-[#00babc] drop-shadow-[0_0_25px_rgba(0,186,188,0.5)]">INTRA YOUCODE</span>
         </h1>
-        <p class="text-gray-500 font-mono text-[10px] tracking-[0.5em] uppercase animate-pulse">
+        <p class="text-gray-500 font-mono text-[15px] tracking-[0.5em] uppercase animate-pulse">
           // RECODE YOUR FUTURE
         </p>
       </div>
@@ -101,14 +101,14 @@ export default {
         console.error("Réponse vide du serveur");
         return;
     }
-
-    const { token, user } = response.data;
-
+    const token = response.data.token;
+    
     if (token) {
       localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
       
       if (user && user.role === 'admin') {
-        this.$router.push('/admin/dashboard');
+        this.$router.push('/admindashboard');
       } else {
         this.$router.push('/dashboard');
       }
