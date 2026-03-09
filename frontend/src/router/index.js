@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import Home from '../views/Home.vue'
 import AdminDashboard from '../views/AdminDashboard.vue'
+import FormateurDash from '../views/FormateurDash.vue'
 
 const routes = [
   {
@@ -14,6 +15,11 @@ const routes = [
     name: 'Dashboard',
     component: AdminDashboard
   },
+  {
+    path: '/formateurdashboard',
+    name: 'FormateurDashboard',
+    component: FormateurDash
+  }
 //   {
 //     path: '/login',
 //     name: 'Login',
