@@ -69,7 +69,7 @@
                     <i class="fas fa-tasks text-xl"></i>
                   </div>
                 </div>
-                <h3 class="text-gray-400 text-sm font-medium">Total Briefs</h3>
+                <h3 class="text-gray-400 text-sm font-medium">Total Activities</h3>
                 <p class="text-2xl font-bold text-white mt-1">42</p>
               </div>
 
@@ -82,8 +82,31 @@
                 <h3 class="text-gray-400 text-sm font-medium">Abandoned</h3>
                 <p class="text-2xl font-bold text-white mt-1">7</p>
               </div>
-
             </div>
+
+            <section class="bg-white/5 border border-white/10 p-5 rounded-2xl backdrop-blur-sm hover:bg-white/10 transition-all">
+              <div class="flex flex-row items-center justify-between">
+                <h2 class="text-gray-400 text-lg font-bold mb-4">Activities List</h2>
+                <div class="flex space-x-2">
+                  <select class="bg-white/5 border border-white/10 text-gray-400 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+                    <option disabled selected>Filter By Activity</option>
+                    <option value="briefs">Briefs</option>
+                    <option value="live-coding">Live Coding</option>
+                    <option value="workshop">Workshop</option>
+                    <option value="tech-watch">Tech Watch</option> 
+                    <option value="debriefing">Debriefing</option> 
+                  </select>
+                  <button class="bg-[#00babc]/20 hover:bg-[#00babc]/30 text-white font-bold py-2 px-4 rounded">
+                    Add Activity
+                  </button>
+                </div>
+              </div>
+              <div v-if="activities">
+              </div>
+              <div v-else>
+                <p class="text-gray-500 text-sm italic">No activities available. Please select an activity type from the dropdown above.</p>
+              </div>
+            </section>
           </main>
         </div>
     </div>
