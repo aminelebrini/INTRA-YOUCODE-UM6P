@@ -101,6 +101,7 @@ export default {
         console.error("Réponse vide du serveur");
         return;
     }
+    const user = response.data.user;
     const token = response.data.token;
     
     if (token) {
