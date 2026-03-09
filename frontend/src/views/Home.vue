@@ -110,8 +110,8 @@ export default {
       
       if (user && user.role === 'admin') {
         this.$router.push('/admindashboard');
-      } else {
-        this.$router.push('/dashboard');
+      } else if(user && user.role === 'formateur') {
+        this.$router.push('/formateurdashboard');
       }
     }
   } catch (error) {
