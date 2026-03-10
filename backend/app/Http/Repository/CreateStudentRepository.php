@@ -27,7 +27,6 @@ class CreateStudentRepository
         ]);
 
         return $user;
-
     }
 }
 

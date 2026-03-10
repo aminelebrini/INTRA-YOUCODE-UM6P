@@ -118,9 +118,7 @@
                   <h1 class="text-gray-400 text-lg font-bold">Student List</h1>
                   <div class="flex space-x-2">
                     <button class="bg-[#00babc]/20 hover:bg-[#00babc]/30 text-white font-bold py-2 px-4 rounded">Add Student</button>
-                    <button class="bg-[#00babc]/20 hover:bg-[#00babc]/30 text-white font-bold py-2 px-4 rounded">Assign a Student</button>
                     <button class="bg-[#00babc]/20 hover:bg-[#00babc]/30 text-white font-bold py-2 px-4 rounded">Assign a Delegate</button>
-
                   </div>
                 </div>
                 <div v-if="students.length > 0">
@@ -131,6 +129,17 @@
                 </div>
             </section>
           </main>
+
+          <div>
+            <div>
+              <h1>Add Student to Class</h1>
+              <form>
+                <select v-for="student in students" :key="student.id" class="bg-white/5 border border-white/10 text-gray-400 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+                  <option value="{{ student.id }}">{{ student.name }}</option>
+                </select>
+              </form>
+            </div>
+          </div>
         </div>
     </div>
 </template>
@@ -146,6 +155,7 @@ const activities = ref([]);
       try{
         const response = await api.get('/students');
         students.value = response.data;
+        console.log('Fetched students:', students.value);
       }
       catch(error){
         console.error('Error fetching students:', error);
