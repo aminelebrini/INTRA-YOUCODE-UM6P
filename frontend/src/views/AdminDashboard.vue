@@ -226,6 +226,11 @@ const classeCampus = ref('')
     console.error("Error creating class:", error);
   }
  }
+
+ const logout = () => {
+  localStorage.clear();
+  window.location.href = '/'
+ }
 onMounted(() => {
   const data = localStorage.getItem('user')
   if(data) {

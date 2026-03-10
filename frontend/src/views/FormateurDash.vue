@@ -82,11 +82,15 @@
                 <h3 class="text-gray-400 text-sm font-medium">Abandoned</h3>
                 <p class="text-2xl font-bold text-white mt-1">7</p>
               </div>
+
+              <div>
+                <h1>Classe Information</h1>
+              </div>
             </div>
 
             <section class="bg-white/5 border border-white/10 p-5 rounded-2xl backdrop-blur-sm hover:bg-white/10 transition-all">
               <div class="flex flex-row items-center justify-between">
-                <h2 class="text-gray-400 text-lg font-bold mb-4">Activities List</h2>
+                <h2 class="text-gray-400 text-lg font-bold">Activities List</h2>
                 <div class="flex space-x-2">
                   <select class="bg-white/5 border border-white/10 text-gray-400 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
                     <option disabled selected>Filter By Activity</option>
@@ -99,6 +103,7 @@
                   <button class="bg-[#00babc]/20 hover:bg-[#00babc]/30 text-white font-bold py-2 px-4 rounded">
                     Add Activity
                   </button>
+                  
                 </div>
               </div>
               <div v-if="activities">
@@ -106,6 +111,24 @@
               <div v-else>
                 <p class="text-gray-500 text-sm italic">No activities available. Please select an activity type from the dropdown above.</p>
               </div>
+            </section>
+
+            <section class="bg-white/5 border border-white/10 p-5 rounded-2xl backdrop-blur-sm hover:bg-white/10 transition-all mt-6">
+                <div class="flex flex-row items-center justify-between">
+                  <h1 class="text-gray-400 text-lg font-bold">Student List</h1>
+                  <div class="flex space-x-2">
+                    <button class="bg-[#00babc]/20 hover:bg-[#00babc]/30 text-white font-bold py-2 px-4 rounded">Add Student</button>
+                    <button class="bg-[#00babc]/20 hover:bg-[#00babc]/30 text-white font-bold py-2 px-4 rounded">Assign a Student</button>
+                    <button class="bg-[#00babc]/20 hover:bg-[#00babc]/30 text-white font-bold py-2 px-4 rounded">Assign a Delegate</button>
+
+                  </div>
+                </div>
+                <div v-if="students.length > 0">
+                  <p class="text-gray-500 text-sm italic">Students available.</p>
+                </div>
+                <div v-else>
+                  <p class="text-gray-500 text-sm italic">No students available. Please add students using the button above.</p>
+                </div>
             </section>
           </main>
         </div>
@@ -116,12 +139,25 @@
 import api from '@/services/api';
 import { onMounted , ref} from 'vue';
 const user = ref(null);
+const students = ref([]);
+const activities = ref([]);
+
+    const getStudents = async () => {
+      try{
+        const response = await api.get('/students');
+        students.value = response.data;
+      }
+      catch(error){
+        console.error('Error fetching students:', error);
+      }
+    }
 
     const logout = () => {
         localStorage.clear();
         window.location.href = '/';
     };
     onMounted(()=>{
+        getStudents();
         const data = localStorage.getItem('user');
         if (data) {
             user.value = JSON.parse(data);
