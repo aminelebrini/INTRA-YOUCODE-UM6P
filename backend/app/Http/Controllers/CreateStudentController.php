@@ -41,4 +41,5 @@ class CreateStudentController extends Controller
             return response()->json(['message' => 'Failed to create student'], 500);
         }
     }
+
 }
