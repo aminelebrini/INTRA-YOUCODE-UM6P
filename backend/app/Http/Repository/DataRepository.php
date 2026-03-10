@@ -7,9 +7,11 @@ use App\Models\User;
 
 class DataRepository
 {
-    public function getStudents()
+    public function getUsers()
     {
-        return User::where('role', 'etudiant')->get();
+        $users = User::all();
+
+        return $users;  
     }
 }
 

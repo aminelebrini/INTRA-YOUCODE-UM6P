@@ -14,9 +14,9 @@ class DataService
         $this->DataRepository = $DataRepository;
     }
 
-    public function getStudents()
+    public function getUsers()
     {
-        return $this->DataRepository->getStudents();
+        return $this->DataRepository->getUsers();
     }
 }
 

@@ -172,6 +172,7 @@ const classecapacity = ref('')
 const link_logo = ref('')
 const promo = ref('')
 const classeCampus = ref('')
+const users = ref([]);
 
 
  const submitRegistration = async ()=>{
@@ -231,7 +232,21 @@ const classeCampus = ref('')
   localStorage.clear();
   window.location.href = '/'
  }
+
+ const Data = async () => {
+  try{
+    const response = await api.get('/data');
+    const data = response.data;
+    users.value = data.users;
+    console.log('Fetched users:', users.value);
+
+  }
+  catch(error){
+    console.error('Error fetching users:', error);
+  }
+ }
 onMounted(() => {
+  Data();
   const data = localStorage.getItem('user')
   if(data) {
     user.value = JSON.parse(data)
