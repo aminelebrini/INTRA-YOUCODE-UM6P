@@ -14,13 +14,13 @@ class DataController extends Controller
         $this->DataService = $DataService;
     }
 
-    public function index()
+    public function data()
     {
         try{
-            $students = $this->DataService->getStudents();
-            return response()->json($students, 200);
+            $users = $this->DataService->getUsers();
+            return response()->json(['users' => $users], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to retrieve students',
+            return response()->json(['message' => 'Failed to retrieve users',
              'error' => $e->getMessage()], 500);    
         }
     }

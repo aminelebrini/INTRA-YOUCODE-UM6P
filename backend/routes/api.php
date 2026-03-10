@@ -12,6 +12,6 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function (){
     Route::post('/createstudents', [CreateStudentController::class, 'create']);
     Route::post('/createclasse', [CreateClasseController::class, 'create']);
-    Route::get('/students', [DataController::class, 'index']);
+    Route::get('/data', [DataController::class, 'data']);
 });
 
