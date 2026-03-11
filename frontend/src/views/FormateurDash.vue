@@ -123,6 +123,10 @@
                 </div>
                 <div v-if="students.length > 0">
                   <p class="text-gray-500 text-sm italic">Students available.</p>
+                  <div v-for="student in students" :key="student.id">
+                    
+                    <p class="text-white text-sm">{{ student.fullname }}</p>  
+                  </div>
                 </div>
                 <div v-else>
                   <p class="text-gray-500 text-sm italic">No students available. Please add students using the button above.</p>

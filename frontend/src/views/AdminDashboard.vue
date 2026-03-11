@@ -62,20 +62,56 @@
           </div>
         </header>
 
-        <section class="bg-[#121215] border border-white/5 p-8 rounded-lg">
-          <h3 class="text-lg font-bold mb-4 uppercase tracking-wide">Personnal Management</h3>
-          <div class="flex flex-row items-center justify-between">
-              <p>Personnal List</p>
-              <button @click="oppenToggle('createPersonnalModal')" class="bg-[#00babc] text-white font-bold py-2 px-4 rounded hover:bg-[#00a89c] transition-colors">
-                Create Personnal
+        <section class="bg-[#121215] border border-white/5 p-8 rounded-xl shadow-2xl">
+          <h3 class="text-xs font-black mb-6 uppercase tracking-[0.3em] text-[#00babc] opacity-70">
+            Personnel Management
+          </h3>
+
+          <div class="flex flex-row items-center justify-between mb-10">
+              <p class="text-xl font-semibold text-gray-100">Personnel List</p>
+              <button @click="oppenToggle('createPersonnalModal')" 
+                      class="bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold py-2.5 px-6 rounded-lg transition-all duration-300 transform active:scale-95 shadow-lg shadow-[#00babc]/10">
+                + Create Personnel
               </button>
           </div>
-          <div v-if="user">
 
+          <div v-if="users" class="w-full overflow-hidden">
+            <table class="w-full border-collapse">
+              <thead>
+                <tr class="text-left text-[10px] text-gray-500 uppercase tracking-[0.2em] border-b border-white/5">
+                  <th class="pb-4 font-black">Full Name</th>
+                  <th class="pb-4 font-black">Email Address</th>
+                  <th class="pb-4 font-black">Designation / Role</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-white/[0.03]">
+                <tr v-for="user in users" :key="user.id" class="group hover:bg-white/[0.02] transition-colors">
+                  <td class="py-5 text-sm text-gray-200 font-medium group-hover:text-[#00babc] transition-colors">
+                    {{ user.fullname }}
+                  </td>
+                  <td class="py-5 text-sm text-gray-400 font-mono tracking-tight">
+                    {{ user.email }}
+                  </td>
+                  <td class="py-5">
+                    <span class="text-[10px] font-bold px-2 py-1 rounded bg-white/5 border border-white/10 text-gray-300 uppercase tracking-tighter">
+                     {{ user.role }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-            <p class="text-xs text-gray-500 italic">// System_Ready_Waiting_For_Data</p>
-        </section>
 
+          <div v-else class="mt-10 pt-6 border-t border-white/5 flex items-center justify-between">
+            <p class="text-[10px] text-gray-600 font-mono italic tracking-widest">
+              System_Ready_Waiting_For_Data
+            </p>
+            <div class="flex gap-1">
+              <span class="w-1 h-1 bg-[#00babc] rounded-full animate-ping"></span>
+              <span class="w-1 h-1 bg-[#00babc] rounded-full opacity-50"></span>
+            </div>
+          </div>
+        </section>
 
         <section class="bg-[#121215] border border-white/5 p-8 rounded-lg">
           <h3 class="text-lg font-bold mb-4 uppercase tracking-wide">Classes Management</h3>
@@ -85,7 +121,7 @@
                 Create Class
               </button>
           </div>
-          <div v-if="user">
+          <div v-if="classe">
 
           </div>
             <p class="text-xs text-gray-500 italic">// System_Ready_Waiting_For_Data</p>
