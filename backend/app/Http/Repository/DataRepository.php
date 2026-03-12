@@ -4,6 +4,8 @@ namespace App\Http\Repository;
 
 use App\Models\Student;
 use App\Models\User;
+use App\Models\Classe;
+use Illuminate\Support\Facades\DB;
 
 class DataRepository
 {
@@ -12,6 +14,25 @@ class DataRepository
         $users = User::all();
 
         return $users;  
+    }
+    public function getClasses()
+    {
+        $classes = Classe::all();
+
+        return $classes;  
+    }
+    public function getFormateurs()
+    {
+        $assignedFormateurs = DB::table('users')
+        ->leftJoin('formateur_classe', 'users.id', '=', 'formateur_classe.formateur_id')
+        ->leftJoin('classes', 'formateur_classe.classe_id', '=', 'classes.id')
+        ->select('users.fullname as formateur_name', 'classes.nom as classe_name')
+        ->where('users.role', 'formateur')
+        ->whereNull('formateur_classe.formateur_id')
+        ->whereNull('formateur_classe.classe_id')
+        ->get();
+        
+        return $assignedFormateurs;
     }
 }
 

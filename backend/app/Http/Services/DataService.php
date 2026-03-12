@@ -18,6 +18,14 @@ class DataService
     {
         return $this->DataRepository->getUsers();
     }
+    public function getClasses()
+    {
+        return $this->DataRepository->getClasses();
+    }
+    public function getFormateurs()
+    {
+        return $this->DataRepository->getFormateurs();
+    }
 }
 
 ?>

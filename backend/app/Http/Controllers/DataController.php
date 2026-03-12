@@ -18,7 +18,12 @@ class DataController extends Controller
     {
         try{
             $users = $this->DataService->getUsers();
-            return response()->json(['users' => $users], 200);
+            $classes = $this->DataService->getClasses();
+            $assignformateurs = $this->DataService->getFormateurs();
+
+            return response()->json(['users' => $users, 
+            'classes' => $classes, 
+            'assignformateurs' => $assignformateurs], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to retrieve users',
              'error' => $e->getMessage()], 500);    
