@@ -26,6 +26,10 @@ class DataService
     {
         return $this->DataRepository->getFormateurs();
     }
+    public function getNotAssignedClasses()
+    {
+        return $this->DataRepository->getNotAssignedClasses();
+    }
 }
 
 ?>

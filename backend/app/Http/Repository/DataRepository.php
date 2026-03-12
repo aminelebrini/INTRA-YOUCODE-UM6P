@@ -34,6 +34,17 @@ class DataRepository
         
         return $assignedFormateurs;
     }
+
+    public function getNotAssignedClasses()
+    {
+        $assignedClasses = DB::table('classes')
+        ->leftJoin('formateur_classe', 'classes.id', '=', 'formateur_classe.classe_id')
+        ->select('classes.nom as classe_name')
+        ->whereNull('formateur_classe.classe_id')
+        ->get();
+        
+        return $assignedClasses;
+    }
 }
 
 
