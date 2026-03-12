@@ -169,6 +169,13 @@
         <section>
           <div>
             <h3 class="text-lg font-bold mb-4 uppercase tracking-wide">Absences Management</h3>
+            <button @click="detectAbsences" class="bg-[#00babc] text-white font-bold py-2 px-4 rounded hover:bg-[#00a89c] transition-colors">
+              Detect Absences
+            </button>
+          </div>
+          <div>
+            
+
             <p class="text-xs text-gray-500 italic">// System_Ready_Waiting_For_Data</p>
           </div>
         </section>
