@@ -63,12 +63,10 @@
         </header>
 
         <section class="bg-[#121215] border border-white/5 p-8 rounded-xl shadow-2xl">
-          <h3 class="text-xs font-black mb-6 uppercase tracking-[0.3em] text-[#00babc] opacity-70">
-            Personnel Management
-          </h3>
-
           <div class="flex flex-row items-center justify-between mb-10">
-              <p class="text-xl font-semibold text-gray-100">Personnel List</p>
+              <h3 class="text-xs font-black uppercase tracking-[0.3em] text-[#00babc] opacity-70">
+                Personnel Management
+              </h3>
               <button @click="oppenToggle('createPersonnalModal')" 
                       class="bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold py-2.5 px-6 rounded-lg transition-all duration-300 transform active:scale-95 shadow-lg shadow-[#00babc]/10">
                 + Create Personnel
@@ -85,7 +83,7 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-white/[0.03]">
-                <tr v-for="user in users" :key="user.id" class="group hover:bg-white/[0.02] transition-colors">
+                <tr v-for="user in users.filter(e => e.id !== user.id)" :key="user.id" class="group hover:bg-white/[0.02] transition-colors">
                   <td class="py-5 text-sm text-gray-200 font-medium group-hover:text-[#00babc] transition-colors">
                     {{ user.fullname }}
                   </td>
@@ -113,18 +111,59 @@
           </div>
         </section>
 
-        <section class="bg-[#121215] border border-white/5 p-8 rounded-lg">
-          <h3 class="text-lg font-bold mb-4 uppercase tracking-wide">Classes Management</h3>
+        <section class="bg-[#121215] border border-white/5 p-8 rounded-lg mt-6">
           <div class="flex flex-row items-center justify-between">
-              <p>Classes List</p>
-              <button @click="oppenToggle('createClassModal')" class="bg-[#00babc] text-white font-bold py-2 px-4 rounded hover:bg-[#00a89c] transition-colors">
-                Create Class
-              </button>
+              <h3 class="text-lg font-bold mb-4 uppercase tracking-wide">Classes Management</h3>
+              <div class="flex flex-row items-center justify-between gap-3">
+                <button @click="oppenToggle('createClassModal')" class="bg-[#00babc] text-white font-bold py-2 px-4 rounded hover:bg-[#00a89c] transition-colors">
+                  Create Class
+                </button>
+                <button @click="oppenToggle('AssignClassFormatorModal')" class="bg-[#00babc] text-white font-bold py-2 px-4 rounded hover:bg-[#00a89c] transition-colors">
+                  Assign a Formator
+                </button>
+              </div>
           </div>
-          <div v-if="classe">
-
+          <div v-if="classes" class="w-full overflow-hidden mt-4">
+            <table class="w-full border-collapse">
+              <thead>
+                <tr class="text-left text-[10px] text-gray-500 uppercase tracking-[0.2em] border-b border-white/5">
+                  <th class="pb-4 font-black">Classe Name</th>
+                  <th class="pb-4 font-black">Classe Capacity</th>
+                  <th class="pb-4 font-black">Formator</th>
+                  <th class="pb-4 font-black">Classe Promo</th>
+                  <th class="pb-4 font-black">Campus</th>
+                  <th class="pb-4 font-black">Created At</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-white/[0.03]">
+                <tr v-for="classe in classes" :key="classe.id" class="group hover:bg-white/[0.02] transition-colors">
+                  <td class="py-5 text-sm text-gray-200 font-medium group-hover:text-[#00babc] transition-colors">
+                    {{ classe.nom }}
+                  </td>
+                  <td class="py-5 text-sm text-gray-400 font-mono tracking-tight">
+                    {{ classe.capacite }}
+                  </td>
+                  <td class="py-5 text-sm text-gray-400 font-mono tracking-tight">
+                    {{ classe.formateur ? classe.formateur.fullname : 'No Assigned' }}
+                  </td>
+                  <td class="py-5">
+                    <span class="py-5 text-sm text-gray-400 font-mono tracking-tight">
+                     {{ classe.promo }}
+                    </span>
+                  </td>
+                  <td class="py-5 text-sm text-gray-400 font-mono tracking-tight">
+                    {{ classe.campus }}
+                  </td>
+                  <td class="py-5 text-sm text-gray-400 font-mono tracking-tight">
+                    {{ formatDate(classe.created_at) }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-            <p class="text-xs text-gray-500 italic">// System_Ready_Waiting_For_Data</p>
+            <div v-else class="mt-10 pt-6 border-t border-white/5 flex items-center justify-between">
+              <p class="text-xs text-gray-500 italic">// System_Ready_Waiting_For_Data</p>
+            </div>
         </section>
 
         <section>
@@ -169,7 +208,33 @@
     </form> 
     </div>
   </div>
+  <div class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4" id="AssignClassFormatorModal">
+    <div class="bg-[#121215] border border-white/5 p-8 rounded-lg w-full max-w-md shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-white font-black uppercase tracking-widest">Assign Class to Formator</h1>
+        <button @click="oppenToggle('AssignClassFormatorModal')" class="text-gray-400 hover:text-white transition-colors">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
 
+    <form @submit.prevent="submitClassAssignRegistration" class="space-y-4">
+      <select v-model="formator" class="w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none">
+        <option value="" disabled selected>Select Formator</option>
+        <option v-for="formateur in assignformateurs" :key="formateur.id" :value="formateur.id">
+          {{ formateur.formateur_name }}
+        </option>
+      </select>
+      <select v-model="assignedClass" class="w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none">
+        <option value="" disabled selected>Select Class</option>
+        <option v-for="classe in assignformateurs" :key="classe.id" :value="classe.id">
+          {{ classe.classe_name }}
+        </option>
+      </select>
+       <button type="submit" class="w-full bg-[#00babc] text-black font-bold py-3 rounded mt-2 hover:bg-[#00a89c] transition-colors uppercase tracking-widest">
+        Assign Formator
+      </button>
+    </form>
+  </div>
 
   <div class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4" id="createClassModal">
   <div class="bg-[#121215] border border-white/5 p-8 rounded-lg w-full max-w-md shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
@@ -186,6 +251,7 @@
        <input type="text" v-model="classeCampus" placeholder="Campus">
        <button type="submit">Create Class</button>
     </form>
+  </div>
   </div>
   </div>
 </template>
@@ -209,6 +275,9 @@ const link_logo = ref('')
 const promo = ref('')
 const classeCampus = ref('')
 const users = ref([]);
+const classes = ref([]);
+const classeDate = ref('');
+const assignformateurs = ref([]);
 
 
  const submitRegistration = async ()=>{
@@ -274,7 +343,11 @@ const users = ref([]);
     const response = await api.get('/data');
     const data = response.data;
     users.value = data.users;
+    classes.value = data.classes;
+    assignformateurs.value = data.assignformateurs;
     console.log('Fetched users:', users.value);
+    console.log('Fetched classes:', classes.value);
+    console.log('Fetched assignformateurs:', assignformateurs.value);
 
   }
   catch(error){
@@ -289,6 +362,11 @@ onMounted(() => {
   }
 })
 
+function formatDate(isDate)
+{
+  const date = new Date(isDate);
+  return date.toLocaleDateString();
+}
 function oppenToggle(id)
 {
   const modal = document.getElementById(id)
