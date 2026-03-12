@@ -17,12 +17,12 @@ class AssignFormateurClasseController extends Controller
     public function assign(Request $request)
     {
         $request->validate([
-            'formator' => 'required|exists:users,id',
-            'assignclass' => 'required|exists:classes,id',
+            'formateur_id' => 'required|exists:users,id',
+            'classe_id' => 'required|exists:classes,id',
         ]);
 
         $result = $this->AssignFormateurClasseService
-        ->assign($request->formator, $request->assignclass);
+        ->assign($request->formateur_id, $request->classe_id);
 
         if($result)
         {
