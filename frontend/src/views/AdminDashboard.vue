@@ -113,7 +113,7 @@
 
         <section class="bg-[#121215] border border-white/5 p-8 rounded-lg mt-6">
           <div class="flex flex-row items-center justify-between">
-              <h3 class="text-lg font-bold mb-4 uppercase tracking-wide">Classes Management</h3>
+              <h3 class="text-lg font-bold uppercase tracking-wide">Classes Management</h3>
               <div class="flex flex-row items-center justify-between gap-3">
                 <button @click="oppenToggle('createClassModal')" class="bg-[#00babc] text-white font-bold py-2 px-4 rounded hover:bg-[#00a89c] transition-colors">
                   Create Class
