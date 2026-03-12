@@ -224,9 +224,9 @@
           {{ formateur.formateur_name }}
         </option>
       </select>
-      <select v-model="assignedClass" class="w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none">
+      <select v-model="assignclass" class="w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none">
         <option value="" disabled selected>Select Class</option>
-        <option v-for="classe in assignformateurs" :key="classe.id" :value="classe.id">
+        <option v-for="classe in assignclasses" :key="classe.id" :value="classe.id">
           {{ classe.classe_name }}
         </option>
       </select>
@@ -278,7 +278,9 @@ const users = ref([]);
 const classes = ref([]);
 const classeDate = ref('');
 const assignformateurs = ref([]);
-
+const assignclasses = ref([]);
+const formator = ref('');
+const assignclass = ref('');
 
  const submitRegistration = async ()=>{
   
@@ -333,6 +335,21 @@ const assignformateurs = ref([]);
   }
  }
 
+ const submitClassAssignRegistration = async ()=>
+ {
+  try{
+    const response = await api.post('http://localhost:8000/api/assignformateurclasse', {
+      formator: formator.value,
+      assignedClass: assignclass.value
+    })
+    console.log({
+      formator: formator.value,
+      assignedClass: assignclass.value
+    })
+  }catch (error) {
+    console.error("Error assigning formateur to class:", error);
+  }
+ }
  const logout = () => {
   localStorage.clear();
   window.location.href = '/'
@@ -345,10 +362,12 @@ const assignformateurs = ref([]);
     users.value = data.users;
     classes.value = data.classes;
     assignformateurs.value = data.assignformateurs;
+    assignclasses.value = data.assignclasses;
     console.log('Fetched users:', users.value);
     console.log('Fetched classes:', classes.value);
     console.log('Fetched assignformateurs:', assignformateurs.value);
-
+    console.log('Fetched assignclasses:', assignclasses.value);
+    //abssence hasha tokon interface
   }
   catch(error){
     console.error('Error fetching users:', error);
