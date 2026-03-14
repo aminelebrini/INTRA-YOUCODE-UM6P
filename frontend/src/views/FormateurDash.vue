@@ -1,5 +1,5 @@
 <template>
-    <div v-if="user" class="flex min-h-screen bg-[#0f0f12] text-white font-sans">
+    <div v-if="user && formateurData && user.id === formateurData.formateur_id" class="flex min-h-screen bg-[#0f0f12] text-white font-sans">
         <aside class="w-64 bg-[#121215] border-r border-white/5 flex flex-col fixed h-full z-20">
       <div class="p-8 border-b border-white/5">
         <img src="@/assets/logo-white.png" alt="Logo" class="w-32 opacity-80 hover:opacity-100 transition-opacity">
@@ -37,11 +37,12 @@
       <div class="p-6 bg-[#0c0c0e] border-t border-white/5">
         <div class="flex items-center space-x-3 mb-4">
           <div class="w-8 h-8 rounded-full bg-[#00babc]/20 border border-[#00babc]/40 flex items-center justify-center text-[10px] font-bold text-[#00babc]">
-            {{ user?.fullname ? user.fullname.split(' ').map(n => n[0]).join('').toUpperCase() : 'A' }}
+            <img src="" alt="logo" class="w-6 h-6 rounded-full">
           </div>
           <div class="overflow-hidden">
             <p class="text-[11px] font-bold truncate">{{ user?.fullname || 'Admin' }}</p>
             <p class="text-[9px] text-gray-600 truncate">{{ user?.email || 'admin@youcode.ma' }}</p>
+            <p class="text-[9px] text-gray-600 truncate">{{ formateurData?.classe_name || 'No Class Assigned' }}</p>
           </div>
         </div>
         <button @click="logout" class="w-full text-left text-[9px] text-red-500/60 hover:text-red-500 font-bold uppercase tracking-widest transition-colors">
@@ -154,15 +155,27 @@ import { onMounted , ref} from 'vue';
 const user = ref(null);
 const students = ref([]);
 const activities = ref([]);
+const formateurData = ref([]);
 
     const getStudents = async () => {
       try{
         const response = await api.get('/students');
         students.value = response.data;
-        console.log('Fetched students:', students.value);
+        // console.log('Fetched students:', students.value);
       }
       catch(error){
         console.error('Error fetching students:', error);
+      }
+    }
+
+    const getFormateurData = async () =>{
+      try{
+        const response = await api.get('/formateurdata');
+        formateurData.value = response.data;
+        // console.log('Fetched formateur data:', formateurData.value);
+      }
+      catch(error){
+        console.error('Error fetching formateur data:', error);
       }
     }
 
@@ -172,9 +185,12 @@ const activities = ref([]);
     };
     onMounted(()=>{
         getStudents();
+        getFormateurData();
         const data = localStorage.getItem('user');
         if (data) {
             user.value = JSON.parse(data);
+            console.log('User data loaded:', user.value);
         }
+        
     })
 </script>

@@ -30,6 +30,10 @@ class DataService
     {
         return $this->DataRepository->getNotAssignedClasses();
     }
+    public function getFormateurData()
+    {
+        return $this->DataRepository->getFormateurData();
+    }
 }
 
 ?>
