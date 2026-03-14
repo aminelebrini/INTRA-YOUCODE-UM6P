@@ -15,5 +15,6 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::post('/createclasse', [CreateClasseController::class, 'create']);
     Route::post('/assignformateurclasse', [AssignFormateurClasseController::class, 'assign']);
     Route::get('/data', [DataController::class, 'data']);
+    Route::get('/formateurdata', [DataController::class, 'data']);
 });
 
