@@ -10,17 +10,19 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
+    {
     Schema::create('abscences', function (Blueprint $table) {
         $table->id();
-        $table->time('heure_debut')->default('08:00:00'); 
+        $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+        $table->date('jour');
+        $table->time('heure_debut')->default('09:00:00'); 
         $table->time('duree_retard')->nullable();        
-        $table->enum('status', ['justifie', 'non justifie']);
-        $table->string('motif');
-        $table->string('justification');
+        $table->enum('status', ['justifie', 'non justifie'])->default('non justifie');
+        $table->string('motif')->nullable();
+        $table->string('justification')->nullable();
         $table->timestamps();
     });
-}
+    }
 
     /**
      * Reverse the migrations.
@@ -30,3 +32,4 @@ return new class extends Migration
         Schema::dropIfExists('abscences');
     }
 };
+
