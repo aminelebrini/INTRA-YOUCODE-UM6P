@@ -1,5 +1,5 @@
 <template>
-    <div v-if="user && formateurData && user.id === formateurData.formateur_id" class="flex min-h-screen bg-[#0f0f12] text-white font-sans">
+    <div v-if="user" class="flex min-h-screen bg-[#0f0f12] text-white font-sans">
         <aside class="w-64 bg-[#121215] border-r border-white/5 flex flex-col fixed h-full z-20">
       <div class="p-8 border-b border-white/5">
         <img src="@/assets/logo-white.png" alt="Logo" class="w-32 opacity-80 hover:opacity-100 transition-opacity">
@@ -34,15 +34,15 @@
         </router-link>
         </nav>
 
-      <div class="p-6 bg-[#0c0c0e] border-t border-white/5">
+      <div v-for="formateur in formateurData.formateurData.filter(f => f.formateur_id === user.id)" :key="formateur.formateur_id" class="p-6 bg-[#0c0c0e] border-t border-white/5">
         <div class="flex items-center space-x-3 mb-4">
           <div class="w-8 h-8 rounded-full bg-[#00babc]/20 border border-[#00babc]/40 flex items-center justify-center text-[10px] font-bold text-[#00babc]">
-            <img src="" alt="logo" class="w-6 h-6 rounded-full">
+            <img :src="user?.link_profile || 'https://intranet.youcode.ma/storage/users/profile/thumbnail/0.jpg'" alt="logo" class="w-6 h-6 rounded-full">
           </div>
           <div class="overflow-hidden">
             <p class="text-[11px] font-bold truncate">{{ user?.fullname || 'Admin' }}</p>
             <p class="text-[9px] text-gray-600 truncate">{{ user?.email || 'admin@youcode.ma' }}</p>
-            <p class="text-[9px] text-gray-600 truncate">{{ formateurData?.classe_name || 'No Class Assigned' }}</p>
+            <p class="text-[9px] text-gray-600 truncate">{{ formateur?.classe_name || 'No Class Assigned' }}</p>
           </div>
         </div>
         <button @click="logout" class="w-full text-left text-[9px] text-red-500/60 hover:text-red-500 font-bold uppercase tracking-widest transition-colors">
@@ -53,6 +53,7 @@
 
         <div class="ml-64 flex-1 flex flex-col min-h-screen">
           <main class="flex-1 p-8">
+            <div class="flex flex-col items-start justify-center w-full">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-4">
               <div class="bg-white/5 border border-white/10 p-5 rounded-2xl backdrop-blur-sm hover:bg-white/10 transition-all cursor-default">
                 <div class="flex justify-between items-start mb-4">
@@ -83,7 +84,7 @@
                 <h3 class="text-gray-400 text-sm font-medium">Abandoned</h3>
                 <p class="text-2xl font-bold text-white mt-1">7</p>
               </div>
-
+              </div>
               <div>
                 <h1>Classe Information</h1>
               </div>
@@ -157,22 +158,23 @@ const students = ref([]);
 const activities = ref([]);
 const formateurData = ref([]);
 
-    const getStudents = async () => {
-      try{
-        const response = await api.get('/students');
-        students.value = response.data;
-        // console.log('Fetched students:', students.value);
-      }
-      catch(error){
-        console.error('Error fetching students:', error);
-      }
-    }
+    // const getStudents = async () => {
+    //   try{
+    //     const response = await api.get('/students');
+    //     students.value = response.data;
+    //     // console.log('Fetched students:', students.value);
+    //   }
+    //   catch(error){
+    //     console.error('Error fetching students:', error);
+    //   }
+    // }
 
-    const getFormateurData = async () =>{
+    const getFormateurData = async (fid) =>{
       try{
         const response = await api.get('/formateurdata');
         formateurData.value = response.data;
-        // console.log('Fetched formateur data:', formateurData.value);
+           
+        console.log('Fetched formateur data:', formateurData.value);
       }
       catch(error){
         console.error('Error fetching formateur data:', error);
@@ -184,12 +186,12 @@ const formateurData = ref([]);
         window.location.href = '/';
     };
     onMounted(()=>{
-        getStudents();
-        getFormateurData();
+        // getStudents();
+        getFormateurData(user.value?.id);
         const data = localStorage.getItem('user');
         if (data) {
             user.value = JSON.parse(data);
-            console.log('User data loaded:', user.value);
+            // console.log('User data loaded:', user.value);
         }
         
     })

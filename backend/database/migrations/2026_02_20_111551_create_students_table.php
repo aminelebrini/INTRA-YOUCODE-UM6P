@@ -20,8 +20,8 @@ return new class extends Migration
             $table->integer('points');
             $table->string('promotion');
             $table->string('annee');
-            $table->foreignId('formateur_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('classe_id')->constrained('classes')->onDelete('cascade');
+            $table->foreignId('formateur_id')->nullable()->constrained('users')->onDelete('cascade');
+            $table->foreignId('classe_id')->nullable()->constrained('classes')->onDelete('cascade');
             $table->timestamps();
         });
     }
