@@ -22,7 +22,7 @@ return new class extends Migration
               ->on('students')
               ->cascadeOnDelete();
             $table->string('ressource')->nullable();
-            $table->enum('etat',['abonnée', 'non abonné']);
+            $table->enum('etat',['abonnee', 'non abonne']);
             $table->date('date_debut');
             $table->date('date_fin');
             $table->timestamps();
