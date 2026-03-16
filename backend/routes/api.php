@@ -10,6 +10,7 @@ use App\Http\Controllers\AssignFormateurClasseController;
 use App\Http\Controllers\FormateurDataController;
 use App\Http\Controllers\ActiviteController;
 use App\Http\Controllers\AssignStudentClasseController;
+use App\Http\Controllers\AbsenceController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -19,6 +20,8 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::post('/assignformateurclasse', [AssignFormateurClasseController::class, 'assign']);
     Route::post('/assignstudentclasse', [AssignStudentClasseController::class, 'assign']);
     Route::post('/createactivites', [ActiviteController::class, 'activites']);
+    Route::post('/absences',[AbsenceController::class,'dedicateAbsence']);
+    Route::post('/absencejustification',[AbsenceController::class,'Absencejustification']);
     Route::get('/data', [DataController::class, 'data']);
     Route::get('/formateurdata', [FormateurDataController::class, 'Data']);
 

@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('justificatifs', function (Blueprint $table) {
+        Schema::create('justifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('absence_id')->constrained('abscences')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('fichier_path');
             $table->string('type_document')->nullable();
             $table->timestamp('date_depot');
