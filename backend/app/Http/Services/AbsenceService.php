@@ -11,9 +11,13 @@ class AbsenceService
     {
         $this->AbsenceRepository = $AbsenceRepository;
     }
-    public function dedicateAbsence($userId, $heureDebut, $dureeRetard, $status)
+    public function dedicateAbsence($userId, $jour, $heureDebut, $dureeRetard, $status)
     {
-        return $this->AbsenceRepository->dedicateAbsence($userId, $heureDebut, $dureeRetard, $status);
+        return $this->AbsenceRepository->dedicateAbsence($userId, $jour, $heureDebut, $dureeRetard, $status);
+    }
+    public function createJustification($absenceId, $userId, $fichierPath, $typeDocument, $dateDepot)
+    {
+        return $this->AbsenceRepository->createJustification($absenceId, $userId, $fichierPath, $typeDocument, $dateDepot);
     }
 }
 
