@@ -16,8 +16,8 @@ class AbsenceController extends Controller
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'jour' => 'required|date',
-            'heure_debut' => 'required|date',
-            'duree_retard' => 'required|integer|min:0',
+            'heure_debut' => 'required|date_format:H:i',
+            'duree_retard' => 'required|date_format:H:i',
             'status' => 'required|string|max:255',
         ]);
 
