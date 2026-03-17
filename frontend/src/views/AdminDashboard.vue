@@ -33,7 +33,7 @@
       <div class="p-6 bg-[#0c0c0e] border-t border-white/5">
         <div class="flex items-center space-x-3 mb-4">
           <div class="w-8 h-8 rounded-full bg-[#00babc]/20 border border-[#00babc]/40 flex items-center justify-center text-[10px] font-bold text-[#00babc]">
-            {{ user?.fullname ? user.fullname.split(' ').map(n => n[0]).join('').toUpperCase() : 'A' }}
+            <img :src="user?.link_profile" alt="Profile Picture" class="w-full h-full object-cover rounded-full">
           </div>
           <div class="overflow-hidden">
             <p class="text-[11px] font-bold truncate">{{ user?.fullname || 'Admin' }}</p>

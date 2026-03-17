@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('fullname');
             $table->string('username')->unique();
-            $table->string('link_profile')->nullable();
+            $table->string('link_profile')->default('https://intranet.youcode.ma/storage/users/profile/thumbnail/0.jpg');
             $table->string('email')->unique();
             $table->string('password');
             $table->string('role')->default('etudiant');

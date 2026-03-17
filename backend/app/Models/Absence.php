@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Absence extends Model
 {
+    protected $table = 'abscences';
     protected $fillable = [
         'user_id',
         'jour',
