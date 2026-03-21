@@ -10,9 +10,9 @@ class Activite extends Model
         'nom',
         'description',
         'type',
-        'binome_id',
+        'user_id',
+        'classe_id',
         'ressource',
-        'etat',
         'date_debut',
         'date_fin'
     ];
