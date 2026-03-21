@@ -17,7 +17,7 @@ class ActiviteController extends Controller
             'nom' => 'required|string|max:255',
             'description' => 'nullable|string',
             'type' => 'required|string|max:255',
-            'binome_id' => 'required|exists:students,user_id',
+            'classe_id' => 'required|integer|exists:classes,id',
             'ressource' => 'required|string',
             'etat' => 'required|string|max:255',
             'date_debut' => 'required|date',
@@ -27,7 +27,7 @@ class ActiviteController extends Controller
         $activite = $this->activiteService
         ->createActivite($request->nom,$request->description,
             $request->type,
-            $request->binome_id,
+            $request->classe_id,
             $request->ressource,
             $request->etat,
             $request->date_debut,
@@ -36,7 +36,8 @@ class ActiviteController extends Controller
         if($activite){
             return response()->json(['message' => 'Activité créée avec succès', 'activite' => $activite], 201);
         } else {
-            return response()->json(['message' => 'Erreur lors de la création de l\'activité'], 500);
+            return response()->json(['message' => 'Erreur lors de la création de l\'activité',
+            'activite'=> $activite], 500);
         }
     }
 }
