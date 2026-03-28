@@ -14,11 +14,13 @@ use App\Http\Controllers\AbsenceController;
 use App\Http\Controllers\ValidateAbsenceController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AssignDelegateController;
+use App\Http\Controllers\SendLivrableController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function (){
     Route::post('/createuser', [CreateStudentController::class, 'create']);
+    Route::post('/sendlivrable', [SendLivrableController::class, 'sendLivrable']);
     Route::post('/createclasse', [CreateClasseController::class, 'create']);
     Route::post('/assignformateurclasse', [AssignFormateurClasseController::class, 'assign']);
     Route::post('/assignstudentclasse', [AssignStudentClasseController::class, 'assign']);
