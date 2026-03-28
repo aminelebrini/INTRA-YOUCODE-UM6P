@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
             $table->foreignId('activite_id')->constrained('activites')->onDelete('cascade');
-            $table->string('lien_githb');
+            $table->foreignId('classe_id')->constrained('classes')->onDelete('cascade');
+            $table->string('lien_github');
             $table->string('lien_deploiment')->nullable();
             $table->string('commentaire');
             $table->date('date_soumission');
