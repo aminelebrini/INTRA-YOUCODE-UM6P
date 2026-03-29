@@ -69,12 +69,11 @@
           </button>
         </form>
 
-        <p class="text-center text-[9px] text-gray-800 uppercase tracking-widest pt-4">
+        <p class="text-center text-[14px] text-gray-800 uppercase tracking-widest pt-4">
           © 2026 YouCode - Secure Access Only
         </p>
       </div>
     </div>
-
   </div>
 </template>
 

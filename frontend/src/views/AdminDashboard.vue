@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center items-start md:items-center md:min-h-screen w-full bg-[#0f0f12] text-white font-sans">
+  <div class="flex items-start min-h-screen w-full bg-[#0f0f12] text-white font-sans overflow-x-hidden">
     
     <aside 
       :class="[
@@ -14,22 +14,27 @@
 
       <nav class="flex-1 px-3 md:px-4 py-6 md:py-8 space-y-2">
         <p class="text-[9px] text-gray-600 uppercase tracking-[0.2em] font-bold px-4 mb-4">Main_Menu</p>
-        <router-link to="/admindashboard" @click="closeSidebar" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
+        <router-link to="/admindashboard" :class="activTab==='profile'" @click="activTab = 'profile'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
+          <span class="text-[#00babc] opacity-0 group-hover:opacity-100 transition-opacity mr-2">></span>
+          PROFILE
+        </router-link>
+
+        <router-link to="/admindashboard" :class="activTab==='dashboard'" @click="activTab = 'dashboard'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
           <span class="text-[#00babc] opacity-0 group-hover:opacity-100 transition-opacity mr-2">></span>
           DASHBOARD
         </router-link>
 
-        <router-link to="/admindashboard" @click="closeSidebar" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
+        <router-link to="/admindashboard" :class="activTab==='personnel'" @click="activTab = 'personnel'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
           <span class="text-[#00babc] opacity-0 group-hover:opacity-100 transition-opacity mr-2">></span>
-          PERSONNAL
+          PERSONNEL
         </router-link>
 
-        <router-link to="/admindashboard" @click="closeSidebar" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
+        <router-link to="/admindashboard" :class="activTab==='classes'" @click="activTab = 'classes'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
           <span class="text-[#00babc] opacity-0 group-hover:opacity-100 transition-opacity mr-2">></span>
           CLASSES
         </router-link>
 
-        <router-link to="/admindashboard" @click="closeSidebar" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
+        <router-link to="/admindashboard" :class="activTab==='absences'" @click="activTab = 'absences'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
           <span class="text-[#00babc] opacity-0 group-hover:opacity-100 transition-opacity mr-2">></span>
           ABSENCES
         </router-link>
@@ -38,7 +43,7 @@
       <div class="p-6 md:p-10 bg-[#0c0c0e] border-t border-white/5">
         <div class="flex items-center space-x-3 mb-4">
           <div class="w-8 h-8 rounded-full bg-[#00babc]/20 border border-[#00babc]/40 flex items-center justify-center text-[10px] font-bold text-[#00babc]">
-            <img :src="user?.link_profile" alt="Profile Picture" class="w-full h-full object-cover rounded-full">
+            <img :src="user?.link_profile || 'https://intranet.youcode.ma/storage/users/profile/0.jpg'" alt="Profile Picture" class="w-full h-full object-cover rounded-full">
           </div>
           <div class="overflow-hidden">
             <p class="text-[11px] font-bold truncate">{{ user?.fullname || 'Admin' }}</p>
@@ -52,21 +57,21 @@
     </aside>
 
     <button 
-  v-if="showSidebar && !isDesktop" 
-  @click="closeSidebar" 
-  class="fixed inset-0 bg-black/60 z-20 md:hidden">
-</button>
+      v-if="showSidebar && !isDesktop" 
+      @click="closeSidebar" 
+      class="fixed inset-0 bg-black/60 z-20 md:hidden">
+    </button>
 
-    <div class="md:flex-1 md:ml-64 flex flex-col p-3 sm:p-4 md:p-6 w-full">
+    <div class="md:flex-1 md:ml-64 flex flex-col p-3 sm:p-4 md:p-6 w-full min-h-screen">
       <div class="md:hidden mb-4 flex items-center justify-between bg-[#121215] border border-white/10 rounded-lg px-4 py-3">
         <img src="@/assets/logo-white.png" alt="Logo" class="w-24 opacity-90">
         <button @click="showSidebar = true" class="text-[#00babc] border border-[#00babc]/40 rounded px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold">
-          Menu
+          <i class="fas fa-bars"></i>
         </button>
       </div>
 
-      <main class="p-2 sm:p-3 md:p-10">
-        <header class="relative mb-6 p-4 md:p-6 rounded-xl border border-white/10 overflow-hidden w-full min-h-[120px] md:min-h-[160px]">
+      <main class="w-full max-w-7xl mx-auto p-2 sm:p-3 md:p-2 pb-8">
+        <header v-if="activTab === 'profile'" class="relative mb-6 p-4 md:p-6 rounded-xl border md:flex md:flex-row md:justify-between md:items-center border-white/10 overflow-hidden w-full min-h-[120px] md:min-h-[200px]">
           <div class="absolute inset-0 z-0">
             <img src="@/assets/bg.jpg" class="w-full h-full object-cover object-center" alt="header_bg">
             <div class="absolute inset-0 bg-gradient-to-r from-black/90 to-black/40 backdrop-blur-[2px]"></div>
@@ -75,7 +80,8 @@
           <div class="relative z-10 w-full flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div class="flex items-center gap-4 md:gap-6 min-w-0">
               <div class="relative shrink-0">
-                <img src="https://avatars.githubusercontent.com/u/113290995?v=4" 
+                <img 
+                    :src="user?.link_profile || 'https://intranet.youcode.ma/storage/users/profile/0.jpg'" 
                     alt="user_profile" 
                     class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-full border-2 border-[#00babc] object-cover shadow-[0_0_15px_rgba(0,186,188,0.3)]">
                 <div class="absolute bottom-1 right-1 w-3 h-3 bg-green-500 border-2 border-black rounded-full"></div>
@@ -92,22 +98,24 @@
             </div>
 
             <div class="flex flex-col justify-center min-w-0 w-full md:w-auto md:items-end">
-              <h2 class="text-white font-black uppercase tracking-tighter text-xs sm:text-base md:text-3xl leading-tight break-all md:break-normal md:text-right">
+              <h2 class="text-white font-black uppercase tracking-tighter text-xs sm:text-base md:text-2xl leading-tight break-all md:break-normal md:text-right">
                 {{ user?.email || 'a.lebrini@staff.youcode.ma' }}
               </h2>
-              <span class="text-[8px] md:text-[10px] text-white/50 font-mono tracking-widest uppercase md:text-right">
-                  Role: {{ user?.role || 'Admin' }}
-                </span>
+              <div class="flex flex-row items-center justify-start gap-2 mt-1 md:mt-2">
+                <span class="text-[8px] md:text-[10px] text-white/50 font-mono tracking-widest truncate">
+                    Role: {{ user?.role || 'ADMIN' }}
+                  </span>
+              </div>
             </div>
           </div>
         </header>
 
-        <section class="bg-[#121215] border border-white/5 p-4 sm:p-6 md:p-8 rounded-xl shadow-2xl">
+        <section v-if="activTab === 'personnel'" class="bg-[#121215] border border-white/5 p-4 sm:p-6 md:p-8 rounded-xl shadow-2xl">
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-8 md:mb-10">
               <h3 class="text-xs font-black uppercase tracking-[0.3em] text-[#00babc] opacity-70">
                 Personnel Management
               </h3>
-              <button @click="oppenToggle('createPersonnalModal')" 
+              <button @click="oppenToggle('CreatePersonnalModal')" 
                       class="w-full sm:w-auto bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] text-[11px] font-bold uppercase tracking-widest py-2.5 px-4 md:px-6 rounded-lg transition-all duration-300 transform active:scale-95 shadow-lg shadow-[#00babc]/10">
                 Create Personnel
               </button>
@@ -151,7 +159,7 @@
           </div>
         </section>
 
-        <section class="bg-[#121215] border border-white/5 p-4 sm:p-6 md:p-8 rounded-lg mt-6">
+        <section v-if="activTab === 'classes'" class="bg-[#121215] border border-white/5 p-4 sm:p-6 md:p-8 rounded-lg mt-6">
           <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
               <h3 class="text-xs font-black uppercase tracking-[0.3em] text-[#00babc] opacity-70">Classes Management</h3>
               <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full lg:w-auto">
@@ -208,7 +216,7 @@
             </div>
         </section>
 
-        <section class="bg-[#121215] border border-white/5 p-4 sm:p-6 md:p-8 rounded-lg mt-6">
+        <section v-if="activTab === 'absences'" class="bg-[#121215] border border-white/5 p-4 sm:p-6 md:p-8 rounded-lg mt-6">
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <h3 class="text-xs font-black uppercase tracking-[0.3em] text-[#00babc] opacity-70">Absences Management</h3>
             <button @click="oppenToggle('detectAbsencesModal')" class="w-full sm:w-auto bg-[#00babc] text-[#121215] font-bold py-2 px-4 rounded hover:bg-[#00d1d3] transition-all text-[11px] uppercase tracking-widest">
@@ -231,6 +239,36 @@
           </div>
         </section>
       </main>
+    </div>
+  </div>
+
+  <div class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 " id="CreatePersonnalModal">
+    <div class="bg-[#121215] border border-white/10 p-8 rounded-lg w-[100%] max-w-md shadow-2xl overflow-y-auto max-h-[90vh]">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-[#00babc] font-black uppercase tracking-widest text-sm">Create Personal</h1>
+        <button @click="oppenToggle('CreatePersonnalModal')" class="text-[#00babc] hover:text-red-500 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+      <form class="flex flex-col justify-center items-start gap-4 w-[100%]" @submit.prevent="submitRegistration">
+        <label for="fullname" class="text-[#00babc] text-[11px] uppercase tracking-widest">FULL NAME</label>
+        <input type="text" id="fullname" v-model="fullname" placeholder="FULL NAME" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]">
+        <label for="email" class="text-[#00babc] text-[11px] uppercase tracking-widest">EMAIL ADDRESS</label>
+        <input type="email" id="email" v-model="email" placeholder="EMAIL ADDRESS" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%] ">
+        <label for="password" class="text-[#00babc] text-[11px] uppercase tracking-widest">PASSWORD</label>
+        <input type="password" id="password" v-model="password" placeholder="PASSWORD" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]">
+        <label for="link_profile" class="text-[#00babc] text-[11px] uppercase tracking-widest">LINK PROFILE</label>
+        <input type="url" id="link_profile" v-model="link_profile" placeholder="LINK PROFILE" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]">
+        <label for="ville" class="text-[#00babc] text-[11px] uppercase tracking-widest">VILLE</label>
+        <input type="text" id="ville" v-model="ville" placeholder="VILLE" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]">
+        <label for="campus" class="text-[#00babc] text-[11px] uppercase tracking-widest">CAMPUS</label>
+        <input type="text" id="campus" v-model="campus" placeholder="CAMPUS" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]">
+        <label for="role" class="text-[#00babc] text-[11px] uppercase tracking-widest">ROLE</label>
+        <input type="text" id="role" v-model="role" placeholder="Formateur" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]">
+        <button type="submit" class="w-full bg-[#00babc] text-[#121215] font-bold py-3 rounded mt-2 hover:bg-[#00d1d3] transition-all uppercase tracking-widest text-xs">
+          Create Account
+        </button>
+      </form>
     </div>
   </div>
 
@@ -264,6 +302,7 @@
 import api from '@/services/api';
 import { ref, onMounted, onBeforeUnmount } from 'vue'; 
 
+const activTab = ref('profile');
 const showSidebar = ref(false);
 const isDesktop = ref(false);
 const user = ref(null)
@@ -406,20 +445,21 @@ function oppenToggle(id)
 
 function syncSidebarWithViewport() {
   isDesktop.value = window.innerWidth >= 768;
-  showSidebar.value = isDesktop.value; // Toujours ouvert sur desktop
+  showSidebar.value = isDesktop.value;
 }
 
 function closeSidebar() {
   if (!isDesktop.value) {
-    showSidebar.value = false; // Ne ferme que sur mobile
+    showSidebar.value = false; 
   }
 }
 
 function toggleSidebar() {
   if (!isDesktop.value) {
-    showSidebar.value = !showSidebar.value; // Toggle sur mobile
+    showSidebar.value = !showSidebar.value;
   }
 }
+
 
 onMounted(() => {
   syncSidebarWithViewport();
