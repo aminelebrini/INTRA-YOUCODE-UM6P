@@ -32,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::post('/createannouncement',[AnnouncementController::class,'createAnnouncement']);
     Route::get('/data', [DataController::class, 'data']);
     Route::get('/formateurdata', [FormateurDataController::class, 'Data']);
+    Route::get('/students', [FormateurDataController::class, 'getStudents']);
 
 });
 

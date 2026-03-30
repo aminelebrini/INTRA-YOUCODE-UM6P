@@ -16,6 +16,10 @@ class FormateurDataService
     {
         return $this->FormateurDataRepository->getFormateurData();
     }
+    public function getStudents($formateurId)
+    {
+        return $this->FormateurDataRepository->getStudents($formateurId);
+    }
 
 }
 ?>

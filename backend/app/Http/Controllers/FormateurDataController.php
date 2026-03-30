@@ -17,6 +17,21 @@ class FormateurDataController extends Controller
     {
         $formateurData = $this->FormateurDataService->getFormateurData();
 
-        return response()->json(['formateurData' => $formateurData], 200);
+       if($formateurData) {
+           return response()->json(['formateurData' => $formateurData], 200);
+       } else {
+           return response()->json(['message' => 'No formateur data found'], 404);
+       }
+    }
+    public function getStudents()
+    {
+        $user = auth()->user();
+        $students = $this->FormateurDataService->getStudents($user->id);
+
+        if ($students) {
+            return response()->json(['students' => $students], 200);
+        } else {
+            return response()->json(['message' => 'No students found for this formateur'], 404);
+        }
     }
 }

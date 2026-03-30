@@ -14,27 +14,27 @@
 
       <nav class="flex-1 px-3 md:px-4 py-6 md:py-8 space-y-2">
         <p class="text-[9px] text-gray-600 uppercase tracking-[0.2em] font-bold px-4 mb-4">Main_Menu</p>
-        <router-link to="/admindashboard" :class="activTab==='profile'" @click="activTab = 'profile'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
+        <router-link :class="activTab==='profile'" @click="activTab='profile'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
           <span class="text-[#00babc] opacity-0 group-hover:opacity-100 transition-opacity mr-2">></span>
           PROFILE
         </router-link>
 
-        <router-link to="/admindashboard" :class="activTab==='dashboard'" @click="activTab = 'dashboard'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
+        <router-link :class="activTab==='dashboard'" @click="activTab = 'dashboard'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
           <span class="text-[#00babc] opacity-0 group-hover:opacity-100 transition-opacity mr-2">></span>
           DASHBOARD
         </router-link>
 
-        <router-link to="/admindashboard" :class="activTab==='personnel'" @click="activTab = 'personnel'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
+        <router-link :class="activTab==='personnel'" @click="activTab = 'personnel'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
           <span class="text-[#00babc] opacity-0 group-hover:opacity-100 transition-opacity mr-2">></span>
           PERSONNEL
         </router-link>
 
-        <router-link to="/admindashboard" :class="activTab==='classes'" @click="activTab = 'classes'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
+        <router-link :class="activTab==='classes'" @click="activTab = 'classes'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
           <span class="text-[#00babc] opacity-0 group-hover:opacity-100 transition-opacity mr-2">></span>
           CLASSES
         </router-link>
 
-        <router-link to="/admindashboard" :class="activTab==='absences'" @click="activTab = 'absences'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
+        <router-link :class="activTab==='absences'" @click="activTab = 'absences'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
           <span class="text-[#00babc] opacity-0 group-hover:opacity-100 transition-opacity mr-2">></span>
           ABSENCES
         </router-link>
@@ -127,17 +127,22 @@
                 <tr class="text-left text-[10px] text-gray-500 uppercase tracking-[0.2em] border-b border-white/5">
                   <th class="pb-4 font-black">Full Name</th>
                   <th class="pb-4 font-black">Email Address</th>
+                  <th class="pb-4 font-black">username</th>
                   <th class="pb-4 font-black">Designation / Role</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-white/[0.03]">
                 <tr v-for="u in users.filter(e => e.id !== user?.id)" :key="u.id" class="group hover:bg-white/[0.02] transition-colors">
-                  <td class="py-5 text-sm text-gray-200 font-medium group-hover:text-[#00babc] transition-colors">
-                    {{ u?.fullname || 'AMINE LEBRINI' }}
+                  <td class="flex flex-row justify-content items-center py-5 text-sm text-gray-200 font-medium group-hover:text-[#00babc] transition-colors">
+                    <img :src="u?.link_profile || 'https://intranet.youcode.ma/storage/users/profile/0.jpg'" alt="logo" class="w-8 h-8 rounded-full object-cover mr-2">
+                      {{ u?.fullname || 'AMINE LEBRINI' }}
                   </td>
-                  <td class="py-5 text-sm text-gray-400 font-mono tracking-tight">
-                    {{ u?.email || 'example@example.com' }}
-                  </td>
+                    <td class="py-5 text-sm text-gray-400 font-mono tracking-tight">
+                      {{ u?.email || 'example@example.com' }}
+                    </td>
+                    <td class="py-5 text-sm text-gray-400 font-mono tracking-tight">
+                      {{ u?.username || 'username' }}
+                    </td>
                   <td class="py-5">
                     <span class="text-[10px] font-bold px-2 py-1 rounded bg-white/5 border border-white/10 text-gray-300 uppercase tracking-tighter">
                      {{ u?.role || 'User' }}
@@ -272,7 +277,82 @@
     </div>
   </div>
 
-  <!-- <div class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4" id="detectAbsencesModal">
+  <div class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4" id="createClassModal">
+    <div class="bg-[#121215] border border-white/10 p-8 rounded-lg w-[100%] max-w-md shadow-2xl overflow-y-auto max-h-[90vh]">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-[#00babc] font-black uppercase tracking-widest text-sm">Create Class</h2>
+        <button @click="oppenToggle('createClassModal')" class="text-[#00babc] hover:text-red-500 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+      <form class="flex flex-col justify-center items-start gap-4 w-[100%]" @submit.prevent="submitClassRegistration">
+        <label for="classename" class="text-[#00babc] text-[11px] uppercase tracking-widest">Class Name</label>
+        <input type="text" id="classename" v-model="classename" placeholder="A1" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]" required>
+        <label for="classecapacity" class="text-[#00babc] text-[11px] uppercase tracking-widest">Capacity</label>
+        <input type="number" id="classecapacity" v-model="classecapacity" placeholder="30" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]" min="1" required>
+        <label for="promo" class="text-[#00babc] text-[11px] uppercase tracking-widest">Promo</label>
+        <input type="text" id="promo" v-model="promo" placeholder="2026" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]" required>
+        <label for="classeCampus" class="text-[#00babc] text-[11px] uppercase tracking-widest">Campus</label>
+        <input type="text" id="classeCampus" v-model="classeCampus" placeholder="Youssoufia" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]" required>
+        <label for="link_logo" class="text-[#00babc] text-[11px] uppercase tracking-widest">Logo Link</label>
+        <input type="url" id="link_logo" v-model="link_logo" placeholder="https://..." class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]" required>
+        <button type="submit" class="w-full bg-[#00babc] text-[#121215] font-bold py-3 rounded mt-2 hover:bg-[#00d1d3] transition-all uppercase tracking-widest text-xs">
+          Create Class
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4" id="AssignClassFormatorModal">
+    <div class="bg-[#121215] border border-white/10 p-8 rounded-lg w-[100%] max-w-md shadow-2xl overflow-y-auto max-h-[90vh]">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-[#00babc] font-black uppercase tracking-widest text-sm">Assign Formator</h2>
+        <button @click="oppenToggle('AssignClassFormatorModal')" class="text-[#00babc] hover:text-red-500 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+      <form @submit.prevent="submitClassAssignRegistration" class="space-y-4 w-[100%]">
+        <label for="formator" class="text-[#00babc] text-[11px] uppercase tracking-widest">Formator</label>
+        <select id="formator" v-model="formator" class="w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required>
+          <option value="" disabled>Select Formator</option>
+          <option v-for="f in assignformateurs" :key="f.id" :value="f.id">{{ f.formateur_name }}</option>
+        </select>
+        <label for="assignclass" class="text-[#00babc] text-[11px] uppercase tracking-widest">Class</label>
+        <select id="assignclass" v-model="assignclass" class="w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required>
+          <option value="" disabled>Select Class</option>
+          <option v-for="c in assignclasses" :key="c.id" :value="c.id">{{ c.classe_name }}</option>
+        </select>
+        <button type="submit" class="w-full bg-[#00babc] text-[#121215] font-bold py-3 rounded mt-2 hover:bg-[#00d1d3] transition-all uppercase tracking-widest text-xs">
+          Assign
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4" id="detectAbsencesModal">
+    <div class="bg-[#121215] border border-white/10 p-8 rounded-lg w-[100%] max-w-md shadow-2xl overflow-y-auto max-h-[90vh]">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-[#00babc] font-black uppercase tracking-widest text-sm">Detect Absences</h2>
+        <button @click="oppenToggle('detectAbsencesModal')" class="text-[#00babc] hover:text-red-500 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+      <form @submit.prevent="submitAbsenceDetection" class="space-y-4 w-[100%]">
+        <label for="detectClass" class="text-[#00babc] text-[11px] uppercase tracking-widest">Class</label>
+        <select id="detectClass" v-model="assignclass" class="w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required>
+          <option value="" disabled>Select Class</option>
+          <option v-for="c in assignclasses" :key="c.id" :value="c.id">{{ c.classe_name }}</option>
+        </select>
+        <label for="detectionDate" class="text-[#00babc] text-[11px] uppercase tracking-widest">Date</label>
+        <input type="date" id="detectionDate" v-model="detectionDate" class="w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required>
+        <button type="submit" class="w-full bg-[#00babc] text-[#121215] font-bold py-3 rounded mt-2 hover:bg-[#00d1d3] transition-all uppercase tracking-widest text-xs">
+          Start Detection
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- <div class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4" id="legacyDetectAbsencesModal">
     <div class="bg-[#121215] border border-white/10 p-8 rounded-lg w-full max-w-md shadow-2xl">
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-white font-black uppercase tracking-widest text-sm">Scan / Detect Absences</h2>
@@ -298,48 +378,42 @@
   
 </template>
 
-<script setup> 
+<script setup>
 import api from '@/services/api';
-import { ref, onMounted, onBeforeUnmount } from 'vue'; 
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 
 const activTab = ref('profile');
 const showSidebar = ref(false);
 const isDesktop = ref(false);
-const user = ref(null)
-const fullname = ref('')
-const campus = ref('')
-const role = ref('')
-const link_profile = ref('')
-const ville = ref('')
-const email = ref('')
-const password = ref('')
-const classename = ref('')
-const classecapacity = ref('')
-const link_logo = ref('')
-const promo = ref('')
-const classeCampus = ref('')
+
+const user = ref(null);
+const fullname = ref('');
+const campus = ref('');
+const role = ref('');
+const link_profile = ref('');
+const ville = ref('');
+const email = ref('');
+const password = ref('');
+
+const classename = ref('');
+const classecapacity = ref('');
+const link_logo = ref('');
+const promo = ref('');
+const classeCampus = ref('');
+
 const users = ref([]);
 const classes = ref([]);
+const absences = ref([]);
 const assignformateurs = ref([]);
 const assignclasses = ref([]);
+
 const formator = ref('');
 const assignclass = ref('');
+const detectionDate = ref('');
 
- const submitRegistration = async ()=>{
-  
+const submitRegistration = async () => {
   try {
-      const response = await api.post('http://localhost:8000/api/createstudents', {
-
-  fullname: fullname.value,
-  campus: campus.value,
-  role: role.value,
-  link_profile: link_profile.value,
-  ville: ville.value,
-  email: email.value,
-  password: password.value
-
-})
-    console.log({
+    await api.post('/createuser', {
       fullname: fullname.value,
       campus: campus.value,
       role: role.value,
@@ -347,99 +421,112 @@ const assignclass = ref('');
       ville: ville.value,
       email: email.value,
       password: password.value
-    })
+    });
 
-    
-  }catch (error) {
-    console.error("Error creating student:", error);
+    await Data();
+    oppenToggle('CreatePersonnalModal');
+
+    fullname.value = '';
+    campus.value = '';
+    role.value = '';
+    link_profile.value = '';
+    ville.value = '';
+    email.value = '';
+    password.value = '';
+  } catch (error) {
+    console.error('Error creating user:', error?.response?.data || error);
   }
+};
 
- }
-
- const submitClassRegistration = async ()=>{
-
-  try{
-    const response = await api.post('http://localhost:8000/api/createclasse', {
-      classename: classename.value,
-      classecapacity: classecapacity.value,
+const submitClassRegistration = async () => {
+  try {
+    await api.post('/createclasse', {
+      nom: classename.value,
+      capacite: Number(classecapacity.value),
       promo: promo.value,
       link_logo: link_logo.value,
       campus: classeCampus.value
-    })
-    console.log({
-      classename: classename.value,
-      classecapacity: classecapacity.value,
-      promo: promo.value,
-      link_logo: link_logo.value,
-      campus: classeCampus.value
-    })
-  }catch (error) {
-    console.error("Error creating class:", error);
-  }
- }
+    });
 
- const submitClassAssignRegistration = async ()=>
- {
-  try{
-    const response = await api.post('http://localhost:8000/api/assignformateurclasse', {
-      formator: formator.value,
-      assignedClass: assignclass.value
-    })
-    console.log({
-      formator: formator.value,
-      assignedClass: assignclass.value
-    })
-  }catch (error) {
-    console.error("Error assigning formateur to class:", error);
+    await Data();
+    oppenToggle('createClassModal');
+
+    classename.value = '';
+    classecapacity.value = '';
+    promo.value = '';
+    link_logo.value = '';
+    classeCampus.value = '';
+  } catch (error) {
+    console.error('Error creating class:', error?.response?.data || error);
   }
- }
- const logout = () => {
+};
+
+const submitClassAssignRegistration = async () => {
+  try {
+    await api.post('/assignformateurclasse', {
+      formator: formator.value,
+      assignedClass: assignclass.value
+    });
+
+    await Data();
+    oppenToggle('AssignClassFormatorModal');
+    formator.value = '';
+    assignclass.value = '';
+  } catch (error) {
+    console.error('Error assigning formateur to class:', error?.response?.data || error);
+  }
+};
+
+const submitAbsenceDetection = async () => {
+  try {
+    const response = await api.post('/detectabsences', {
+      assignedClass: assignclass.value,
+      date: detectionDate.value
+    });
+
+    if (response?.data?.absences) {
+      absences.value = response.data.absences;
+    } else {
+      await Data();
+    }
+
+    oppenToggle('detectAbsencesModal');
+    assignclass.value = '';
+    detectionDate.value = '';
+  } catch (error) {
+    console.error('Error detecting absences:', error?.response?.data || error);
+  }
+};
+
+const logout = () => {
   localStorage.clear();
-  window.location.href = '/'
- }
+  window.location.href = '/';
+};
 
- const Data = async () => {
-  try{
+const Data = async () => {
+  try {
     const response = await api.get('/data');
     const data = response.data;
+
     users.value = data.users;
     classes.value = data.classes;
+    absences.value = data.absences || [];
     assignformateurs.value = data.assignformateurs;
     assignclasses.value = data.assignclasses;
-    console.log('Fetched users:', users.value);
-    console.log('Fetched classes:', classes.value);
-    console.log('Fetched assignformateurs:', assignformateurs.value);
-    console.log('Fetched assignclasses:', assignclasses.value);
-    //abssence hasha tokon interface
-  }
-  catch(error){
+  } catch (error) {
     console.error('Error fetching users:', error);
   }
- }
-onMounted(() => {
-  Data();
-  syncSidebarWithViewport();
-  window.addEventListener('resize', syncSidebarWithViewport);
-  const data = localStorage.getItem('user')
-  if(data) {
-    user.value = JSON.parse(data)
-  }
-})
+};
 
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', syncSidebarWithViewport);
-})
-
-function formatDate(isDate)
-{
+function formatDate(isDate) {
   const date = new Date(isDate);
   return date.toLocaleDateString();
 }
-function oppenToggle(id)
-{
-  const modal = document.getElementById(id)
-  if(modal) {
-    modal.classList.toggle('hidden')
+
+function oppenToggle(id) {
+  const modal = document.getElementById(id);
+  if (modal) {
+    modal.classList.toggle('hidden');
   }
 }
 
@@ -450,27 +537,22 @@ function syncSidebarWithViewport() {
 
 function closeSidebar() {
   if (!isDesktop.value) {
-    showSidebar.value = false; 
+    showSidebar.value = false;
   }
 }
-
-function toggleSidebar() {
-  if (!isDesktop.value) {
-    showSidebar.value = !showSidebar.value;
-  }
-}
-
 
 onMounted(() => {
+  Data();
   syncSidebarWithViewport();
   window.addEventListener('resize', syncSidebarWithViewport);
 
   const data = localStorage.getItem('user');
-  if (data) user.value = JSON.parse(data);
+  if (data) {
+    user.value = JSON.parse(data);
+  }
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', syncSidebarWithViewport);
 });
-
 </script>
