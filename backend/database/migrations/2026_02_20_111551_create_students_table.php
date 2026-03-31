@@ -17,9 +17,9 @@ return new class extends Migration
               ->unique()
               ->constrained('users')
               ->cascadeOnDelete();
-            $table->integer('points');
-            $table->string('promotion');
-            $table->string('annee');
+            $table->integer('points')->default(0);
+            $table->string('promotion')->nullable();
+            $table->string('annee')->nullable();
             $table->foreignId('formateur_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->foreignId('classe_id')->nullable()->constrained('classes')->onDelete('cascade');
             $table->timestamps();
