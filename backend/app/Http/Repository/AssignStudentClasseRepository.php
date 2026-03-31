@@ -14,13 +14,15 @@ class AssignStudentClasseRepository
         $classeId
     )
     {
-        $student = Student::create([
-            'user_id' => $studentId,
+        $retuStudent = Student::find($studentId);
+
+        $student = Student::where('id', $studentId)->
+        update([
             'points' => $points,
             'promotion' => $promotion,
             'annee' => $annee,
             'formateur_id' => $formateurId,
-            'classe_id' => $classeId
+            'classe_id' => $classeId,
         ]);
     }
 }

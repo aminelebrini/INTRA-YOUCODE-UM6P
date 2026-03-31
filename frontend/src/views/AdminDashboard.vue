@@ -165,7 +165,7 @@
         </section>
 
         <section v-if="activTab === 'classes'" class="bg-[#121215] border border-white/5 p-4 sm:p-6 md:p-8 rounded-lg mt-6">
-          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-8">
               <h3 class="text-xs font-black uppercase tracking-[0.3em] text-[#00babc] opacity-70">Classes Management</h3>
               <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full lg:w-auto">
                 <button @click="oppenToggle('createClassModal')" class="w-full sm:w-auto bg-transparent border border-[#00babc] text-[#00babc] font-bold py-2 px-4 rounded hover:bg-[#00babc] hover:text-[#121215] transition-all text-[11px] uppercase tracking-widest">
@@ -176,50 +176,54 @@
                 </button>
               </div>
           </div>
-          <div v-if="classes && classes.length > 0" class="w-full overflow-x-auto mt-8">
-            <table class="w-full min-w-[760px] border-collapse">
-              <thead>
-                <tr class="text-left text-[10px] text-gray-500 uppercase tracking-[0.2em] border-b border-white/5">
-                  <th class="pb-4 font-black">Classe Name</th>
-                  <th class="pb-4 font-black">Capacity</th>
-                  <th class="pb-4 font-black">Formator</th>
-                  <th class="pb-4 font-black">Promo</th>
-                  <th class="pb-4 font-black">Campus</th>
-                  <th class="pb-4 font-black">Created At</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-white/[0.03]">
-                <tr v-for="classe in classes" :key="classe.id" class="group hover:bg-white/[0.02] transition-colors">
-                  <td class="py-5 text-sm text-gray-200 font-medium group-hover:text-[#00babc] transition-colors">
-                    <img :src="classe?.link_logo || 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Google_Classroom_Logo.svg/250px-Google_Classroom_Logo.svg.png'" alt="" class="w-6 h-6 rounded-full object-cover inline-block mr-2"> 
-                    {{ classe?.nom || 'Unnamed Class' }}
-                  </td>
-                  <td class="py-5 text-sm text-gray-400 font-mono">
-                    {{ classe?.capacite || 0 }}
-                  </td>
-                  <td class="py-5 text-sm text-gray-400 font-mono">
-                    {{ classe?.formateur?.fullname || 'Unassigned' }}
-                  </td>
-                  <td class="py-5 text-sm text-gray-400 font-mono">
-                     {{ classe?.promo || 'N/A' }}
-                  </td>
-                  <td class="py-5 text-sm text-gray-400 font-mono">
-                    {{ classe?.campus || 'N/A' }}
-                  </td>
-                  <td class="py-5 text-sm text-gray-400 font-mono">
-                    {{ formatDate(classe.created_at) }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-            <div v-else class="mt-10 pt-6 border-t border-white/5 flex items-center justify-between">
-              <p class="text-[10px] text-gray-500 italic font-mono">System_Ready_Waiting_For_Data</p>
-              <div class="flex gap-1">
-                <span class="w-1 h-1 bg-[#00babc] rounded-full animate-ping"></span>
-                <span class="w-1 h-1 bg-[#00babc] rounded-full opacity-50"></span>
+
+          <div v-if="classes && classes.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div v-for="classe in classes" :key="classe.id" class="bg-[#1a1a1e] border border-white/10 hover:border-[#00babc]/60 rounded-lg p-5 transition-all duration-300 hover:shadow-lg hover:shadow-[#00babc]/20 cursor-pointer">
+              
+              <div class="flex items-start justify-between gap-3 mb-4">
+                <div class="flex items-center gap-3 flex-1">
+                  <img :src="classe?.link_logo || 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Google_Classroom_Logo.svg/250px-Google_Classroom_Logo.svg.png'" alt="" class="w-10 h-10 rounded-lg object-cover">
+                  <div class="min-w-0 flex-1">
+                    <h4 class="text-white font-bold text-sm truncate">{{ classe?.nom || 'Unnamed Class' }}</h4>
+                    <p class="text-gray-500 text-xs">{{ classe?.promo || 'N/A' }}</p>
+                  </div>
+                </div>
+                <span :class="['px-2.5 py-1 rounded text-[7px] font-bold whitespace-nowrap',
+                  classe?.formateur ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
+                ]">
+                  {{ classe?.formateur ? 'Assigned' : 'Unassigned' }}
+                </span>
+              </div>
+
+              <div class="border-t border-white/5 mb-4"></div>
+
+              <div class="space-y-2.5 text-sm">
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-500">Capacity</span>
+                  <span class="text-white font-semibold">{{ classe?.capacite || 0 }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-500">Formator</span>
+                  <span class="text-gray-300 text-xs truncate max-w-[140px]">{{ classe?.formateur?.fullname || 'None' }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-500">Campus</span>
+                  <span class="text-gray-300 text-xs">{{ classe?.campus || 'N/A' }}</span>
+                </div>
+                <div class="flex justify-between items-center pt-2 border-t border-white/5">
+                  <span class="text-gray-600 text-xs">Created</span>
+                  <span class="text-gray-500 text-xs">{{ formatDate(classe.created_at) }}</span>
+                </div>
               </div>
             </div>
+          </div>
+          <div v-else class="mt-10 pt-6 border-t border-white/5 flex items-center justify-between">
+            <p class="text-[10px] text-gray-500 italic font-mono">System_Ready_Waiting_For_Data</p>
+            <div class="flex gap-1">
+              <span class="w-1 h-1 bg-[#00babc] rounded-full animate-ping"></span>
+              <span class="w-1 h-1 bg-[#00babc] rounded-full opacity-50"></span>
+            </div>
+          </div>
         </section>
 
         <section v-if="activTab === 'absences'" class="bg-[#121215] border border-white/5 p-4 sm:p-6 md:p-8 rounded-lg mt-6">
