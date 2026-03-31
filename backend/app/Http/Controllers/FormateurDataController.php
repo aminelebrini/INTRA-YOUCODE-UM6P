@@ -15,7 +15,8 @@ class FormateurDataController extends Controller
     }
     public function Data()
     {
-        $formateurData = $this->FormateurDataService->getFormateurData();
+        $user = auth()->user();
+        $formateurData = $this->FormateurDataService->getFormateurData($user->id);
 
        if($formateurData) {
            return response()->json(['formateurData' => $formateurData], 200);
@@ -32,6 +33,16 @@ class FormateurDataController extends Controller
             return response()->json(['students' => $students], 200);
         } else {
             return response()->json(['message' => 'No students found for this formateur'], 404);
+        }
+    }
+    public function getAllStudents()
+    {
+        $allstudents = $this->FormateurDataService->getAllStudents();
+
+        if ($allstudents) {
+            return response()->json(['allStudents' => $allstudents], 200);
+        } else {
+            return response()->json(['message' => 'No students found'], 404);
         }
     }
 }

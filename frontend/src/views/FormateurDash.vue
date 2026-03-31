@@ -43,15 +43,15 @@
         </router-link>
         </nav>
 
-      <div v-for="formateur in formateurEntries" :key="formateur.formateur_id" class="p-6 bg-[#0c0c0e] border-t border-white/5">
+      <div v-if="formateurData" :key="formateurData.formateur_id" class="p-6 bg-[#0c0c0e] border-t border-white/5">
         <div class="flex items-center space-x-3 mb-4">
           <div class="w-8 h-8 rounded-full bg-[#00babc]/20 border border-[#00babc]/40 flex items-center justify-center text-[10px] font-bold text-[#00babc]">
             <img :src="user?.link_profile || 'https://intranet.youcode.ma/storage/users/profile/thumbnail/0.jpg'" alt="logo" class="w-6 h-6 rounded-full">
           </div>
           <div class="overflow-hidden">
-            <p class="text-[11px] font-bold truncate">{{ user?.fullname || 'Admin' }}</p>
+            <p class="text-[11px] font-bold truncate">{{ formateurData?.formateur_name || user?.fullname || 'Admin' }}</p>
             <p class="text-[9px] text-gray-600 truncate">{{ user?.email || 'admin@youcode.ma' }}</p>
-            <p class="text-[9px] text-gray-600 truncate">{{ formateur?.classe_name || 'No Class Assigned' }}</p>
+            <p class="text-[9px] text-gray-600 truncate">{{ formateurData?.classe_name || 'No Class Assigned' }}</p>
           </div>
         </div>
         <button @click="logout" class="w-full text-left text-[9px] text-red-500/60 hover:text-red-500 font-bold uppercase tracking-widest transition-colors">
@@ -124,7 +124,7 @@
                   </div>
                 </div>
                 <h3 class="text-gray-400 text-sm font-medium">Total Students</h3>
-                <p class="text-2xl font-bold text-white mt-1">{{ students.length }}</p>
+                <p class="text-2xl font-bold text-white mt-1">{{ students.length || 0 }}</p>
               </div>
 
               <div class="bg-white/5 border border-white/10 p-5 rounded-2xl backdrop-blur-sm hover:bg-white/10 transition-all">
@@ -148,7 +148,7 @@
               </div>
               </div>
               <div class="relative w-full mt-6 rounded-2xl border border-white/10 overflow-hidden bg-[#101216]">
-                <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(0,186,188,0.18),transparent_45%)]"></div>
+                <div class="absolute inset-0"></div>
                 <div class="relative p-4 md:p-6">
                   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
                     <div>
@@ -156,14 +156,14 @@
                       <p class="text-[10px] md:text-xs text-gray-500 mt-1">Overview of the assigned class</p>
                     </div>
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase border border-[#00babc]/30 bg-[#00babc]/10 text-[#00babc]">
-                      {{ currentClasse ? 'Assigned' : 'Unassigned' }}
+                      {{ formateurData ? 'Assigned' : 'Unassigned' }}
                     </span>
                   </div>
 
-                  <div v-if="currentClasse" class="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-5">
+                  <div v-if="formateurData" class="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-5">
                     <div class="lg:col-span-2">
                       <img
-                        :src="currentClasse?.link_logo || currentClasse?.class_logo || 'https://www.freecodecamp.org/news/content/images/2022/02/arnold-francisca-f77Bh3inUpE-unsplash.jpg'"
+                        :src="formateurData?.link_logo || formateurData?.class_logo || 'https://www.freecodecamp.org/news/content/images/2022/02/arnold-francisca-f77Bh3inUpE-unsplash.jpg'"
                         alt="class_logo"
                         class="w-full h-44 sm:h-52 object-cover rounded-xl border border-white/10"
                       >
@@ -172,29 +172,30 @@
                     <div class="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div class="bg-white/5 border border-white/10 rounded-xl p-3">
                         <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-1">Class Name</p>
-                        <p class="text-sm md:text-base font-semibold text-white truncate">{{ currentClasse?.classe_name || currentClasse?.name || 'N/A' }}</p>
+                        <p class="text-sm md:text-base font-semibold text-white truncate">{{ formateurData?.classe_name || 'N/A' }}</p>
                       </div>
 
                       <div class="bg-white/5 border border-white/10 rounded-xl p-3">
                         <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-1">Formator</p>
-                        <p class="text-sm md:text-base font-semibold text-white truncate">{{ user?.fullname || 'N/A' }}</p>
+                        <p class="text-sm md:text-base font-semibold text-white truncate">{{ formateurData?.formateur_name || 'N/A' }}</p>
                       </div>
 
                       <div class="bg-white/5 border border-white/10 rounded-xl p-3">
                         <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-1">Created At</p>
-                        <p class="text-sm md:text-base font-semibold text-white">{{ currentClasse?.created_at ? formatDate(currentClasse.created_at) : 'N/A' }}</p>
+                        <p class="text-sm md:text-base font-semibold text-white">{{ formateurData?.created_at ? formatDate(formateurData.created_at) : 'N/A' }}</p>
                       </div>
 
                       <div class="bg-white/5 border border-white/10 rounded-xl p-3">
                         <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-1">Campus</p>
-                        <p class="text-sm md:text-base font-semibold text-white truncate">{{ currentClasse?.campus || 'N/A' }}</p>
+                        <p class="text-sm md:text-base font-semibold text-white truncate">{{ formateurData?.campus || 'N/A' }}</p>
                       </div>
                       <div class="bg-white/5 border border-white/10 rounded-xl p-3">
                         <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-1">Capacity</p>
-                        <p class="text-sm md:text-base font-semibold text-white truncate">{{ currentClasse?.capacite || 'N/A' }}</p>
+                        <p class="text-sm md:text-base font-semibold text-white truncate">{{ formateurData?.capacite || 'N/A' }}</p>
                       </div>
                     </div>
                   </div>
+                  
 
                   <div v-else class="mt-2 rounded-xl border border-white/10 bg-white/5 p-4 flex items-center justify-between">
                     <p class="text-[11px] text-gray-400 italic tracking-wide">No class assigned yet for this formateur.</p>
@@ -219,13 +220,24 @@
                     <option value="tech-watch">Tech Watch</option> 
                     <option value="debriefing">Debriefing</option> 
                   </select>
-                  <button class="w-full sm:w-auto bg-[#00babc]/20 hover:bg-[#00babc]/30 text-white font-bold py-2 px-4 rounded">
+                  <button
+                    @click="toggle('CreateActivityModal')"
+                    class="w-full sm:w-auto bg-[#00babc]/20 hover:bg-[#00babc]/30 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded"
+                  >
                     Add Activity
                   </button>
                   
                 </div>
               </div>
-              <div v-if="activities">
+              <div v-if="activities.length > 0" class="mt-5 space-y-2">
+                <div
+                  v-for="activity in activities"
+                  :key="activity.id"
+                  class="border border-white/10 rounded-lg p-3 bg-white/5"
+                >
+                  <p class="text-sm font-semibold text-white">{{ activity.nom || activity.title || 'Activity' }}</p>
+                  <p class="text-xs text-gray-400">{{ activity.type || 'N/A' }} - {{ activity.etat || 'N/A' }}</p>
+                </div>
               </div>
               <div v-else class="mt-10 pt-6 border-t border-white/5 flex items-center justify-between">
                 <p class="text-[10px] text-gray-600 font-mono italic tracking-widest">
@@ -242,8 +254,8 @@
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <h1 class="text-gray-400 text-lg font-bold">Student List</h1>
                   <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                    <button class="w-full sm:w-auto bg-[#00babc]/20 hover:bg-[#00babc]/30 text-white font-bold py-2 px-4 rounded">Add Student</button>
-                    <button class="w-full sm:w-auto bg-[#00babc]/20 hover:bg-[#00babc]/30 text-white font-bold py-2 px-4 rounded">Assign a Delegate</button>
+                    <button @click="toggle('AddStudentModal')" class="w-full sm:w-auto bg-[#00babc]/20 hover:bg-[#00babc]/30 text-white font-bold py-2 px-4 rounded">Add Student</button>
+                    <button @click="toggle('AssignDelegateModal')" class="w-full sm:w-auto bg-[#00babc]/20 hover:bg-[#00babc]/30 text-white font-bold py-2 px-4 rounded">Assign a Delegate</button>
                   </div>
                 </div>
                 <div v-if="students.length > 0">
@@ -266,30 +278,112 @@
           </main>
         </div>
     </div>
+
+    <div
+      class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" id="CreateActivityModal">
+      <div class="w-full max-w-2xl rounded-xl border border-white/10 bg-[#121215] p-5 md:p-6 max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between mb-5">
+          <h2 class="text-sm md:text-base font-black uppercase tracking-widest text-[#00babc]">Create Activity</h2>
+          <button @click="toggle('CreateActivityModal')" class="text-gray-400 hover:text-red-400 text-xl leading-none">x</button>
+        </div>
+
+        <form @submit.prevent="submitCreateActivity" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="md:col-span-2">
+            <label class="text-[10px] uppercase tracking-widest text-gray-400">Activity Name</label>
+            <input v-model="nom" type="text" required class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
+          </div>
+
+          <div>
+            <label class="text-[10px] uppercase tracking-widest text-gray-400">Type</label>
+            <select v-model="type" required class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
+              <option value="briefs">Briefs</option>
+              <option value="live-coding">Live Coding</option>
+              <option value="workshop">Workshop</option>
+              <option value="tech-watch">Tech Watch</option>
+              <option value="debriefing">Debriefing</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-[10px] uppercase tracking-widest text-gray-400">Status</label>
+            <select v-model="etat" required class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
+              <option value="pending">Pending</option>
+              <option value="in_progress">In Progress</option>
+              <option value="done">Done</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-[10px] uppercase tracking-widest text-gray-400">Start Date</label>
+            <input v-model="date_debut" type="date" required class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
+          </div>
+
+          <div>
+            <label class="text-[10px] uppercase tracking-widest text-gray-400">End Date</label>
+            <input v-model="date_fin" type="date" required class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="text-[10px] uppercase tracking-widest text-gray-400">Resource</label>
+            <input v-model="ressource" type="text" required placeholder="GitHub, Notion, PDF..." class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="text-[10px] uppercase tracking-widest text-gray-400">Description</label>
+            <textarea v-model="description" rows="4" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]"></textarea>
+          </div>
+          <button @click="submitCreateActivity" class="md:col-span-2 bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold px-4 py-2 rounded text-xs uppercase tracking-widest">
+            Create Activity
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" id="AddStudentModal">
+      <div class="w-full max-w-md rounded-xl border border-white/10 bg-[#121215] p-5 md:p-6">
+        <div class="flex items-center justify-between mb-5">
+          <h2 class="text-sm md:text-base font-black uppercase tracking-widest text-[#00babc]">Add Student</h2>
+          <button @click="toggle('AddStudentModal')" class="text-gray-400 hover:text-red-400 text-xl leading-none">x</button>
+        </div>
+        <form @submit.prevent="submitAddStudent" class="grid grid-cols-1 gap-4">
+          <div>
+            <label class="text-[10px] uppercase tracking-widest text-gray-400">Full Name</label>
+            <select name="student_id" id="student_id" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]" v-model="selectedStudentId" required>
+              <option disabled value="" class="text-gray-400">Select a student</option>
+              <option v-for="student in allStudents" :key="student.id" :value="student.user_id || student.id" class="text-white">
+                {{ student.user?.fullname || student.fullname || 'Unknown student' }}
+              </option>
+            </select>
+          </div>
+          <button class="bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold px-4 py-2 rounded text-xs uppercase tracking-widest">
+            Add Student
+          </button>
+        </form>
+      </div>
+    </div>
 </template>
 
 <script setup>
 import api from '@/services/api';
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import {onBeforeUnmount, onMounted, ref } from 'vue';
 
 const activTab = ref('profile');
 const user = ref(null);
 const students = ref([]);
 const activities = ref([]);
 const formateurData = ref([]);
+const nom = ref('');
+const description = ref('');
+const type = ref('briefs');
+const ressource = ref('');
+const etat = ref('pending');
+const date_debut = ref('');
+const date_fin = ref('');
+const allStudents = ref([]);
+const selectedStudentId = ref('');
+
 const showSidebar = ref(false);
 const isDesktop = ref(window.innerWidth >= 768);
-
-const formateurEntries = computed(() => {
-  const rows = formateurData.value?.formateurData;
-  if (!Array.isArray(rows) || !user.value?.id) return [];
-  return rows.filter((f) => f.formateur_id === user.value.id);
-});
-
-const currentClasse = computed(() => {
-  if (!formateurEntries.value.length) return null;
-  return formateurEntries.value[0];
-});
 
 const handleResize = () => {
   isDesktop.value = window.innerWidth >= 768;
@@ -302,6 +396,43 @@ const closeSidebar = () => {
   showSidebar.value = false;
 };
 
+
+
+const submitCreateActivity = async () => {
+  const classeId = formateurData.value?.classe_id || formateurData.value?.id;
+  
+  
+  try {
+    
+    return await api.post('/createactivites', {
+      nom:nom.value,
+      description: description.value,
+      type: type.value,
+      classe_id: classeId,
+      ressource: ressource.value,
+      etat: etat.value,
+      date_debut: date_debut.value,
+      date_fin: date_fin.value
+    });
+
+
+    await getFormateurData();
+    resetActivityForm();
+    toggle('CreateActivityModal');
+  } catch (error) {
+    console.error('Error creating activity:', error);
+  } 
+};
+    const getAllStudents = async () => {
+      try{
+        const response = await api.get('/getstudents');
+        allStudents.value = response.data?.allStudents || [];
+        console.log('Fetched all students:', allStudents.value);
+      }
+      catch(error){
+        console.error('Error fetching students:', error);
+      }
+    }
     const getStudents = async () => {
       try{
         const response = await api.get('/students');
@@ -316,7 +447,7 @@ const closeSidebar = () => {
     const getFormateurData = async () => {
       try{
         const response = await api.get('/formateurdata');
-        formateurData.value = response.data;
+        formateurData.value = response.data.formateurData[0];
            
         console.log('Fetched formateur data:', formateurData.value);
       }
@@ -340,6 +471,7 @@ const closeSidebar = () => {
             // console.log('User data loaded:', user.value);
         }
         getStudents();
+        getAllStudents();
       getFormateurData();
       window.addEventListener('resize', handleResize);
       handleResize();
@@ -348,4 +480,17 @@ const closeSidebar = () => {
     onBeforeUnmount(() => {
       window.removeEventListener('resize', handleResize);
     });
+
+    function toggle(id)
+    {
+      const element = document.getElementById(id);
+      if(element.classList.contains('hidden'))
+      {
+        element.classList.remove('hidden');
+      }
+      else
+      {
+        element.classList.add('hidden');
+      }
+    }
 </script>
