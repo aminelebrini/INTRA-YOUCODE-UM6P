@@ -12,13 +12,17 @@ class FormateurDataService
         $this->FormateurDataRepository = $FormateurDataRepository;
     }
 
-    public function getFormateurData()
+    public function getFormateurData($userId)
     {
-        return $this->FormateurDataRepository->getFormateurData();
+        return $this->FormateurDataRepository->getFormateurData($userId);
     }
     public function getStudents($formateurId)
     {
         return $this->FormateurDataRepository->getStudents($formateurId);
+    }
+    public function getAllStudents()
+    {
+        return $this->FormateurDataRepository->getAllStudents();
     }
 
 }

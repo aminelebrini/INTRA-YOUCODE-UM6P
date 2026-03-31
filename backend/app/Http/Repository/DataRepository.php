@@ -26,7 +26,7 @@ class DataRepository
         $assignedFormateurs = DB::table('users')
         ->leftJoin('formateur_classe', 'users.id', '=', 'formateur_classe.formateur_id')
         ->leftJoin('classes', 'formateur_classe.classe_id', '=', 'classes.id')
-        ->select('users.fullname as formateur_name', 'classes.nom as classe_name')
+        ->select('users.id as formateur_id', 'users.fullname as formateur_name', 'classes.nom as classe_name')
         ->where('users.role', 'formateur')
         ->whereNull('formateur_classe.formateur_id')
         ->whereNull('formateur_classe.classe_id')
@@ -39,7 +39,7 @@ class DataRepository
     {
         $assignedClasses = DB::table('classes')
         ->leftJoin('formateur_classe', 'classes.id', '=', 'formateur_classe.classe_id')
-        ->select('classes.nom as classe_name')
+        ->select('classes.id as classe_id', 'classes.nom as classe_name')
         ->whereNull('formateur_classe.classe_id')
         ->get();
         

@@ -14,27 +14,27 @@
 
       <nav class="flex-1 px-3 md:px-4 py-6 md:py-8 space-y-2">
         <p class="text-[9px] text-gray-600 uppercase tracking-[0.2em] font-bold px-4 mb-4">Main_Menu</p>
-        <router-link :class="activTab==='profile'" @click="activTab='profile'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
+        <router-link to="/admindashboard" :class="activTab==='profile'" @click="activTab='profile'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
           <span class="text-[#00babc] opacity-0 group-hover:opacity-100 transition-opacity mr-2">></span>
           PROFILE
         </router-link>
 
-        <router-link :class="activTab==='dashboard'" @click="activTab = 'dashboard'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
+        <router-link to="/admindashboard" :class="activTab==='dashboard'" @click="activTab = 'dashboard'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
           <span class="text-[#00babc] opacity-0 group-hover:opacity-100 transition-opacity mr-2">></span>
           DASHBOARD
         </router-link>
 
-        <router-link :class="activTab==='personnel'" @click="activTab = 'personnel'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
+        <router-link to="/admindashboard" :class="activTab==='personnel'" @click="activTab = 'personnel'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
           <span class="text-[#00babc] opacity-0 group-hover:opacity-100 transition-opacity mr-2">></span>
           PERSONNEL
         </router-link>
 
-        <router-link :class="activTab==='classes'" @click="activTab = 'classes'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
+        <router-link to="/admindashboard" :class="activTab==='classes'" @click="activTab = 'classes'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
           <span class="text-[#00babc] opacity-0 group-hover:opacity-100 transition-opacity mr-2">></span>
           CLASSES
         </router-link>
 
-        <router-link :class="activTab==='absences'" @click="activTab = 'absences'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
+        <router-link to="/admindashboard" :class="activTab==='absences'" @click="activTab = 'absences'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
           <span class="text-[#00babc] opacity-0 group-hover:opacity-100 transition-opacity mr-2">></span>
           ABSENCES
         </router-link>
@@ -191,6 +191,7 @@
               <tbody class="divide-y divide-white/[0.03]">
                 <tr v-for="classe in classes" :key="classe.id" class="group hover:bg-white/[0.02] transition-colors">
                   <td class="py-5 text-sm text-gray-200 font-medium group-hover:text-[#00babc] transition-colors">
+                    <img :src="classe?.link_logo || 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Google_Classroom_Logo.svg/250px-Google_Classroom_Logo.svg.png'" alt="" class="w-6 h-6 rounded-full object-cover inline-block mr-2"> 
                     {{ classe?.nom || 'Unnamed Class' }}
                   </td>
                   <td class="py-5 text-sm text-gray-400 font-mono">
@@ -313,14 +314,14 @@
       </div>
       <form @submit.prevent="submitClassAssignRegistration" class="space-y-4 w-[100%]">
         <label for="formator" class="text-[#00babc] text-[11px] uppercase tracking-widest">Formator</label>
-        <select id="formator" v-model="formator" class="w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required>
+        <select id="formator" v-model="formator_id" class="w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required>
           <option value="" disabled>Select Formator</option>
-          <option v-for="f in assignformateurs" :key="f.id" :value="f.id">{{ f.formateur_name }}</option>
+          <option v-for="f in assignformateurs" :key="f.formateur_id" :value="f.formateur_id">{{ f.formateur_name }}</option>
         </select>
         <label for="assignclass" class="text-[#00babc] text-[11px] uppercase tracking-widest">Class</label>
-        <select id="assignclass" v-model="assignclass" class="w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required>
+        <select id="assignclass" v-model="assignclass_id" class="w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required>
           <option value="" disabled>Select Class</option>
-          <option v-for="c in assignclasses" :key="c.id" :value="c.id">{{ c.classe_name }}</option>
+          <option v-for="c in assignclasses" :key="c.classe_id" :value="c.classe_id">{{ c.classe_name }}</option>
         </select>
         <button type="submit" class="w-full bg-[#00babc] text-[#121215] font-bold py-3 rounded mt-2 hover:bg-[#00d1d3] transition-all uppercase tracking-widest text-xs">
           Assign
@@ -407,8 +408,8 @@ const absences = ref([]);
 const assignformateurs = ref([]);
 const assignclasses = ref([]);
 
-const formator = ref('');
-const assignclass = ref('');
+const formator_id = ref('');
+const assignclass_id = ref('');
 const detectionDate = ref('');
 
 const submitRegistration = async () => {
@@ -463,40 +464,41 @@ const submitClassRegistration = async () => {
 
 const submitClassAssignRegistration = async () => {
   try {
+    console.log('Assign Formateur:', formator_id.value, 'to Class:', assignclass_id.value);
     await api.post('/assignformateurclasse', {
-      formator: formator.value,
-      assignedClass: assignclass.value
+      formateur_id: formator_id.value,
+      classe_id: assignclass_id.value
     });
 
     await Data();
     oppenToggle('AssignClassFormatorModal');
-    formator.value = '';
-    assignclass.value = '';
+    formator_id.value = '';
+    assignclass_id.value = '';
   } catch (error) {
     console.error('Error assigning formateur to class:', error?.response?.data || error);
   }
 };
 
-const submitAbsenceDetection = async () => {
-  try {
-    const response = await api.post('/detectabsences', {
-      assignedClass: assignclass.value,
-      date: detectionDate.value
-    });
+// const submitAbsenceDetection = async () => {
+//   try {
+//     const response = await api.post('/detectabsences', {
+//       assignedClass: assignclass_id.value,
+//       date: detectionDate.value
+//     });
 
-    if (response?.data?.absences) {
-      absences.value = response.data.absences;
-    } else {
-      await Data();
-    }
+//     if (response?.data?.absences) {
+//       absences.value = response.data.absences;
+//     } else {
+//       await Data();
+//     }
 
-    oppenToggle('detectAbsencesModal');
-    assignclass.value = '';
-    detectionDate.value = '';
-  } catch (error) {
-    console.error('Error detecting absences:', error?.response?.data || error);
-  }
-};
+//     oppenToggle('detectAbsencesModal');
+//     assignclass.value = '';
+//     detectionDate.value = '';
+//   } catch (error) {
+//     console.error('Error detecting absences:', error?.response?.data || error);
+//   }
+// };
 
 const logout = () => {
   localStorage.clear();
