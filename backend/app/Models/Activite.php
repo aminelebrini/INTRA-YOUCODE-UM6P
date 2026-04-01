@@ -10,10 +10,16 @@ class Activite extends Model
         'nom',
         'description',
         'type',
-        'user_id',
+        'formateur_id',
+        'student_id',
+        'binome_id',
         'classe_id',
         'ressource',
         'date_debut',
         'date_fin'
     ];
+    public function formateur()
+    {
+        return $this->belongsTo(User::class, 'formateur_id');
+    }
 }

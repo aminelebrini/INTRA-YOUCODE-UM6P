@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Classe;
 use App\Models\Student;
+use App\Models\Activite;
 
 class FormateurDataRepository
 {
@@ -14,7 +15,7 @@ class FormateurDataRepository
         ->leftJoin('formateur_classe', 'users.id', '=', 'formateur_classe.formateur_id')
         ->leftJoin('classes', 'formateur_classe.classe_id', '=', 'classes.id')
         ->select('users.id as formateur_id', 'users.fullname as formateur_name', 'users.email as email', 'classes.nom as classe_name'
-        , 'classes.created_at as created_at', 'classes.campus', 'classes.capacite')
+        , 'classes.id as classe_id', 'classes.created_at as created_at', 'classes.campus', 'classes.capacite')
         ->where('users.role', 'formateur')
         ->where('users.id', $userId)
         ->get();
@@ -27,7 +28,8 @@ class FormateurDataRepository
             ->join('students', 'users.id', '=', 'students.user_id')
             ->join('formateur_classe', 'students.classe_id', '=', 'formateur_classe.classe_id')
             ->where('formateur_classe.formateur_id', $formateurId)
-            ->select('users.id as student_id', 'users.fullname as student_name', 'users.email as email')
+            ->select('users.id as student_id', 'users.fullname as student_name', 'users.email as email'
+            , 'users.link_profile as student_image', 'students.points')
             ->get();
 
         return $students;
@@ -39,6 +41,13 @@ class FormateurDataRepository
         ->get();
 
         return $allstudents;
+    }
+    public function getActivites($formateurId)
+    {
+        $activites = Activite::where('formateur_id', $formateurId)
+        ->get();
+
+        return $activites;
     }
 }
 

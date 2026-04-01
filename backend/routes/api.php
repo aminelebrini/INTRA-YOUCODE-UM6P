@@ -33,6 +33,7 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::get('/data', [DataController::class, 'data']);
     Route::get('/formateurdata', [FormateurDataController::class, 'Data']);
     Route::get('/students', [FormateurDataController::class, 'getStudents']);
+    Route::get('/activites', [FormateurDataController::class, 'getActivites']);
     Route::get('/getstudents', [FormateurDataController::class, 'getAllStudents']);
 
 });

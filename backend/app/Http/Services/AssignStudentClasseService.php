@@ -10,25 +10,9 @@ class AssignStudentClasseService
     {
         $this->assignStudentClasseRepository = $assignStudentClasseRepository;
     }
-    public function assign(
-        $userId, 
-        $points, 
-        $promotion, 
-        $annee, 
-        $formateurId, 
-        $classeId
-    )
+    public function assign(array $payload)
     {
-        
-        return $this->assignStudentClasseRepository
-        ->assignStudent(
-            $userId,
-            $points,
-            $promotion,
-            $annee,
-            $formateurId,
-            $classeId
-        );
+        return $this->assignStudentClasseRepository->assignStudent($payload);
     }
 }
 

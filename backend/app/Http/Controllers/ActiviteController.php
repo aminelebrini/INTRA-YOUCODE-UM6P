@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Services\ActiviteService;
 
+
 class ActiviteController extends Controller
 {
     private $activiteService;
@@ -17,16 +18,20 @@ class ActiviteController extends Controller
             'nom' => 'required|string|max:255',
             'description' => 'nullable|string',
             'type' => 'required|string|max:255',
+            'formateur_id' => 'required|integer|exists:formateur_classe,formateur_id',
+            'student_id' => 'nullable|integer|exists:users,id',
+            'binome_id' => 'nullable|integer|exists:users,id',
             'classe_id' => 'required|integer|exists:classes,id',
-            'ressource' => 'required|string',
+            'ressource' => 'nullable|string',
             'etat' => 'required|string|max:255',
             'date_debut' => 'required|date',
             'date_fin' => 'required|date',
         ]);
-
+        
         $activite = $this->activiteService
         ->createActivite($request->nom,$request->description,
             $request->type,
+            $request->formateur_id,
             $request->classe_id,
             $request->ressource,
             $request->etat,
