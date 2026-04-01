@@ -115,6 +115,54 @@
               </div>
             </header>
 
+            <section v-if="activTab === 'profile'" class="flex flex-col gap-6">
+              <div class="bg-[#121215] border border-white/10 rounded-xl p-6">
+                <div class="flex items-center justify-between mb-6">
+                  <h3 class="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Personal Information</h3>
+                  <button class="bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold py-2 px-4 rounded-lg text-[10px] uppercase tracking-widest transition-colors flex items-center gap-2">
+                    <i class="fas fa-edit"></i>
+                    Edit Profile
+                  </button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="border-b md:border-b-0 md:border-r border-white/10 pb-6 md:pb-0 md:pr-6">
+                    <div class="mb-6">
+                      <p class="text-[9px] text-gray-600 uppercase tracking-widest mb-2">Full Name</p>
+                      <p class="text-base font-bold text-white">{{ user?.fullname || 'N/A' }}</p>
+                    </div>
+                    
+                    <div class="mb-6">
+                      <p class="text-[9px] text-gray-600 uppercase tracking-widest mb-2">Username</p>
+                      <p class="text-base font-bold text-white">{{ user?.username?.toLowerCase().trim() || 'N/A' }}</p>
+                    </div>
+                  </div>
+                  
+                  <div class="md:pl-6">
+                    <div class="mb-6">
+                      <p class="text-[9px] text-gray-600 uppercase tracking-widest mb-2">Email</p>
+                      <p class="text-base font-bold text-[#00babc] truncate">{{ user?.email || 'N/A' }}</p>
+                    </div>
+                    
+                    <div class="mb-6">
+                      <p class="text-[9px] text-gray-600 uppercase tracking-widest mb-2">Role</p>
+                      <span class="inline-block text-[9px] px-3 py-1.5 rounded bg-[#00babc]/20 text-[#00babc] border border-[#00babc]/25 font-bold uppercase tracking-widest">
+                        {{ user?.role || 'FORMATEUR' }}
+                      </span>
+                    </div>
+                    
+                    <div>
+                      <p class="text-[9px] text-gray-600 uppercase tracking-widest mb-2">Status</p>
+                      <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                        <span class="text-base font-bold text-green-400">Active</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
             <div v-if="activTab === 'dashboard'" class="flex flex-col items-start justify-center w-full">
             <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 p-2 sm:p-4 w-full">
               <div class="bg-white/5 border border-white/10 p-5 rounded-2xl backdrop-blur-sm hover:bg-white/10 transition-all cursor-default">
@@ -134,7 +182,7 @@
                   </div>
                 </div>
                 <h3 class="text-gray-400 text-sm font-medium">Total Activities</h3>
-                <p class="text-2xl font-bold text-white mt-1">42</p>
+                <p class="text-2xl font-bold text-white mt-1">{{ activites.length || 0 }}</p>
               </div>
 
               <div class="bg-white/5 border border-white/10 p-5 rounded-2xl backdrop-blur-sm hover:bg-white/10 transition-all">
@@ -144,7 +192,7 @@
                   </div>
                 </div>
                 <h3 class="text-gray-400 text-sm font-medium">Abandoned</h3>
-                <p class="text-2xl font-bold text-white mt-1">7</p>
+                <p class="text-2xl font-bold text-white mt-1">{{ students.status === 'abandoned' ? students.length : 0 }}</p>
               </div>
               </div>
               <div class="relative w-full mt-6 rounded-2xl border border-white/10 overflow-hidden bg-[#101216]">
@@ -191,7 +239,7 @@
                       </div>
                       <div class="bg-white/5 border border-white/10 rounded-xl p-3">
                         <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-1">Delegate</p>
-                        <p class="text-sm md:text-base font-semibold text-white truncate">{{ formateurData?.delegate_name || 'N/A' }}</p>
+                        <p class="text-sm md:text-base font-semibold text-white truncate">{{ formateurData?.delegate_name || 'Not Assigned Yet' }}</p>
                       </div>
                       <div class="bg-white/5 border border-white/10 rounded-xl p-3">
                         <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-1">Capacity</p>
@@ -208,6 +256,80 @@
                       <span class="w-1.5 h-1.5 bg-[#00babc] rounded-full opacity-50"></span>
                     </div>
                   </div>
+                </div>
+              </div>
+
+              <div class="mt-6 rounded-2xl border border-white/10 bg-[#101216] p-4 md:p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+                  <div>
+                    <h2 class="text-white font-black uppercase tracking-wider text-sm md:text-base">Students Details</h2>
+                    <p class="text-[10px] md:text-xs text-gray-500 mt-1">Informations des etudiants de la classe {{ formateurData?.classe_name || '' }}</p>
+                  </div>
+                  <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase border border-[#00babc]/30 bg-[#00babc]/10 text-[#00babc]">
+                    {{ students.length }} Students
+                  </span>
+                </div>
+
+                <div v-if="students.length > 0" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                  <article
+                    v-for="student in students"
+                    :key="student.student_id || student.id"
+                    class="rounded-xl border border-white/10 bg-white/5 p-4 hover:border-[#00babc]/40 transition-colors"
+                  >
+                    <div class="flex items-start gap-3 mb-4">
+                      <img
+                        v-if="student.student_image"
+                        :src="student.student_image"
+                        alt="Student Image"
+                        class="w-12 h-12 rounded-full object-cover border border-white/10"
+                      >
+                      <div
+                        v-else
+                        class="w-12 h-12 rounded-full bg-[#00babc]/20 border border-[#00babc]/30 flex items-center justify-center text-[#00babc] font-black"
+                      >
+                        {{ student.student_name?.charAt(0) || 'S' }}
+                      </div>
+
+                      <div class="min-w-0 flex-1">
+                        <h3 class="text-white font-bold text-sm truncate">{{ student.student_name || 'Unknown Student' }}</h3>
+                        <p class="text-[11px] text-gray-500 truncate">{{ student.email || 'No email' }}</p>
+                        <div class="mt-2 flex flex-wrap gap-2">
+                          <span class="text-[9px] px-2 py-1 rounded bg-[#00babc]/15 text-[#00babc] border border-[#00babc]/25 uppercase tracking-widest font-bold">
+                            {{ student.classe_name || formateurData?.classe_name || 'N/A' }}
+                          </span>
+                          <span class="text-[9px] px-2 py-1 rounded bg-white/5 text-gray-300 border border-white/10 uppercase tracking-widest font-bold">
+                            {{ student.annee || 'N/A' }}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 text-left">
+                      <div class="rounded-lg border border-white/5 bg-[#0c0c0e] p-3">
+                        <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Promotion</p>
+                        <p class="text-sm font-semibold text-white">{{ student.promotion || 'N/A' }}</p>
+                      </div>
+
+                      <div class="rounded-lg border border-white/5 bg-[#0c0c0e] p-3">
+                        <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Status</p>
+                        <p class="text-sm font-semibold text-white">{{ student.status || 'N/A' }}</p>
+                      </div>
+
+                      <div class="rounded-lg border border-white/5 bg-[#0c0c0e] p-3">
+                        <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Status</p>
+                        <p class="text-sm font-semibold text-white">{{ student.ville || 'N/A' }}</p>
+                      </div>
+
+                      <div class="rounded-lg border border-white/5 bg-[#0c0c0e] p-3">
+                        <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Points</p>
+                        <p class="text-sm font-semibold text-[#00babc]">{{ student.points || 0 }}</p>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+
+                <div v-else class="rounded-xl border border-dashed border-white/10 bg-black/20 p-5 text-center">
+                  <p class="text-[11px] text-gray-400 italic tracking-wide">No students linked to this class yet.</p>
                 </div>
               </div>
             </div>
@@ -285,6 +407,11 @@
                         View →
                       </a>
                     </div>
+                    <div v-if="activity.type != 'brief'">
+                      <div v-if="activity.student_id">
+                        <a>Noter</a>
+                      </div>
+                    </div>
                   </div>
                 </article>
               </div>
@@ -332,7 +459,9 @@
                   <div class="flex items-start justify-between gap-3">
                     <div class="min-w-0">
                       <div class="flex items-center gap-3 mb-2">
-                        <img :src="student.student_image" alt="Student Image" class="w-10 h-10 rounded-full object-cover border border-white/10 mb-2">
+                        <div class="w-10 h-10 rounded-full bg-[#00babc]/20 border border-[#00babc]/40 flex items-center justify-center text-[10px] font-bold text-[#00babc]">
+                          <img :src="student.student_image" alt="Student Image" class="w-10 h-10 rounded-full">
+                        </div>
                         <span class="text-[15px] text-[#00babc] font-bold">{{ student.points || 0 }} POINTS</span>
                       </div>
 
@@ -353,6 +482,62 @@
                 <div class="flex gap-1">
                   <span class="w-1 h-1 bg-[#00babc] rounded-full animate-ping"></span>
                   <span class="w-1 h-1 bg-[#00babc] rounded-full opacity-50"></span>
+                </div>
+              </div>
+            </section>
+
+            <section v-if="activTab === 'classes'" class="bg-[#121215] border border-white/10 p-5 sm:p-6 rounded-2xl">
+              <div class="mb-6">
+                <h1 class="text-white text-lg md:text-xl font-black uppercase tracking-wide">Your Class</h1>
+                <p class="text-[11px] text-gray-500 mt-1">Informations completes de votre classe</p>
+              </div>
+
+              <div v-if="formateurData" class="space-y-6">
+                <div class="relative w-full rounded-2xl border border-white/10 overflow-hidden bg-[#0f0f12] h-48 md:h-64">
+                  <img
+                    :src="formateurData?.link_logo || formateurData?.class_logo || 'https://www.freecodecamp.org/news/content/images/2022/02/arnold-francisca-f77Bh3inUpE-unsplash.jpg'"
+                    alt="class_logo"
+                    class="w-full h-full object-cover"
+                  >
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                  
+                  <div class="absolute bottom-0 left-0 right-0 p-6">
+                    <h2 class="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter">{{ formateurData?.classe_name || 'N/A' }}</h2>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                  <div class="bg-[#0f0f12] border border-white/10 rounded-xl p-4">
+                    <p class="text-[9px] text-gray-600 uppercase tracking-widest font-bold mb-2">Class Name</p>
+                    <p class="text-base font-bold text-white">{{ formateurData?.classe_name || 'N/A' }}</p>
+                  </div>
+
+                  <div class="bg-[#0f0f12] border border-white/10 rounded-xl p-4">
+                    <p class="text-[9px] text-gray-600 uppercase tracking-widest font-bold mb-2">Campus</p>
+                    <p class="text-base font-bold text-white">{{ formateurData?.campus || 'N/A' }}</p>
+                  </div>
+
+                  <div class="bg-[#0f0f12] border border-white/10 rounded-xl p-4">
+                    <p class="text-[9px] text-gray-600 uppercase tracking-widest font-bold mb-2">Capacity</p>
+                    <p class="text-base font-bold text-white">{{ formateurData?.capacite || '0' }} Students</p>
+                  </div>
+
+                  <div class="bg-[#0f0f12] border border-white/10 rounded-xl p-4">
+                    <p class="text-[9px] text-gray-600 uppercase tracking-widest font-bold mb-2">Created At</p>
+                    <p class="text-base font-bold text-white">{{ formatDate(formateurData?.created_at) || 'N/A' }}</p>
+                  </div>
+
+                  <div class="bg-[#0f0f12] border border-white/10 rounded-xl p-4">
+                    <p class="text-[9px] text-gray-600 uppercase tracking-widest font-bold mb-2">Current Students</p>
+                    <p class="text-base font-bold text-[#00babc]">{{ students.length || 0 }}</p>
+                  </div>
+                  
+
+                  <div class="bg-[#0f0f12] border border-white/10 rounded-xl p-4">
+                    <p class="text-[9px] text-gray-600 uppercase tracking-widest font-bold mb-2">Occupancy Rate</p>
+                    <p class="text-base font-bold text-white">{{ Math.round((students.length / (formateurData?.capacite || 1)) * 100) }}%</p>
+                  </div>
                 </div>
               </div>
             </section>
@@ -388,7 +573,7 @@
             <label class="text-[10px] uppercase tracking-widest text-gray-400">Student</label>
             <select v-model="student_id" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
               <option value="">Select Student</option>
-              <option v-for="student in students" :key="student.student_id || student.id" :value="student.id">
+              <option v-for="student in students" :key="student.student_id" :value="student.student_id">
                 {{ student.student_name }}
               </option>
             </select>
@@ -397,7 +582,7 @@
             <label class="text-[10px] uppercase tracking-widest text-gray-400">Binome</label>
             <select v-model="binome_id" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
               <option value="">Select Student</option>
-              <option v-for="student in students" :key="student.student_id || student.id" :value="student.id">
+              <option v-for="student in students" :key="student.student_id" :value="student.student_id">
                 {{ student.student_name }}
               </option>
             </select>
@@ -563,6 +748,8 @@ const submitCreateActivity = async () => {
       description: description.value,
       type: type.value,
       formateur_id: formateurId,
+      student_id: student_id.value || null,
+      binome_id: binome_id.value || null,
       classe_id: classeId,
       ressource: ressource.value || '',
       etat: etat.value,

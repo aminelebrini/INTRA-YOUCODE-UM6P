@@ -27,9 +27,11 @@ class FormateurDataRepository
         $students = DB::table('users')
             ->join('students', 'users.id', '=', 'students.user_id')
             ->join('formateur_classe', 'students.classe_id', '=', 'formateur_classe.classe_id')
+            ->leftJoin('classes', 'students.classe_id', '=', 'classes.id')
             ->where('formateur_classe.formateur_id', $formateurId)
             ->select('users.id as student_id', 'users.fullname as student_name', 'users.email as email'
-            , 'users.link_profile as student_image', 'students.points')
+            , 'users.link_profile as student_image', 'students.points', 'students.promotion', 'students.annee',
+             'classes.nom', 'users.status', 'users.ville')
             ->get();
 
         return $students;
