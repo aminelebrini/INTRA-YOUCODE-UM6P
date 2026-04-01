@@ -32,6 +32,8 @@ class ActiviteController extends Controller
         ->createActivite($request->nom,$request->description,
             $request->type,
             $request->formateur_id,
+            $request->student_id,
+            $request->binome_id,
             $request->classe_id,
             $request->ressource,
             $request->etat,
