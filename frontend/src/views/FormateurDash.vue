@@ -190,6 +190,10 @@
                         <p class="text-sm md:text-base font-semibold text-white truncate">{{ formateurData?.campus || 'N/A' }}</p>
                       </div>
                       <div class="bg-white/5 border border-white/10 rounded-xl p-3">
+                        <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-1">Delegate</p>
+                        <p class="text-sm md:text-base font-semibold text-white truncate">{{ formateurData?.delegate_name || 'N/A' }}</p>
+                      </div>
+                      <div class="bg-white/5 border border-white/10 rounded-xl p-3">
                         <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-1">Capacity</p>
                         <p class="text-sm md:text-base font-semibold text-white truncate">{{ formateurData?.capacite || 'N/A' }}</p>
                       </div>
@@ -208,37 +212,83 @@
               </div>
             </div>
 
-            <section v-if="activTab=== 'activities'" class="bg-white/5 border border-white/10 p-5 rounded-2xl backdrop-blur-sm hover:bg-white/10 transition-all">
-              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <h2 class="text-gray-400 text-lg font-bold">Activities List</h2>
-                <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                  <select class="w-full sm:w-auto bg-white/5 border border-white/10 text-gray-400 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
-                    <option disabled selected>Filter By Activity</option>
-                    <option value="briefs">Briefs</option>
+            <section v-if="activTab=== 'activities'" class="bg-[#121215] border border-white/10 p-5 sm:p-6 rounded-2xl">
+              <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+                <div>
+                  <h1 class="text-white text-lg md:text-xl font-black uppercase tracking-wide">Activities</h1>
+                  <p class="text-[11px] text-gray-500 mt-1">Activites de la classe</p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
+                  <select class="w-full sm:w-auto bg-[#0f0f12] border border-white/10 text-gray-400 text-sm rounded-lg focus:border-[#00babc] block p-2.5 outline-none transition-colors">
+                    <option value="">Filter By Type</option>
+                    <option value="brief">Brief</option>
                     <option value="live-coding">Live Coding</option>
                     <option value="workshop">Workshop</option>
-                    <option value="tech-watch">Tech Watch</option> 
-                    <option value="debriefing">Debriefing</option> 
+                    <option value="veille">Veille Technologique</option>
+                    <option value="debriefing">Debriefing</option>
                   </select>
                   <button
                     @click="toggle('CreateActivityModal')"
-                    class="w-full sm:w-auto bg-[#00babc]/20 hover:bg-[#00babc]/30 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded"
+                    class="w-full sm:w-auto bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold py-2.5 px-4 rounded-lg text-[11px] uppercase tracking-widest transition-colors"
                   >
                     Add Activity
                   </button>
-                  
                 </div>
               </div>
-              <div v-if="activities.length > 0" class="mt-5 space-y-2">
-                <div
-                  v-for="activity in activities"
+
+              <div v-if="activites.length > 0" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
+                <article
+                  v-for="activity in activites"
                   :key="activity.id"
-                  class="border border-white/10 rounded-lg p-3 bg-white/5"
+                  class="bg-[#0f0f12] border border-white/10 rounded-xl p-4 hover:border-[#00babc]/50 transition-colors"
                 >
-                  <p class="text-sm font-semibold text-white">{{ activity.nom || activity.title || 'Activity' }}</p>
-                  <p class="text-xs text-gray-400">{{ activity.type || 'N/A' }} - {{ activity.etat || 'N/A' }}</p>
-                </div>
+                  <div class="flex items-start justify-between gap-3 mb-3">
+                    <div class="flex-1 min-w-0">
+                      <h3 class="text-white font-bold text-sm truncate">{{ activity.nom || 'Untitled Activity' }}</h3>
+                      <p class="text-[10px] text-gray-500 truncate mt-1">{{ formatDate(activity.date_debut) }} - {{ formatDate(activity.date_fin) }}</p>
+                    </div>
+                    <span 
+                      :class="{
+                        'bg-blue-500/15 text-blue-400 border-blue-500/25': activity.type === 'brief',
+                        'bg-purple-500/15 text-purple-400 border-purple-500/25': activity.type === 'live-coding',
+                        'bg-green-500/15 text-green-400 border-green-500/25': activity.type === 'workshop',
+                        'bg-orange-500/15 text-orange-400 border-orange-500/25': activity.type === 'veille',
+                        'bg-pink-500/15 text-pink-400 border-pink-500/25': activity.type === 'debriefing',
+                        'bg-gray-500/15 text-gray-400 border-gray-500/25': !activity.type
+                      }"
+                      class="text-[8px] px-2 py-1 rounded border uppercase tracking-widest font-bold whitespace-nowrap flex-shrink-0"
+                    >
+                      {{ activity.type || 'N/A' }}
+                    </span>
+                  </div>
+
+                  <p v-if="activity.description" class="text-[11px] text-gray-400 line-clamp-2 mb-3">{{ activity.description }}</p>
+
+                  <div class="flex items-center justify-between mt-4 pt-3 border-t border-white/5">
+                    <div>
+                      <p class="text-[9px] text-gray-600 mb-1">Status</p>
+                      <span 
+                        :class="{
+                          'bg-green-500/20 text-green-400': activity.etat === 'done' || activity.etat === 'completed',
+                          'bg-amber-500/20 text-amber-400': activity.etat === 'in_progress',
+                          'bg-gray-500/20 text-gray-400': activity.etat === 'pending' || !activity.etat
+                        }"
+                        class="inline-block text-[9px] px-2 py-1 rounded border border-current/25 font-bold"
+                      >
+                        {{ activity.etat === 'in_progress' ? 'In Progress' : activity.etat === 'done' ? 'Done' : 'Pending' }}
+                      </span>
+                    </div>
+                    <div v-if="activity.ressource" class="text-right">
+                      <p class="text-[9px] text-gray-600 mb-1">Resource</p>
+                      <a :href="activity.ressource" target="_blank" class="text-[9px] text-[#00babc] hover:text-[#00d1d3] font-bold truncate">
+                        View →
+                      </a>
+                    </div>
+                  </div>
+                </article>
               </div>
+
               <div v-else class="mt-10 pt-6 border-t border-white/5 flex items-center justify-between">
                 <p class="text-[10px] text-gray-600 font-mono italic tracking-widest">
                   System_Ready_Waiting_For_Data
@@ -250,30 +300,61 @@
               </div>
             </section>
 
-            <section v-if="activTab=== 'students'" class="bg-white/5 border border-white/10 p-5 rounded-2xl backdrop-blur-sm hover:bg-white/10 transition-all mt-6">
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                  <h1 class="text-gray-400 text-lg font-bold">Student List</h1>
-                  <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                    <button @click="toggle('AddStudentModal')" class="w-full sm:w-auto bg-[#00babc]/20 hover:bg-[#00babc]/30 text-white font-bold py-2 px-4 rounded">Add Student</button>
-                    <button @click="toggle('AssignDelegateModal')" class="w-full sm:w-auto bg-[#00babc]/20 hover:bg-[#00babc]/30 text-white font-bold py-2 px-4 rounded">Assign a Delegate</button>
-                  </div>
+            <section v-if="activTab=== 'students'" class="bg-[#121215] border border-white/10 p-5 sm:p-6 rounded-2xl mt-6">
+              <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+                <div>
+                  <h1 class="text-white text-lg md:text-xl font-black uppercase tracking-wide">Students</h1>
+                  <p class="text-[11px] text-gray-500 mt-1">Gestion des etudiants de la classe</p>
                 </div>
-                <div v-if="students.length > 0">
-                  <p class="text-gray-500 text-sm italic">Students available.</p>
-                  <div v-for="student in students" :key="student.id">
-                    
-                    <p class="text-white text-sm">{{ student.fullname }}</p>  
-                  </div>
+
+                <div class="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
+                  <button
+                    @click="toggle('AddStudentModal')"
+                    class="w-full sm:w-auto bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold py-2.5 px-4 rounded-lg text-[11px] uppercase tracking-widest transition-colors"
+                  >
+                    Add Student
+                  </button>
+                  <button
+                    @click="toggle('AssignDelegateModal')"
+                    class="w-full sm:w-auto bg-transparent border border-[#00babc]/40 hover:border-[#00babc] text-[#00babc] font-bold py-2.5 px-4 rounded-lg text-[11px] uppercase tracking-widest transition-colors"
+                  >
+                    Assign Delegate
+                  </button>
                 </div>
-                <div v-else class="mt-10 pt-6 border-t border-white/5 flex items-center justify-between">
-                  <p class="text-[10px] text-gray-600 font-mono italic tracking-widest">
-                    System_Ready_Waiting_For_Data
-                  </p>
-                  <div class="flex gap-1">
-                    <span class="w-1 h-1 bg-[#00babc] rounded-full animate-ping"></span>
-                    <span class="w-1 h-1 bg-[#00babc] rounded-full opacity-50"></span>
+              </div>
+
+              <div v-if="students.length > 0" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
+                <article
+                  v-for="student in students"
+                  :key="student.student_id || student.id"
+                  class="bg-[#0f0f12] border border-white/10 rounded-xl p-4 hover:border-[#00babc]/50 transition-colors"
+                >
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="min-w-0">
+                      <div class="flex items-center gap-3 mb-2">
+                        <img :src="student.student_image" alt="Student Image" class="w-10 h-10 rounded-full object-cover border border-white/10 mb-2">
+                        <span class="text-[15px] text-[#00babc] font-bold">{{ student.points || 0 }} POINTS</span>
+                      </div>
+
+                      <h3 class="text-white font-bold text-sm truncate">{{ student.student_name || 'Unknown Student' }}</h3>
+                      <p class="text-[11px] text-gray-500 truncate mt-1">{{ student.email || 'No email' }}</p>
+                    </div>
+                    <span class="text-[9px] px-2 py-1 rounded bg-[#00babc]/15 text-[#00babc] border border-[#00babc]/25 uppercase tracking-widest font-bold">
+                      Student
+                    </span>
                   </div>
+                </article>
+              </div>
+
+              <div v-else class="mt-10 pt-6 border-t border-white/5 flex items-center justify-between">
+                <p class="text-[10px] text-gray-600 font-mono italic tracking-widest">
+                  System_Ready_Waiting_For_Data
+                </p>
+                <div class="flex gap-1">
+                  <span class="w-1 h-1 bg-[#00babc] rounded-full animate-ping"></span>
+                  <span class="w-1 h-1 bg-[#00babc] rounded-full opacity-50"></span>
                 </div>
+              </div>
             </section>
           </main>
         </div>
@@ -296,11 +377,29 @@
           <div>
             <label class="text-[10px] uppercase tracking-widest text-gray-400">Type</label>
             <select v-model="type" required class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
-              <option value="briefs">Briefs</option>
+              <option value="brief">Briefs</option>
               <option value="live-coding">Live Coding</option>
               <option value="workshop">Workshop</option>
               <option value="tech-watch">Tech Watch</option>
               <option value="debriefing">Debriefing</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[10px] uppercase tracking-widest text-gray-400">Student</label>
+            <select v-model="student_id" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
+              <option value="">Select Student</option>
+              <option v-for="student in students" :key="student.student_id || student.id" :value="student.id">
+                {{ student.student_name }}
+              </option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[10px] uppercase tracking-widest text-gray-400">Binome</label>
+            <select v-model="binome_id" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
+              <option value="">Select Student</option>
+              <option v-for="student in students" :key="student.student_id || student.id" :value="student.id">
+                {{ student.student_name }}
+              </option>
             </select>
           </div>
 
@@ -325,7 +424,7 @@
 
           <div class="md:col-span-2">
             <label class="text-[10px] uppercase tracking-widest text-gray-400">Resource</label>
-            <input v-model="ressource" type="text" required placeholder="GitHub, Notion, PDF..." class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
+            <input v-model="ressource" type="text" placeholder="GitHub, Notion, PDF..." class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
           </div>
 
           <div class="md:col-span-2">
@@ -355,8 +454,58 @@
               </option>
             </select>
           </div>
-          <button class="bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold px-4 py-2 rounded text-xs uppercase tracking-widest">
+
+          <div>
+            <label for="promotion" class="text-[10px] uppercase tracking-widest text-gray-400">Promotion</label>
+            <input type="text" id="promotion" v-model="promotion" placeholder="2022-2024" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]" required>
+          </div>
+
+          <div>
+            <label for="annee" class="text-[10px] uppercase tracking-widest text-gray-400">Annee</label>
+            <input type="text" id="annee" v-model="annee" placeholder="A1" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]" required>
+          </div>
+
+          <div>
+            <label for="formateur_id" class="text-[10px] uppercase tracking-widest text-gray-400">Formateur ID</label>
+            <input type="text" id="formateur_id" :value="formateurData?.formateur_id || ''" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-gray-400 outline-none" readonly>
+          </div>
+
+          <div>
+            <label for="classe_id" class="text-[10px] uppercase tracking-widest text-gray-400">Classe ID</label>
+            <input type="text" id="classe_id" :value="formateurData?.classe_id || ''" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-gray-400 outline-none" readonly>
+          </div>
+
+          <button @click="submitAddStudent" class="bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold px-4 py-2 rounded text-xs uppercase tracking-widest">
             Add Student
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" id="AssignDelegateModal">
+      <div class="w-full max-w-md rounded-xl border border-white/10 bg-[#121215] p-5 md:p-6">
+        <div class="flex items-center justify-between mb-5">
+          <h2 class="text-sm md:text-base font-black uppercase tracking-widest text-[#00babc]">Assign Class Delegate</h2>
+          <button @click="toggle('AssignDelegateModal')" class="text-gray-400 hover:text-red-400 text-xl leading-none">x</button>
+        </div>
+        <form @submit.prevent="submitAssignDelegate" class="grid grid-cols-1 gap-4">
+          <div>
+            <label class="text-[10px] uppercase tracking-widest text-gray-400">Select Student</label>
+            <select v-model="selectedDelegateStudentId" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]" required>
+              <option disabled value="" class="text-gray-400">Choose a delegate</option>
+              <option v-for="student in students" :key="student.student_id || student.id" :value="student.student_id || student.id" class="text-white">
+                {{ student.student_name || 'Unknown Student' }}
+              </option>
+            </select>
+          </div>
+
+          <div class="bg-white/5 border border-white/10 rounded p-3 text-[11px] text-gray-400">
+            <p class="mb-2"><span class="text-[#00babc]">•</span> The selected student will be marked as class delegate</p>
+            <p><span class="text-[#00babc]">•</span> Only one delegate per class is allowed</p>
+          </div>
+
+          <button type="submit" class="bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold px-4 py-2 rounded text-xs uppercase tracking-widest">
+            Assign Delegate
           </button>
         </form>
       </div>
@@ -370,7 +519,7 @@ import {onBeforeUnmount, onMounted, ref } from 'vue';
 const activTab = ref('profile');
 const user = ref(null);
 const students = ref([]);
-const activities = ref([]);
+const activites = ref([]);
 const formateurData = ref([]);
 const nom = ref('');
 const description = ref('');
@@ -379,8 +528,13 @@ const ressource = ref('');
 const etat = ref('pending');
 const date_debut = ref('');
 const date_fin = ref('');
+const student_id = ref('');
+const binome_id = ref('');
 const allStudents = ref([]);
 const selectedStudentId = ref('');
+const promotion = ref('');
+const annee = ref(String(new Date().getFullYear()));
+const selectedDelegateStudentId = ref('');
 
 const showSidebar = ref(false);
 const isDesktop = ref(window.innerWidth >= 768);
@@ -400,28 +554,39 @@ const closeSidebar = () => {
 
 const submitCreateActivity = async () => {
   const classeId = formateurData.value?.classe_id || formateurData.value?.id;
-  
+  const formateurId = formateurData.value?.formateur_id || user.value?.id;
   
   try {
-    
-    return await api.post('/createactivites', {
+    await api.post('/createactivites', {
       nom:nom.value,
       description: description.value,
       type: type.value,
+      formateur_id: formateurId,
       classe_id: classeId,
-      ressource: ressource.value,
+      ressource: ressource.value || '',
       etat: etat.value,
       date_debut: date_debut.value,
       date_fin: date_fin.value
     });
 
-
-    await getFormateurData();
+    await getActivities();
     resetActivityForm();
     toggle('CreateActivityModal');
   } catch (error) {
     console.error('Error creating activity:', error);
-  } 
+  }
+};
+
+const resetActivityForm = () => {
+  nom.value = '';
+  description.value = '';
+  type.value = 'brief';
+  ressource.value = '';
+  etat.value = 'pending';
+  date_debut.value = '';
+  date_fin.value = '';
+  student_id.value = '';
+  binome_id.value = '';
 };
     const getAllStudents = async () => {
       try{
@@ -436,11 +601,21 @@ const submitCreateActivity = async () => {
     const getStudents = async () => {
       try{
         const response = await api.get('/students');
-        students.value = response.data;
+        students.value = response.data.students || [];
         console.log('Fetched students:', students.value);
       }
       catch(error){
         console.error('Error fetching students:', error);
+      }
+    }
+    const getActivities = async () => {
+      try{
+        const response = await api.get('/activites');
+        activites.value = response.data.activites || [];
+        console.log('Fetched activities:', activites.value);
+      }
+      catch(error){
+        console.error('Error fetching activities:', error);
       }
     }
 
@@ -473,9 +648,60 @@ const submitCreateActivity = async () => {
         getStudents();
         getAllStudents();
       getFormateurData();
+      getActivities();
       window.addEventListener('resize', handleResize);
       handleResize();
     });
+
+    const submitAddStudent = async () => {
+      try {
+        const formateurId = formateurData.value?.formateur_id || user.value?.id;
+        const classeId = formateurData.value?.classe_id;
+
+        if (!formateurId || !classeId) {
+          console.error('Missing formateur_id or classe_id. Ensure the formateur is assigned to a class.');
+          return;
+        }
+
+        await api.post('/assignstudentclasse', {
+          user_id: selectedStudentId.value,
+          points: 0,
+          promotion: promotion.value,
+          annee: annee.value,
+          formateur_id: formateurId,
+          classe_id: classeId
+        })
+        await getStudents();
+        selectedStudentId.value = '';
+        promotion.value = '';
+        toggle('AddStudentModal');
+      } catch (error) {
+        console.error('Error assigning student to class:', error);
+      }
+    };
+
+    const submitAssignDelegate = async () => {
+      try {
+        const classeId = formateurData.value?.classe_id;
+
+        if (!selectedDelegateStudentId.value || !classeId) {
+          console.error('Please select a student and ensure a class is assigned.');
+          return;
+        }
+
+        await api.post('/assigndelegate', {
+          student_id: selectedDelegateStudentId.value,
+          classe_id: classeId
+        });
+
+        await getStudents();
+        selectedDelegateStudentId.value = '';
+        toggle('AssignDelegateModal');
+        console.log('Delegate assigned successfully');
+      } catch (error) {
+        console.error('Error assigning delegate:', error);
+      }
+    };
 
     onBeforeUnmount(() => {
       window.removeEventListener('resize', handleResize);

@@ -24,6 +24,10 @@ class FormateurDataService
     {
         return $this->FormateurDataRepository->getAllStudents();
     }
+    public function getActivites($formateurId)
+    {
+        return $this->FormateurDataRepository->getActivites($formateurId);
+    }
 
 }
 ?>

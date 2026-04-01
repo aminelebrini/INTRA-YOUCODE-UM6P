@@ -5,25 +5,16 @@ use App\Models\Student;
 
 class AssignStudentClasseRepository
 {
-    public function assignStudent(
-        $studentId, 
-        $points, 
-        $promotion, 
-        $annee, 
-        $formateurId, 
-        $classeId
-    )
+    public function assignStudent(array $payload)
     {
-        $retuStudent = Student::find($studentId);
-
-        $student = Student::where('id', $studentId)->
-        update([
-            'points' => $points,
-            'promotion' => $promotion,
-            'annee' => $annee,
-            'formateur_id' => $formateurId,
-            'classe_id' => $classeId,
+        Student::where('user_id', $payload['user_id'])->update([
+            'points' => $payload['points'] ?? 0,
+            'promotion' => $payload['promotion'],
+            'annee' => $payload['annee'],
+            'formateur_id' => $payload['formateur_id'],
+            'classe_id' => $payload['classe_id'],
         ]);
+
+        return Student::where('user_id', $payload['user_id'])->first();
     }
 }
-?>

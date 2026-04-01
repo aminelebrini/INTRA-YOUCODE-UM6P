@@ -16,7 +16,9 @@ return new class extends Migration
             $table->string('nom');
             $table->text('description');
             $table->enum('type',['veille','live-coding','brief','workshop','diebrifing','daily-standup']);
-            $table->foreignId('formateur_id')->constrained('formateur_classe')->cascadeOnDelete();
+            $table->foreignId('formateur_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('student_id')->nullable()->constrained('users')->onDelete('cascade');
+            $table->foreignId('binome_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->foreignId('classe_id')->constrained('classes')->cascadeOnDelete();
             $table->string('ressource')->nullable();
             $table->date('date_debut');
