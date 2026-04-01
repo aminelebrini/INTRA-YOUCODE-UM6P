@@ -15,25 +15,10 @@ class ActiviteRepository
                     'formateur_id' => $formateur_id,
                     'classe_id' => $classe_id,
                     'ressource' => $ressource,
-                    'etat' => $etat,
                     'date_debut' => $date_debut,
                     'date_fin' => $date_fin
                 ]);
 
-                $date = now().toDateString();
-                if($date_debut < $date){
-                     $activite->etat = 'pending';
-                     $activite->save();
-                }
-                if($date_debut >= $date && $date_fin < $date){
-                    $activite->etat = 'en cours';
-                    $activite->save();
-                }
-                 if($date_fin >= $date){
-                    $activite->etat = 'terminé';
-                    $activite->save();
-                 }
-                 
                 return $activite;
     }
 }

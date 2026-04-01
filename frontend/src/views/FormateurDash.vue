@@ -270,13 +270,13 @@
                       <p class="text-[9px] text-gray-600 mb-1">Status</p>
                       <span 
                         :class="{
-                          'bg-green-500/20 text-green-400': activity.etat === 'done' || activity.etat === 'completed',
-                          'bg-amber-500/20 text-amber-400': activity.etat === 'in_progress',
-                          'bg-gray-500/20 text-gray-400': activity.etat === 'pending' || !activity.etat
+                          'bg-green-500/20 text-green-400': activity.date_debut < today ? activiteStatus = 'pending': activiteStatus = 'à venir',
+                          'bg-amber-500/20 text-amber-400': activity.date_fin > today && activity.date_debut < today ? activiteStatus = 'en cours': activiteStatus = 'à venir',
+                          'bg-gray-500/20 text-gray-400': activity.date_fin < today ? activiteStatus = 'terminé': activiteStatus = 'à venir',
                         }"
                         class="inline-block text-[9px] px-2 py-1 rounded border border-current/25 font-bold"
                       >
-                        {{ activity.etat === 'in_progress' ? 'In Progress' : activity.etat === 'done' ? 'Done' : 'Pending' }}
+                       {{ activiteStatus }}
                       </span>
                     </div>
                     <div v-if="activity.ressource" class="text-right">
@@ -535,8 +535,9 @@ const selectedStudentId = ref('');
 const promotion = ref('');
 const annee = ref(String(new Date().getFullYear()));
 const selectedDelegateStudentId = ref('');
-
+const activiteStatus = ref('');
 const showSidebar = ref(false);
+const today = new Date().toISOString().split('T')[0];
 const isDesktop = ref(window.innerWidth >= 768);
 
 const handleResize = () => {
