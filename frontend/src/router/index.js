@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import AdminDashboard from '../views/AdminDashboard.vue'
 import FormateurDash from '../views/FormateurDash.vue'
+import StudentDashboard from '../views/StudentDashboard.vue'
 
 const routes = [
   {
@@ -19,12 +20,12 @@ const routes = [
     path: '/formateurdashboard',
     name: 'FormateurDashboard',
     component: FormateurDash
+  },
+  {
+    path: '/studentdashboard',
+    name: 'StudentDashboard',
+    component: StudentDashboard
   }
-//   {
-//     path: '/login',
-//     name: 'Login',
-//     component: Login
-//   }
 ]
 
 const router = createRouter({
