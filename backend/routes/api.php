@@ -15,6 +15,7 @@ use App\Http\Controllers\ValidateAbsenceController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AssignDelegateController;
 use App\Http\Controllers\SendLivrableController;
+use App\Http\Controllers\StudentDataController; 
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -32,6 +33,7 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::post('/createannouncement',[AnnouncementController::class,'createAnnouncement']);
     Route::get('/data', [DataController::class, 'data']);
     Route::get('/formateurdata', [FormateurDataController::class, 'Data']);
+    Route::get('/studentdata', [StudentDataController::class, 'data']);
     Route::get('/students', [FormateurDataController::class, 'getStudents']);
     Route::get('/activites', [FormateurDataController::class, 'getActivites']);
     Route::get('/getstudents', [FormateurDataController::class, 'getAllStudents']);

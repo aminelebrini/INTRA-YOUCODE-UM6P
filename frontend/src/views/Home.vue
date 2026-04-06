@@ -111,6 +111,8 @@ export default {
         this.$router.push('/admindashboard');
       } else if(user && user.role === 'formateur') {
         this.$router.push('/formateurdashboard');
+      }else if(user && user.role === 'etudiant') {
+        this.$router.push('/studentdashboard');
       }
     }
   } catch (error) {

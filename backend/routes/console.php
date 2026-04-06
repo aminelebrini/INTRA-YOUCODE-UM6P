@@ -2,11 +2,7 @@
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
-use App\Jobs\UpdateStatusActivite;
 use Illuminate\Support\Facades\Schedule;
-
-Schedule::job(new UpdateStatusActivite())->daily();
-
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
