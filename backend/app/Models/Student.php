@@ -29,4 +29,12 @@ class Student extends Model
     {
         return $this->belongsTo(Classe::class, 'classe_id', 'id');
     }
+    public function activites()
+    {
+        return $this->hasMany(Activite::class, 'classe_id', 'classe_id');
+    }
+    public function livrables()
+    {
+        return $this->hasMany(Livrable::class, 'student_id', 'user_id');
+    }
 }
