@@ -16,30 +16,26 @@
 
 				<nav class="flex-1 px-3 py-6 space-y-2">
 					<p class="mb-4 px-4 text-[9px] font-bold uppercase tracking-[0.2em] text-gray-600">Main_Menu</p>
-					<a href="#overview" class="group flex items-center rounded-sm px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-500 transition-all hover:bg-[#1d1d21] hover:text-white">
-						<span class="mr-2 text-[#00babc] opacity-0 transition-opacity group-hover:opacity-100">&gt;</span>
-						Overview
-					</a>
-					<a href="#dashboard" class="group flex items-center rounded-sm px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-500 transition-all hover:bg-[#1d1d21] hover:text-white">
-						<span class="mr-2 text-[#00babc] opacity-0 transition-opacity group-hover:opacity-100">&gt;</span>
-						Dashboard
-					</a>
-					<a href="#class-info" class="group flex items-center rounded-sm px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-500 transition-all hover:bg-[#1d1d21] hover:text-white">
-						<span class="mr-2 text-[#00babc] opacity-0 transition-opacity group-hover:opacity-100">&gt;</span>
+					<router-link to="/studentdashboard" @click="activTab='profile'" :class="['group flex items-center rounded-sm px-4 py-3 text-[10px] font-bold uppercase tracking-widest transition-all', activTab === 'profile' ? 'bg-[#1d1d21] text-white' : 'text-gray-500 hover:bg-[#1d1d21] hover:text-white']">
+						<span :class="activTab === 'profile' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'" class="mr-2 text-[#00babc] transition-opacity">&gt;</span>
+						Profile
+					</router-link>
+					<router-link to="/studentdashboard" @click="activTab='classroom'" :class="['group flex items-center rounded-sm px-4 py-3 text-[10px] font-bold uppercase tracking-widest transition-all', activTab === 'classroom' ? 'bg-[#1d1d21] text-white' : 'text-gray-500 hover:bg-[#1d1d21] hover:text-white']">
+						<span :class="activTab === 'classroom' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'" class="mr-2 text-[#00babc] transition-opacity">&gt;</span>
 						Class Info
-					</a>
-					<a href="#activities" class="group flex items-center rounded-sm px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-500 transition-all hover:bg-[#1d1d21] hover:text-white">
-						<span class="mr-2 text-[#00babc] opacity-0 transition-opacity group-hover:opacity-100">&gt;</span>
+					</router-link>
+					<router-link to="/studentdashboard" @click="activTab='activities'" :class="['group flex items-center rounded-sm px-4 py-3 text-[10px] font-bold uppercase tracking-widest transition-all', activTab === 'activities' ? 'bg-[#1d1d21] text-white' : 'text-gray-500 hover:bg-[#1d1d21] hover:text-white']">
+						<span :class="activTab === 'activities' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'" class="mr-2 text-[#00babc] transition-opacity">&gt;</span>
 						Activities
-					</a>
-					<a href="#attendance" class="group flex items-center rounded-sm px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-500 transition-all hover:bg-[#1d1d21] hover:text-white">
-						<span class="mr-2 text-[#00babc] opacity-0 transition-opacity group-hover:opacity-100">&gt;</span>
-						Attendance
-					</a>
-					<a href="#support" class="group flex items-center rounded-sm px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-500 transition-all hover:bg-[#1d1d21] hover:text-white">
-						<span class="mr-2 text-[#00babc] opacity-0 transition-opacity group-hover:opacity-100">&gt;</span>
+					</router-link>
+					<router-link to="/studentdashboard" @click="activTab='leaderboard'" :class="['group flex items-center rounded-sm px-4 py-3 text-[10px] font-bold uppercase tracking-widest transition-all', activTab === 'leaderboard' ? 'bg-[#1d1d21] text-white' : 'text-gray-500 hover:bg-[#1d1d21] hover:text-white']">
+						<span :class="activTab === 'leaderboard' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'" class="mr-2 text-[#00babc] transition-opacity">&gt;</span>
+						Leaderboard
+					</router-link>
+					<router-link to="/studentdashboard" @click="activTab='support'" :class="['group flex items-center rounded-sm px-4 py-3 text-[10px] font-bold uppercase tracking-widest transition-all', activTab === 'support' ? 'bg-[#1d1d21] text-white' : 'text-gray-500 hover:bg-[#1d1d21] hover:text-white']">
+						<span :class="activTab === 'support' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'" class="mr-2 text-[#00babc] transition-opacity">&gt;</span>
 						Support
-					</a>
+					</router-link>
 				</nav>
 
 				<div class="border-t border-white/5 bg-[#0c0c0e] p-6">
@@ -63,6 +59,9 @@
 							<span>Student Points</span>
 							<span class="text-[#00babc]">{{ studentPoints || 0 }}</span>
 						</div>
+						<button @click="logout" class="w-full text-left text-[9px] text-red-500/60 hover:text-red-500 font-bold uppercase tracking-widest transition-colors">
+          					[ DISCONNECT ]
+        				</button>
 					</div>
 				</div>
 			</aside>
@@ -75,7 +74,7 @@
 					</div>
 
 					<main class="mx-auto w-full max-w-7xl space-y-6">
-						<header id="overview" class="relative overflow-hidden rounded-xl border border-white/10 min-h-[180px] md:min-h-[220px]">
+						<header id="profile" v-if="activTab==='profile'" class="relative overflow-hidden rounded-xl border border-white/10 min-h-[180px] md:min-h-[220px]">
 							<div class="absolute inset-0">
 								<img src="@/assets/formateurbg.avif" alt="header_bg" class="h-full w-full object-cover object-center">
 								<div class="absolute inset-0 bg-gradient-to-r from-black/90 to-black/40"></div>
@@ -111,48 +110,54 @@
 										<p class="mt-2 text-sm font-bold text-white md:text-base">{{ studentPoints || 0 }}</p>
 									</div>
 									<div class="rounded-xl border border-white/10 bg-black/30 p-3 md:p-4">
-										<p class="text-[9px] uppercase tracking-widest text-gray-500">Tasks due</p>
-										<p class="mt-2 text-sm font-bold text-white md:text-base">04</p>
+										<p class="text-[9px] uppercase tracking-widest text-gray-500">Announced tasks</p>
+										<p class="mt-2 text-sm font-bold text-white md:text-base">{{ countActivite || 0 }}</p>
 									</div>
 									<div class="rounded-xl border border-white/10 bg-black/30 p-3 md:p-4">
-										<p class="text-[9px] uppercase tracking-widest text-gray-500">Rank</p>
-										<p class="mt-2 text-sm font-bold text-white md:text-base">05 / 28</p>
+										<p class="text-[9px] uppercase tracking-widest text-gray-500">Completed tasks</p>
+										<p class="mt-2 text-sm font-bold text-white md:text-base">{{ countCompletedTasks || 0 }}</p>
 									</div>
 									<div class="rounded-xl border border-white/10 bg-black/30 p-3 md:p-4">
 										<p class="text-[9px] uppercase tracking-widest text-gray-500">Score</p>
 										<p class="mt-2 text-sm font-bold text-[#00babc] md:text-base">14.8</p>
 									</div>
 								</div>
+
+								<div class="rounded-2xl border border-white/10 bg-black/25 p-4 md:p-5">
+									<div class="mb-4 flex items-center justify-between gap-3">
+										<div>
+											<p class="text-[9px] uppercase tracking-widest text-gray-500">Profile Links</p>
+											<h2 class="mt-1 text-sm font-black uppercase tracking-wider text-white md:text-base">Social Media & Portfolio</h2>
+										</div>
+										<button class="rounded-[5px] w-10 h-8 flex items-center justify-center border border-white/10 bg-white/5 text-[10px] font-bold uppercase tracking-widest text-gray-200 hover:bg-white/10">
+											<i class="fas fa-plus"></i>
+										</button>
+									</div>
+
+									<div v-if="profileLinks.length" class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+										<a
+											v-for="link in profileLinks"
+											:key="link.label"
+											:href="link.url"
+											target="_blank"
+											rel="noreferrer"
+											class="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-left transition-colors hover:border-[#00babc]/40 hover:bg-white/10"
+										>
+											<div class="min-w-0">
+												<p class="text-[9px] uppercase tracking-widest text-gray-500">{{ link.label }}</p>
+												<p class="truncate text-sm font-semibold text-white">{{ link.value }}</p>
+											</div>
+											<span class="text-[#00babc]">&gt;</span>
+										</a>
+									</div>
+
+									<div v-else class="rounded-xl border border-dashed border-white/10 bg-white/5 p-4 text-center">
+										<p class="text-[11px] italic tracking-wide text-gray-400">No social links or portfolio URL available yet.</p>
+									</div>
+								</div>
 							</div>
 						</header>
-
-						<section id="dashboard" class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-							<article class="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm transition-colors hover:bg-white/10">
-								<p class="text-[10px] uppercase tracking-widest text-gray-500">Attendance</p>
-								<p class="mt-3 text-3xl font-black text-white md:text-4xl">92%</p>
-								<p class="mt-2 text-sm text-gray-400">Current period presence rate.</p>
-							</article>
-
-							<article class="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm transition-colors hover:bg-white/10">
-								<p class="text-[10px] uppercase tracking-widest text-gray-500">Completed work</p>
-								<p class="mt-3 text-3xl font-black text-white md:text-4xl">18</p>
-								<p class="mt-2 text-sm text-gray-400">Assignments submitted on time.</p>
-							</article>
-
-							<article class="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm transition-colors hover:bg-white/10">
-								<p class="text-[10px] uppercase tracking-widest text-gray-500">Upcoming tasks</p>
-								<p class="mt-3 text-3xl font-black text-white md:text-4xl">04</p>
-								<p class="mt-2 text-sm text-gray-400">Tasks due this week.</p>
-							</article>
-
-							<article class="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm transition-colors hover:bg-white/10">
-								<p class="text-[10px] uppercase tracking-widest text-gray-500">Average score</p>
-								<p class="mt-3 text-3xl font-black text-[#00babc] md:text-4xl">14.8</p>
-								<p class="mt-2 text-sm text-gray-400">Average across current activities.</p>
-							</article>
-						</section>
-
-						<section id="class-info" class="rounded-2xl border border-white/10 bg-[#121215] p-5 md:p-6">
+						<section v-if="activTab==='classroom'" id="classroom" class="rounded-2xl border border-white/10 bg-[#121215] p-5 md:p-6">
 							<div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 								<div>
 									<h2 class="text-sm font-black uppercase tracking-wider text-white md:text-base">Class Information</h2>
@@ -195,136 +200,62 @@
 							</div>
 						</section>
 
-						<section id="activities" class="rounded-2xl border border-white/10 bg-[#121215] p-5 md:p-6">
+						<section v-if="activTab==='activities'" id="activities" class="rounded-2xl border border-white/10 bg-[#11131a] p-5 md:p-6 shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
 							<div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 								<div>
 									<h2 class="text-sm font-black uppercase tracking-wider text-white md:text-base">Activities</h2>
 									<p class="mt-1 text-[10px] text-gray-500">Upcoming and ongoing class work</p>
 								</div>
-								<span class="inline-flex items-center rounded-full border border-[#00babc]/30 bg-[#00babc]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[#00babc]">3 Active</span>
+								<span class="inline-flex items-center rounded-full border border-[#00babc]/30 bg-[#00babc]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[#00babc]">{{ doingActivite.length }} Active</span>
 							</div>
 
 							<div class="grid grid-cols-1 gap-4 xl:grid-cols-3">
-								<article class="rounded-xl border border-white/10 bg-[#0f0f12] p-4 hover:border-[#00babc]/40 transition-colors">
-									<div class="flex items-start justify-between gap-3">
-										<div class="min-w-0">
-											<h3 class="truncate text-sm font-bold text-white">Live Coding</h3>
-											<p class="mt-1 text-[10px] text-gray-500">09:00 - 11:00</p>
-										</div>
-										<span class="rounded-full border border-blue-500/25 bg-blue-500/10 px-2 py-1 text-[9px] font-bold uppercase tracking-widest text-blue-400">In progress</span>
+								<div class="rounded-xl border border-[#00babc]/20 bg-[#0c0f14] p-4 min-h-[360px]">
+									<div class="w-full mb-3 flex items-center justify-between">
+										<p class="text-[11px] uppercase tracking-[0.18em] text-gray-400">Upcoming</p>
+										<p class="rounded-full border border-[#00babc]/35 bg-[#00babc]/15 px-3 py-1 text-[10px] font-bold tracking-wider text-[#00babc]">To Do</p>
 									</div>
-									<p class="mt-3 text-sm text-gray-400">Responsive layout practice with components and utilities.</p>
-								</article>
-
-								<article class="rounded-xl border border-white/10 bg-[#0f0f12] p-4 hover:border-[#00babc]/40 transition-colors">
-									<div class="flex items-start justify-between gap-3">
-										<div class="min-w-0">
-											<h3 class="truncate text-sm font-bold text-white">Workshop</h3>
-											<p class="mt-1 text-[10px] text-gray-500">14:00 - 16:00</p>
+									<div class="space-y-3 max-h-[420px] overflow-y-auto pr-1">
+										<div v-for="Activite in todoActivite" :key="Activite.id" class="rounded-xl border border-[#00babc]/20 bg-[linear-gradient(180deg,rgba(0,186,188,0.08),rgba(255,255,255,0.02))] p-4 text-left">
+											<p class="mb-2 text-[9px] uppercase tracking-widest text-[#00babc]">{{ Activite.type }}</p>
+											<h3 class="text-sm font-semibold text-white leading-snug">{{ Activite.nom }}</h3>
+											<p class="mt-2 text-[10px] text-gray-300">Starts on: {{ Activite.date_debut }}</p>
 										</div>
-										<span class="rounded-full border border-[#00babc]/25 bg-[#00babc]/10 px-2 py-1 text-[9px] font-bold uppercase tracking-widest text-[#00babc]">Upcoming</span>
 									</div>
-									<p class="mt-3 text-sm text-gray-400">Practice session and feedback with the instructor team.</p>
-								</article>
-
-								<article class="rounded-xl border border-white/10 bg-[#0f0f12] p-4 hover:border-[#00babc]/40 transition-colors">
-									<div class="flex items-start justify-between gap-3">
-										<div class="min-w-0">
-											<h3 class="truncate text-sm font-bold text-white">Debriefing</h3>
-											<p class="mt-1 text-[10px] text-gray-500">17:30 - 18:00</p>
+									<p v-if="!todoActivite.length" class="rounded-xl border border-dashed border-white/20 bg-white/5 p-4 text-center text-[11px] text-gray-300">No upcoming activities.</p>
+								</div>
+								<div class="rounded-xl border border-amber-400/20 bg-[#0c0f14] p-4 min-h-[360px]">
+									<div class="w-full mb-3 flex items-center justify-between">
+										<p class="text-[11px] uppercase tracking-[0.18em] text-gray-400">In Progress</p>
+										<p class="rounded-full border border-amber-300/40 bg-amber-300/10 px-3 py-1 text-[10px] font-bold tracking-wider text-amber-300">Doing</p>
+									</div>
+									<div class="space-y-3 max-h-[420px] overflow-y-auto pr-1">
+										<div v-for="Activite in doingActivite" :key="Activite.id" class="rounded-xl border border-amber-300/20 bg-[linear-gradient(180deg,rgba(251,191,36,0.08),rgba(255,255,255,0.02))] p-4 text-left">
+											<p class="mb-2 text-[9px] uppercase tracking-widest text-amber-300">{{ Activite.type }}</p>
+											<h3 class="text-sm font-semibold text-white leading-snug">{{ Activite.nom }}</h3>
+											<div class="flex flex-row items-center justify-between">
+												<p class="mt-2 text-[10px] text-gray-300">Starts on: {{ Activite.date_debut }}</p>
+												<button v-if="!Livrables.some(l => l.activite_id === Activite.id)" class="mt-2 rounded-md bg-emerald-500/20 p-2 text-[10px] font-bold text-emerald-300 hover:bg-emerald-500/30">Deliver</button>
+											</div>
 										</div>
-										<span class="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-[9px] font-bold uppercase tracking-widest text-gray-300">Planned</span>
 									</div>
-									<p class="mt-3 text-sm text-gray-400">Daily review, questions, and next-step alignment.</p>
-								</article>
+									<p v-if="!doingActivite.length" class="rounded-xl border border-dashed border-white/20 bg-white/5 p-4 text-center text-[11px] text-gray-300">No ongoing activities.</p>
+								</div>
+								<div class="rounded-xl border border-emerald-400/20 bg-[#0c0f14] p-4 min-h-[360px]">
+									<div class="w-full mb-3 flex items-center justify-between">
+										<p class="text-[11px] uppercase tracking-[0.18em] text-gray-400">Completed</p>
+										<p class="rounded-full border border-emerald-300/40 bg-emerald-300/10 px-3 py-1 text-[10px] font-bold tracking-wider text-emerald-300">Done</p>
+									</div>
+									<div class="space-y-3 max-h-[420px] overflow-y-auto pr-1">
+										<div v-for="Activite in doneActivite" :key="Activite.id" class="rounded-xl border border-emerald-300/20 bg-[linear-gradient(180deg,rgba(16,185,129,0.08),rgba(255,255,255,0.02))] p-4 text-left">
+											<p class="mb-2 text-[9px] uppercase tracking-widest text-emerald-300">{{ Activite.type }}</p>
+											<h3 class="text-sm font-semibold text-white leading-snug">{{ Activite.nom }}</h3>
+											<p class="mt-2 text-[10px] text-gray-300">Starts on: {{ Activite.date_debut }}</p>
+										</div>
+									</div>
+									<p v-if="!doneActivite.length" class="rounded-xl border border-dashed border-white/20 bg-white/5 p-4 text-center text-[11px] text-gray-300">No completed activities yet.</p>
+								</div>
 							</div>
-						</section>
-
-						<section id="attendance" class="grid grid-cols-1 gap-6 xl:grid-cols-3">
-							<article class="xl:col-span-2 rounded-2xl border border-white/10 bg-[#121215] p-5 md:p-6">
-								<div class="mb-5 flex items-center justify-between gap-4">
-									<div>
-										<h2 class="text-sm font-black uppercase tracking-wider text-white md:text-base">Attendance</h2>
-										<p class="mt-1 text-[10px] text-gray-500">Monthly status overview</p>
-									</div>
-									<span class="rounded-full border border-[#00babc]/30 bg-[#00babc]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[#00babc]">92%</span>
-								</div>
-
-								<div class="rounded-xl border border-white/10 bg-black/20 p-5">
-									<div class="flex items-end justify-between gap-4">
-										<div>
-											<p class="text-sm text-gray-400">Presence</p>
-											<p class="mt-2 text-5xl font-black text-white">27</p>
-										</div>
-										<div class="text-right">
-											<p class="text-sm text-gray-400">Absent</p>
-											<p class="mt-2 text-5xl font-black text-red-400">2</p>
-										</div>
-									</div>
-
-									<div class="mt-5 h-3 overflow-hidden rounded-full bg-white/5">
-										<div class="h-full w-[92%] rounded-full bg-gradient-to-r from-[#00babc] via-[#2ed3d5] to-[#bfffff]"></div>
-									</div>
-
-									<div class="mt-5 grid gap-3 text-sm text-gray-400">
-										<div class="flex items-center justify-between">
-											<span>Attendance rate</span>
-											<span class="font-bold text-white">92%</span>
-										</div>
-										<div class="flex items-center justify-between">
-											<span>Justifications pending</span>
-											<span class="font-bold text-white">1</span>
-										</div>
-									</div>
-								</div>
-							</article>
-
-							<article class="rounded-2xl border border-white/10 bg-[#121215] p-5 md:p-6">
-								<h2 class="text-sm font-black uppercase tracking-wider text-white md:text-base">Announcements</h2>
-								<p class="mt-1 text-[10px] text-gray-500">Latest updates for your class</p>
-
-								<div class="mt-5 space-y-3">
-									<div class="rounded-xl border border-white/10 bg-white/5 p-4">
-										<p class="text-[10px] uppercase tracking-widest text-[#00babc]">Notice</p>
-										<p class="mt-2 text-sm font-bold text-white">Project checkpoint</p>
-										<p class="mt-2 text-sm text-gray-400">Submit your milestone before Friday 18:00.</p>
-									</div>
-
-									<div class="rounded-xl border border-white/10 bg-white/5 p-4">
-										<p class="text-[10px] uppercase tracking-widest text-[#00babc]">Reminder</p>
-										<p class="mt-2 text-sm font-bold text-white">Bring your laptop</p>
-										<p class="mt-2 text-sm text-gray-400">The next session will be fully hands-on.</p>
-									</div>
-								</div>
-							</article>
-						</section>
-
-						<section id="support" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-							<article class="rounded-2xl border border-white/10 bg-white/5 p-5 md:p-6">
-								<p class="text-[10px] uppercase tracking-[0.35em] text-gray-500">Quick actions</p>
-								<div class="mt-4 grid gap-3 sm:grid-cols-2">
-									<div class="rounded-xl border border-white/10 bg-[#121215] p-4">
-										<p class="text-sm font-bold text-white">Check grades</p>
-										<p class="mt-2 text-sm leading-6 text-gray-400">Review your latest evaluation results.</p>
-									</div>
-									<div class="rounded-xl border border-white/10 bg-[#121215] p-4">
-										<p class="text-sm font-bold text-white">Send justification</p>
-										<p class="mt-2 text-sm leading-6 text-gray-400">Prepare proof for an absence if needed.</p>
-									</div>
-								</div>
-							</article>
-
-							<article class="rounded-2xl border border-white/10 bg-white/5 p-5 md:p-6">
-								<p class="text-[10px] uppercase tracking-[0.35em] text-gray-500">Support</p>
-								<h2 class="mt-2 text-2xl font-black uppercase tracking-tight text-white">Need help?</h2>
-								<p class="mt-3 text-sm leading-6 text-gray-400">
-									Reach out to your formateur or the administration team if you need access to your class, attendance, or resources.
-								</p>
-								<div class="mt-5 flex flex-wrap gap-3">
-									<a href="/" class="rounded-xl border border-[#00babc]/25 bg-[#00babc]/10 px-4 py-3 text-[11px] font-bold uppercase tracking-[0.2em] text-[#00babc] transition-colors hover:bg-[#00babc]/20">Go to login</a>
-									<a href="#overview" class="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[11px] font-bold uppercase tracking-[0.2em] text-gray-200 transition-colors hover:border-white/20 hover:bg-white/10">Back to top</a>
-								</div>
-							</article>
 						</section>
 					</main>
 				</div>
@@ -338,6 +269,7 @@ export default {
   name: 'StudentDashboard',
   data() {
 	return {
+		activTab: 'profile',
 		userData: null,
 	    studentName: 'Student Name',
 	    studentEmail: 'student@youcode.ma',
@@ -350,13 +282,31 @@ export default {
 	    attendanceRate: 92,
 	    completedWork: 18,
 	    upcomingTasks: 4,
-	    averageScore: 14.8
+	    averageScore: 14.8,
+	    studentActivite: [],
+		todoActivite: [],
+		doingActivite: [],
+		doneActivite: [],
+		countActivite: 0,
+		Livrables: [],
+		countCompletedTasks: 0,
+		today: new Date().toISOString().split('T')[0],
 	   }
 	},
 	computed: {
 		studentInitial() {
 			const name = this.studentName || ''
 			return name.trim().charAt(0).toUpperCase() || 'S'
+		},
+		profileLinks() {
+			const user = this.userData || {}
+			return [
+				{ label: 'Portfolio', value: user.portfolio_url || user.portfolio || user.website || '', url: user.portfolio_url || user.portfolio || user.website || '' },
+				{ label: 'GitHub', value: user.github_url || user.github || '', url: user.github_url || user.github || '' },
+				{ label: 'LinkedIn', value: user.linkedin_url || user.linkedin || '', url: user.linkedin_url || user.linkedin || '' },
+				{ label: 'Instagram', value: user.instagram_url || user.instagram || '', url: user.instagram_url || user.instagram || '' },
+				{ label: 'Twitter / X', value: user.twitter_url || user.twitter || '', url: user.twitter_url || user.twitter || '' },
+			].filter((link) => link.value)
 		}
 	},
 	methods:{
@@ -370,19 +320,53 @@ export default {
 				this.studentClass = studentData?.classe?.nom || 'Class Not Assigned Yet'
 				this.studentCampus = studentData?.user?.campus || this.studentCampus
 				this.studentAvatar = studentData?.user?.link_profile || this.studentAvatar
-				this.studentPoints = studentData?.points || this.studentPoints
+				this.studentPoints = studentData?.points || this.studentPoints,
+				this.studentActivite = studentData?.activites || this.studentActivite
+				this.countActivite = this.count(this.studentActivite) || this.countActivite
+				this.Livrables = studentData?.livrables || this.Livrables
 
-				console.log('Fetched student data:', response.data)
+				console.log(studentData);
+				this.ActiviteStatus(this.studentActivite);
+				// console.log('Fetched student data:', response.data)
+				console.log('Student Activities:', this.studentActivite)
+
 			} catch (error) {
 				console.error('Failed to fetch student data', error)
 			}
+		},
+		count(array) {
+			return Array.isArray(array) ? array.length : 0
+		},
+		logout() {
+			localStorage.removeItem('user')
+			this.$router.push('/')
+		},
+		ActiviteStatus(activites) {
+			if (!Array.isArray(activites)) {
+				this.todoActivite = []
+				this.doingActivite = []
+				this.doneActivite = []
+				this.countCompletedTasks = 0
+				return
+			}
+
+			const today = new Date().toISOString().split('T')[0]
+			this.todoActivite = activites.filter(activite => activite.date_debut > today)
+			this.doingActivite = activites.filter(activite => activite.date_debut <= today && activite.date_fin >= today)
+			this.doneActivite = activites.filter(activite => activite.date_fin < today)
+			this.countCompletedTasks = this.doneActivite.length
+
+			console.log('To Do Activities:', this.todoActivite)
+			console.log('Doing Activities:', this.doingActivite)
+			console.log('Done Activities:', this.doneActivite)
 		}
+		
 	},
 	mounted() {
 		this.getStudentData()
 		const data = localStorage.getItem('user');
 		if (!data) return
-
+		console.log('Student Initial:', this.today);
 		try {
 			const userData = JSON.parse(data)
 			this.userData = userData
