@@ -9,10 +9,13 @@ class Livrable extends Model
     protected $table = 'livrable';
 
     protected $fillable = [
-        'activite_id',
         'student_id',
-        'file_path',
-        'status',
+        'activite_id',
+        'classe_id',
+        'lien_github',
+        'lien_deploiment',
+        'commentaire',
+        'date_soumission',
     ];
 
     public function activite()

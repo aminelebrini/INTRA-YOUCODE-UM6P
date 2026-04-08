@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+
 class Absence extends Model
 {
     protected $table = 'abscences';
@@ -16,4 +17,8 @@ class Absence extends Model
         'motif',
         'justification',
     ];
+    public function users()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }

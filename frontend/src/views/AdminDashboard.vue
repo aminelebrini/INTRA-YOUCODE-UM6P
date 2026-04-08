@@ -204,7 +204,7 @@
                 </div>
                 <div class="flex justify-between items-center">
                   <span class="text-gray-500">Formator</span>
-                  <span class="text-gray-300 text-xs truncate max-w-[140px]">{{ classe?.formateur?.fullname || 'None' }}</span>
+                  <span class="text-gray-300 text-xs truncate max-w-[140px]">{{ classe.formateurs?.fullname || 'None' }}</span>
                 </div>
                 <div class="flex justify-between items-center">
                   <span class="text-gray-500">Campus</span>
@@ -519,6 +519,14 @@ const Data = async () => {
     absences.value = data.absences || [];
     assignformateurs.value = data.assignformateurs;
     assignclasses.value = data.assignclasses;
+
+    console.log('Fetched Data:', {
+      users: users.value,
+      classes: classes.value,
+      absences: absences.value,
+      assignformateurs: assignformateurs.value,
+      assignclasses: assignclasses.value
+    });
   } catch (error) {
     console.error('Error fetching users:', error);
   }

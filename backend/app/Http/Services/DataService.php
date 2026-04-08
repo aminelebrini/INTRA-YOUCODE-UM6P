@@ -34,6 +34,10 @@ class DataService
     {
         return $this->DataRepository->getFormateurData();
     }
+    public function getAbsences()
+    {
+        return $this->DataRepository->getAbsences();
+    }
 }
 
 ?>

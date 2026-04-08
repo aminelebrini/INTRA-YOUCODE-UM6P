@@ -1,14 +1,14 @@
 <?php
 
 namespace App\Http\Services;
-use App\Http\Repository\SendLivrableRepository;
+use App\Http\Repository\sendLivrableRepository;
 
 
 class SendLivrableService
 {
     protected $sendLivrableRepository;
 
-    public function __construct(SendLivrableRepository $sendLivrableRepository)
+    public function __construct(sendLivrableRepository $sendLivrableRepository)
     {
         $this->sendLivrableRepository = $sendLivrableRepository;
     }

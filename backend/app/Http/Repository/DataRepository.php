@@ -5,6 +5,7 @@ namespace App\Http\Repository;
 use App\Models\Student;
 use App\Models\User;
 use App\Models\Classe;
+use App\Models\Absence;
 use Illuminate\Support\Facades\DB;
 
 class DataRepository
@@ -17,7 +18,7 @@ class DataRepository
     }
     public function getClasses()
     {
-        $classes = Classe::all();
+        $classes = Classe::with('formateurs')->get();
 
         return $classes;  
     }
@@ -37,12 +38,10 @@ class DataRepository
 
     public function getNotAssignedClasses()
     {
-        $assignedClasses = DB::table('classes')
-        ->leftJoin('formateur_classe', 'classes.id', '=', 'formateur_classe.classe_id')
-        ->select('classes.id as classe_id', 'classes.nom as classe_name')
-        ->whereNull('formateur_classe.classe_id')
+        $assignedClasses = Classe::with('formateurs')
+        ->whereDoesntHave('formateurs')
         ->get();
-        
+
         return $assignedClasses;
     }
     public function getFormateurData()
@@ -55,6 +54,10 @@ class DataRepository
         ->get();
         
         return $formateurData;
+    }
+    public function getAbsences()
+    {
+        return Absence::with('users')->get();
     }
 }
 

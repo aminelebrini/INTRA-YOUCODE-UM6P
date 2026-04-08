@@ -168,17 +168,17 @@
 
 							<div class="grid grid-cols-1 gap-4 lg:grid-cols-5">
 								<div class="lg:col-span-2">
-									<img src="@/assets/bg.jpg" alt="class_logo" class="h-48 w-full rounded-xl border border-white/10 object-cover">
+									<img :src="studentClassLogo" :alt="studentClassLogo" class="h-48 w-full rounded-xl border border-white/10 object-cover">
 								</div>
 
 								<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:col-span-3">
 									<div class="rounded-xl border border-white/10 bg-white/5 p-3">
 										<p class="mb-1 text-[9px] uppercase tracking-widest text-gray-500">Class Name</p>
-										<p class="truncate text-sm font-semibold text-white">A1 Web Development</p>
+										<p class="truncate text-sm font-semibold text-white">{{ studentClass }}</p>
 									</div>
 									<div class="rounded-xl border border-white/10 bg-white/5 p-3">
 										<p class="mb-1 text-[9px] uppercase tracking-widest text-gray-500">Formateur</p>
-										<p class="truncate text-sm font-semibold text-white">Instructor Team</p>
+										<p class="truncate text-sm font-semibold text-white">{{ studentFormateur }}</p>
 									</div>
 									<div class="rounded-xl border border-white/10 bg-white/5 p-3">
 										<p class="mb-1 text-[9px] uppercase tracking-widest text-gray-500">Campus</p>
@@ -186,15 +186,15 @@
 									</div>
 									<div class="rounded-xl border border-white/10 bg-white/5 p-3">
 										<p class="mb-1 text-[9px] uppercase tracking-widest text-gray-500">Delegate</p>
-										<p class="truncate text-sm font-semibold text-white">Student Delegate</p>
+										<p class="truncate text-sm font-semibold text-white">{{ studentDelegate }}</p>
 									</div>
 									<div class="rounded-xl border border-white/10 bg-white/5 p-3">
 										<p class="mb-1 text-[9px] uppercase tracking-widest text-gray-500">Current Module</p>
-										<p class="truncate text-sm font-semibold text-white">Frontend Basics</p>
+										<p class="truncate text-sm font-semibold text-white">{{ studentCurrentModule }}</p>
 									</div>
 									<div class="rounded-xl border border-white/10 bg-white/5 p-3">
 										<p class="mb-1 text-[9px] uppercase tracking-widest text-gray-500">Capacity</p>
-										<p class="truncate text-sm font-semibold text-white">28 Students</p>
+										<p class="truncate text-sm font-semibold text-white">{{ studentCapacity }}</p>
 									</div>
 								</div>
 							</div>
@@ -235,7 +235,8 @@
 											<h3 class="text-sm font-semibold text-white leading-snug">{{ Activite.nom }}</h3>
 											<div class="flex flex-row items-center justify-between">
 												<p class="mt-2 text-[10px] text-gray-300">Starts on: {{ Activite.date_debut }}</p>
-												<button v-if="!Livrables.some(l => l.activite_id === Activite.id)" class="mt-2 rounded-md bg-emerald-500/20 p-2 text-[10px] font-bold text-emerald-300 hover:bg-emerald-500/30">Deliver</button>
+												<button v-if="!isLivrableSubmitted(Activite.id)" @click="toggle('LivrableModal', Activite.id)" class="mt-2 rounded-md bg-emerald-500/20 p-2 text-[10px] font-bold text-emerald-300 hover:bg-emerald-500/30">Deliver</button>
+												<span v-else class="mt-2 rounded-md bg-emerald-500/20 p-2 text-[10px] font-bold text-emerald-300">Submitted</span>
 											</div>
 										</div>
 									</div>
@@ -256,6 +257,43 @@
 									<p v-if="!doneActivite.length" class="rounded-xl border border-dashed border-white/20 bg-white/5 p-4 text-center text-[11px] text-gray-300">No completed activities yet.</p>
 								</div>
 							</div>
+							<div id="LivrableModal" class="hidden fixed inset-0 z-50 items-center justify-center bg-black/85 px-4 py-6 backdrop-blur-md">
+							<div class="relative w-full max-w-3xl overflow-hidden rounded-3xl border border-white/10 bg-[#11131a] shadow-[0_30px_100px_rgba(0,0,0,0.7)]">
+								<div class="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(0,186,188,0.8),transparent)]"></div>
+								<div class="border-b border-white/10 bg-[linear-gradient(90deg,rgba(0,186,188,0.14),rgba(255,255,255,0.03))] px-6 py-5 md:px-7">
+									<div class="flex items-start justify-between gap-4">
+										<div>
+											<p class="text-[9px] font-mono uppercase tracking-[0.35em] text-[#00babc]">Student Submission</p>
+											<h2 class="mt-2 text-xl font-black uppercase tracking-wider text-white md:text-2xl">Submit Livrable</h2>
+											<p class="mt-2 max-w-lg text-[11px] leading-relaxed text-gray-400">Fill the fields linked to the livrable model. Keep the submission clean and readable.</p>
+										</div>
+										<button type="button" @click="toggle('LivrableModal')" class="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-lg font-bold text-gray-300 transition-colors hover:border-red-400/40 hover:bg-red-500/10 hover:text-red-300">×</button>
+									</div>
+								</div>
+
+								<form class="grid grid-cols-1 gap-4 px-6 py-6 md:grid-cols-2 md:px-7" @submit.prevent="SendLivrable">
+									<div class="hidden space-y-1.5">
+										<label class="block text-[10px] uppercase tracking-[0.22em] text-gray-400">Activity ID</label>
+										<input type="text" v-for="Activite in doingActivite" :key="Activite.id" v-model="activite_id" :value="Activite.id" class="w-full rounded-2xl border border-white/10 bg-[#0c0f14] px-4 py-3 text-sm text-white outline-none transition-colors placeholder:text-gray-500 focus:border-[#00babc] focus:bg-[#0f1218]" readonly>
+									</div>
+
+									<div class="space-y-1.5 md:col-span-2">
+										<label class="block text-[10px] uppercase tracking-[0.22em] text-gray-400">Lien Github</label>
+										<input type="text" v-model="lien_github" placeholder="GitHub link, Drive URL, or file path" class="w-full rounded-2xl border border-white/10 bg-[#0c0f14] px-4 py-3 text-sm text-white outline-none transition-colors placeholder:text-gray-500 focus:border-[#00babc] focus:bg-[#0f1218]">
+									</div>
+
+									<div class="space-y-1.5 md:col-span-2">
+										<label for="commentaire" class="block text-[10px] uppercase tracking-[0.22em] text-gray-400">Commentaire</label>
+										<textarea id="commentaire" v-model="commentaire" rows="4" class="w-full rounded-2xl border border-white/10 bg-[#0c0f14] px-4 py-3 text-sm text-white outline-none transition-colors placeholder:text-gray-500 focus:border-[#00babc] focus:bg-[#0f1218]"></textarea>
+									</div>
+
+									<div class="md:col-span-2 flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
+										<button type="button" @click="toggle('LivrableModal')" class="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-xs font-bold uppercase tracking-[0.22em] text-gray-300 transition-colors hover:bg-white/10 hover:text-white">Cancel</button>
+										<button type="submit" class="rounded-2xl bg-[#00babc] px-5 py-3 text-xs font-bold uppercase tracking-[0.22em] text-[#121215] transition-colors hover:bg-[#00d1d3]">Submit Livrable</button>
+									</div>
+								</form>
+							</div>
+						</div>
 						</section>
 					</main>
 				</div>
@@ -271,10 +309,13 @@ export default {
 	return {
 		activTab: 'profile',
 		userData: null,
+		studentId: null,
 	    studentName: 'Student Name',
 	    studentEmail: 'student@youcode.ma',
 		studentUsername: 'student-001',
 	    studentClass: 'Class A1',
+		studentClassLogo: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+		studentFormateur: 'Formateur Name',
 		studentCampus: 'Campus',
 		studentAvatar: '',
 		studentStatus: 'active',
@@ -289,6 +330,10 @@ export default {
 		doneActivite: [],
 		countActivite: 0,
 		Livrables: [],
+		activite_id: '',
+		studentClassId: null,
+		lien_github: '',
+		commentaire: '',
 		countCompletedTasks: 0,
 		today: new Date().toISOString().split('T')[0],
 	   }
@@ -314,10 +359,15 @@ export default {
 			try {
 				const response = await api.get('/studentdata')
 				const studentData = response.data?.studentData
+
+				this.studentId = studentData?.id || this.studentId
 				this.studentName = studentData?.user?.fullname || this.studentName
 				this.studentEmail = studentData?.user?.email || this.studentEmail
 				this.studentUsername = studentData?.user?.username || this.studentUsername
 				this.studentClass = studentData?.classe?.nom || 'Class Not Assigned Yet'
+				this.studentClassId = studentData?.classe?.id || this.studentClassId
+				this.studentClassLogo = studentData?.classe?.link_logo || this.studentClassLogo
+				this.studentFormateur = studentData?.classe?.formateurs?.[0]?.fullname || studentData?.formateur?.fullname || this.studentFormateur
 				this.studentCampus = studentData?.user?.campus || this.studentCampus
 				this.studentAvatar = studentData?.user?.link_profile || this.studentAvatar
 				this.studentPoints = studentData?.points || this.studentPoints,
@@ -325,7 +375,7 @@ export default {
 				this.countActivite = this.count(this.studentActivite) || this.countActivite
 				this.Livrables = studentData?.livrables || this.Livrables
 
-				console.log(studentData);
+				console.log('formateur:', this.studentFormateur);
 				this.ActiviteStatus(this.studentActivite);
 				// console.log('Fetched student data:', response.data)
 				console.log('Student Activities:', this.studentActivite)
@@ -337,9 +387,21 @@ export default {
 		count(array) {
 			return Array.isArray(array) ? array.length : 0
 		},
+		isLivrableSubmitted(activiteId)
+		{
+			return this.Livrables.some(livrable => livrable.activite_id === activiteId);
+		},
 		logout() {
 			localStorage.removeItem('user')
 			this.$router.push('/')
+		},
+		toggle(id, activiteId) {
+			const modal = document.getElementById(id)
+			if (modal) {
+				this.activite_id = activiteId || this.activite_id;
+				modal.classList.toggle('hidden')
+				modal.classList.toggle('flex')
+			}
 		},
 		ActiviteStatus(activites) {
 			if (!Array.isArray(activites)) {
@@ -359,6 +421,22 @@ export default {
 			console.log('To Do Activities:', this.todoActivite)
 			console.log('Doing Activities:', this.doingActivite)
 			console.log('Done Activities:', this.doneActivite)
+		},
+		async SendLivrable()
+		{
+			const response = await api.post('/sendlivrable',
+			{
+				student_id: this.studentId,
+				activite_id: this.activite_id,
+				classe_id: this.studentClassId,
+				lien_github: this.lien_github,
+				commentaire: this.commentaire,
+
+
+			});
+
+			await this.getStudentData()
+			return response
 		}
 		
 	},
