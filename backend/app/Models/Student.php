@@ -37,4 +37,8 @@ class Student extends Model
     {
         return $this->hasMany(Livrable::class, 'student_id', 'user_id');
     }
+    public function formateur()
+    {
+        return $this->belongsTo(User::class, 'formateur_id', 'id');
+    }
 }

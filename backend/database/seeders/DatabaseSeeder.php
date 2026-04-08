@@ -15,11 +15,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'fullname' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'amine.lebrini@youcode.ma'],
+            [
+                'fullname' => 'AMINE LEBRINI',
+                'username' => 'amine.lebrini',
+                'link_profile' => 'https://intranet.youcode.ma/storage/users/profile/thumbnail/0.jpg',
+                'password' => 'Admin@123',
+                'role' => 'admin',
+                'ville' => 'Benguerir',
+                'campus' => 'UM6P',
+                'status' => 'active',
+                'etat' => 'en_attente',
+            ]
+        );
     }
 }

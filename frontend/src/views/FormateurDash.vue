@@ -616,7 +616,7 @@
             <label class="text-[10px] uppercase tracking-widest text-gray-400">Description</label>
             <textarea v-model="description" rows="4" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]"></textarea>
           </div>
-          <button @click="submitCreateActivity" class="md:col-span-2 bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold px-4 py-2 rounded text-xs uppercase tracking-widest">
+          <button type="submit" class="md:col-span-2 bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold px-4 py-2 rounded text-xs uppercase tracking-widest">
             Create Activity
           </button>
         </form>
