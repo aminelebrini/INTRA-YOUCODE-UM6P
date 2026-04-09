@@ -295,6 +295,38 @@
 							</div>
 						</div>
 						</section>
+						
+						<section v-if="activTab==='leaderboard'" class="rounded-2xl border border-white/10 bg-[#121215] p-5 md:p-6">
+							<div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+								<div>
+									<h2 class="text-sm font-black uppercase tracking-wider text-white md:text-base">Leaderboard</h2>
+									<p class="mt-1 text-[10px] text-gray-500">Top students ranking snapshot</p>
+								</div>
+							</div>
+
+							<div class="grid grid-cols-1 gap-4 xl:grid-cols-1 w-full">
+								<div class="xl:col-span-2 overflow-hidden rounded-2xl border border-white/10 bg-[#0c0f14]">
+									<div class="grid grid-cols-12 border-b border-white/10 px-4 py-3 text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500">
+										<p class="col-span-2">Rank</p>
+										<p class="col-span-4">Student</p>
+										<p class="col-span-4">Classe</p>
+										<p class="col-span-2 text-right">Points</p>
+									</div>
+
+									<div class="space-y-1 p-3">
+										<div v-for="leader in leaderboard" :key="leader.id" class="grid grid-cols-12 items-center rounded-xl border border-[#00babc]/35 bg-[#00babc]/12 px-3 py-3">
+											<div class="col-span-2"><span class="inline-flex h-7 w-7 items-center justify-center rounded-full border border-[#00babc]/50 bg-[#00babc]/25 text-[10px] font-black text-[#b7ffff]">1</span></div>
+											<div class="col-span-4 flex items-center gap-2">
+												<img :src="leader.user.link_profile" alt="student_profile" class="h-8 w-8 rounded-full border border-[#00babc]/40 bg-[#00babc]/20 object-cover inline-block mr-2">
+												<p class="text-sm font-semibold text-white">{{ leader.user.fullname }}</p>
+											</div>
+											<p class="col-span-4 text-[10px] uppercase tracking-widest text-gray-300">{{ leader.classe.nom }}</p>
+											<p class="col-span-2 text-right text-sm font-black text-[#a8ffff]">{{ leader.points }}</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</section>
 						<section v-if="activTab==='absences'" id="absences" class="rounded-2xl border border-white/10 bg-[#121215] p-5 md:p-6">
 							<div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 								<div>
@@ -314,7 +346,7 @@
 										<div>
 											<h3 class="mt-1 text-sm font-semibold text-white">{{ absence.jour }}</h3>
 										</div>
-										<span class="rounded-full px-3 p-2 text-[10px] font-bold uppercase tracking-widest" :class="absence.status ? 'bg-red-500 text-white' : 'bg-amber-500/15 text-amber-300'">
+										<span class="rounded-full px-3 p-2 text-[10px] font-bold uppercase tracking-widest" :class="absence.status === 'justifie' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'">
 											{{ absence.status }}
 										</span>
 									</div>
@@ -326,7 +358,7 @@
 									</div>
 
 									<div class="mt-4 flex items-center justify-end">
-										<button type="button" @click="toggle('JustificateModal', absence.id)" class="rounded-xl border border-[#00babc]/30 bg-[#00babc]/10 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#00babc] transition-colors hover:bg-[#00babc]/20">Justify</button>
+										<button type="button" v-if="!absence.status" @click="toggle('JustificateModal', absence.id)" class="rounded-xl border border-[#00babc]/30 bg-[#00babc]/10 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#00babc] transition-colors hover:bg-[#00babc]/20">Justify</button>
 									</div>
 								</div>
 							</div>
@@ -397,7 +429,7 @@ export default {
 		studentCampus: 'Campus',
 		studentAvatar: '',
 		studentStatus: 'active',
-		studentPoints: 120,
+		studentPoints: 0,
 	    attendanceRate: 92,
 	    completedWork: 18,
 	    upcomingTasks: 4,
@@ -417,6 +449,7 @@ export default {
 		lien_github: '',
 		commentaire: '',
 		countCompletedTasks: 0,
+		leaderboard: [],
 		today: new Date().toISOString().split('T')[0],
 	   }
 	},
@@ -544,11 +577,21 @@ export default {
 			} catch (error) {
 				console.error('Failed to submit justification', error)
 			}
+		},
+		async getLeaderboard() {
+			try {
+				const response = await api.get('/leaderboard')
+				this.leaderboard = response.data?.leaderboard || []
+				console.log('Leaderboard data:', this.leaderboard)
+			} catch (error) {
+				console.error('Failed to fetch leaderboard data', error)
+			}
 		}
 		
 	},
 	mounted() {
 		this.getStudentData()
+		this.getLeaderboard()
 		const data = localStorage.getItem('user');
 		if (!data) return
 		console.log('Student Initial:', this.today);

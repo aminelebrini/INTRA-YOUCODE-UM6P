@@ -23,5 +23,14 @@ class StudentDataController extends Controller
             return response()->json(['message' => 'No student data found'], 404);
         }
     }
+    public function Leaderboard()
+    {
+        $leaderboard = $this->studentDataService->getLeaderboardData();
+        if ($leaderboard) {
+            return response()->json(['leaderboard' => $leaderboard], 200);
+        } else {
+            return response()->json(['message' => 'No leaderboard data found'], 404);
+        }
+    }
 
 }
