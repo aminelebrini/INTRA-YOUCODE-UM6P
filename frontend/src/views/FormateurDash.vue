@@ -541,6 +541,48 @@
                 </div>
               </div>
             </section>
+
+            <section v-if="activTab==='absences'" class="bg-[#121215] border border-white/10 rounded-2xl p-5 sm:p-6">
+              <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+                <div>
+                  <h1 class="text-white text-lg md:text-xl font-black uppercase tracking-wide">Absences</h1>
+                  <p class="text-[11px] text-gray-500 mt-1">Suivi des absences et validation des justifications</p>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase border border-amber-400/25 bg-amber-400/10 text-amber-300">
+                    3 Pending
+                  </span>
+                  <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase border border-emerald-400/25 bg-emerald-400/10 text-emerald-300">
+                    8 Justified
+                  </span>
+                </div>
+                <button @click="toggle('AbsenceModal')" class="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold text-gray-300 transition-colors hover:border-[#00babc]/40 hover:bg-[#00babc]/10 hover:text-[#00babc]">Detect Absence</button>
+              </div>
+
+              <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+                <article v-for="Absences in studentAbsences" :key="Absences.id" class="rounded-2xl border border-white/10 bg-[#0f0f12] p-4 sm:p-5 hover:border-[#00babc]/40 transition-colors">
+                  <div class="flex items-start justify-between gap-3 mb-4">
+                    <div>
+                      <p class="text-[9px] uppercase tracking-[0.25em] text-gray-500">Absence #01</p>
+                      <h3 class="mt-1 text-sm font-bold text-white">Monday, 08:30</h3>
+                    </div>
+                    <span class="rounded-full border border-amber-400/25 bg-amber-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-amber-300">Pending</span>
+                  </div>
+
+                  <div class="space-y-2 text-[11px] text-gray-300">
+                    <p><span class="text-gray-500">Student:</span> John Doe</p>
+                    <p><span class="text-gray-500">Duration:</span> 00:15</p>
+                    <p><span class="text-gray-500">Status:</span> Late</p>
+                    <p><span class="text-gray-500">Reason:</span> No reason added yet</p>
+                  </div>
+
+                  <div class="mt-5 flex items-center justify-between gap-3 border-t border-white/5 pt-4">
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest">Waiting for justification</p>
+                  </div>
+                </article>
+              </div>
+            </section>
           </main>
         </div>
     </div>
@@ -695,6 +737,53 @@
         </form>
       </div>
     </div>
+    <div class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" id="AbsenceModal">
+      <div class="w-full max-w-3xl overflow-hidden rounded-3xl border border-white/10 bg-[#121215] shadow-[0_30px_100px_rgba(0,0,0,0.75)] max-h-[90vh] overflow-y-auto">
+        <div class="border-b border-white/10 bg-[linear-gradient(90deg,rgba(0,186,188,0.12),rgba(255,255,255,0.03))] px-6 py-5 md:px-7">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h2 class="mt-2 text-xl font-black uppercase tracking-wider text-white md:text-2xl">Detect Absence</h2>
+            </div>
+            <button type="button" @click="toggle('AbsenceModal')" class="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-lg font-bold text-gray-300 transition-colors hover:border-red-400/40 hover:bg-red-500/10 hover:text-red-300">×</button>
+          </div>
+        </div>
+
+        <form @submit.prevent="submitAbsence" class="grid grid-cols-1 gap-4 px-6 py-6 md:grid-cols-2 md:px-7">
+          <div class="space-y-1.5 md:col-span-2">
+            <label class="block text-[10px] uppercase tracking-[0.22em] text-gray-400">Student</label>
+            <select v-model="absence_user_id" class="w-full rounded-2xl border border-white/10 bg-[#0c0f14] px-4 py-3 text-sm text-white outline-none transition-colors focus:border-[#00babc] focus:bg-[#0f1218]" required>
+              <option value="">Select student</option>
+              <option v-for="student in students" :key="student.student_id" :value="student.student_id">
+                {{ student.student_name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="block text-[10px] uppercase tracking-[0.22em] text-gray-400">Duration</label>
+            <input v-model="absence_duree_heure_retard" type="number" min="0" max="4" step="1" placeholder="0" class="w-full rounded-2xl border border-white/10 bg-[#0c0f14] px-4 py-3 text-sm text-white outline-none transition-colors placeholder:text-gray-500 focus:border-[#00babc] focus:bg-[#0f1218]" required>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="block text-[10px] uppercase tracking-[0.22em] text-gray-400">Duration</label>
+            <input v-model="absence_duree_minute_retard" type="number" min="0" max="59" step="1" placeholder="15" class="w-full rounded-2xl border border-white/10 bg-[#0c0f14] px-4 py-3 text-sm text-white outline-none transition-colors placeholder:text-gray-500 focus:border-[#00babc] focus:bg-[#0f1218]" required>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="block text-[10px] uppercase tracking-[0.22em] text-gray-400">Status</label>
+            <select v-model="absence_status" class="w-full rounded-2xl border border-white/10 bg-[#0c0f14] px-4 py-3 text-sm text-white outline-none transition-colors focus:border-[#00babc] focus:bg-[#0f1218]" required>
+              <option value="late">Late</option>
+              <option value="absent">Absent</option>
+              <option value="excused">Excused</option>
+            </select>
+          </div>
+          <div class="md:col-span-2 flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
+            <button type="button" @click="toggle('AbsenceModal')" class="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-xs font-bold uppercase tracking-[0.22em] text-gray-300 transition-colors hover:bg-white/10 hover:text-white">Cancel</button>
+            <button type="submit" class="rounded-2xl bg-[#00babc] px-5 py-3 text-xs font-bold uppercase tracking-[0.22em] text-[#121215] transition-colors hover:bg-[#00d1d3]">Submit Absence</button>
+          </div>
+        </form>
+      </div>
+    </div>
 </template>
 
 <script setup>
@@ -721,10 +810,24 @@ const promotion = ref('');
 const annee = ref(String(new Date().getFullYear()));
 const selectedDelegateStudentId = ref('');
 const activiteStatus = ref('');
+const studentAbsences = ref([]);
+const absence_user_id = ref('');
+const absence_heure_debut = ref('');
+const absence_duree_minute_retard = ref('');
+const absence_duree_heure_retard = ref('');
+const absence_duree_retard = ref('');  
+const absence_status = ref('late');
 const showSidebar = ref(false);
 const today = new Date().toISOString().split('T')[0];
+const absence_jour = ref(today);
 const isDesktop = ref(window.innerWidth >= 768);
 
+
+const convertominutes = (minutes) => {
+      const hour = Math.floor(minutes / 60);
+      const min = minutes % 60;
+      return `${String(hour).padStart(2,'0')}:${String(min).padStart(2,'0')}`;
+    };
 const handleResize = () => {
   isDesktop.value = window.innerWidth >= 768;
   if (isDesktop.value) {
@@ -776,6 +879,30 @@ const resetActivityForm = () => {
   student_id.value = '';
   binome_id.value = '';
 };
+
+
+
+const submitAbsence = async () => {
+  try {
+    const dureeMinutes = Number(absence_duree_heure_retard.value || 0) * 60 + Number(absence_duree_minute_retard.value || 0);
+    const dureeRetard = convertominutes(dureeMinutes);
+
+    absence_duree_retard.value = dureeRetard;
+
+    await api.post('/absences', {
+      user_id: absence_user_id.value,
+      jour: absence_jour.value,
+      duree_retard: dureeRetard,
+    });
+
+    console.log('Absence submitted:', absence_user_id.value, absence_jour.value, dureeRetard);
+
+    await getStudents();
+    toggle('AbsenceModal');
+  } catch (error) {
+    console.error('Error creating absence:', error);
+  }
+};
     const getAllStudents = async () => {
       try{
         const response = await api.get('/getstudents');
@@ -790,6 +917,8 @@ const resetActivityForm = () => {
       try{
         const response = await api.get('/students');
         students.value = response.data.students || [];
+        studentAbsences.value = response.data.studentAbsences || [];
+        console.log('Fetched student absences:', studentAbsences.value);
         console.log('Fetched students:', students.value);
       }
       catch(error){

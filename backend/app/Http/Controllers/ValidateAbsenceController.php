@@ -15,10 +15,11 @@ class ValidateAbsenceController extends Controller
     {
        $request->validate([
         'absence_id' => 'required|exists:abscences,id',
-        'user_id' => 'required|exists:users,id',
+        'status' => 'required|in:justifie,not_justifie',
+        'motif' => 'nullable|string|max:255',
        ]);
 
-       $validate = $this->ValidateAbsenceService->validateAbsence($request->absence_id, $request->user_id);
+       $validate = $this->ValidateAbsenceService->validateAbsence($request->absence_id, $request->status, $request->motif);
        if($validate){
         return response()->json(['message' => 'Absence validée avec succès']);
        }

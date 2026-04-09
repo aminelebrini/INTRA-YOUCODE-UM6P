@@ -32,9 +32,9 @@
 						<span :class="activTab === 'leaderboard' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'" class="mr-2 text-[#00babc] transition-opacity">&gt;</span>
 						Leaderboard
 					</router-link>
-					<router-link to="/studentdashboard" @click="activTab='support'" :class="['group flex items-center rounded-sm px-4 py-3 text-[10px] font-bold uppercase tracking-widest transition-all', activTab === 'support' ? 'bg-[#1d1d21] text-white' : 'text-gray-500 hover:bg-[#1d1d21] hover:text-white']">
-						<span :class="activTab === 'support' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'" class="mr-2 text-[#00babc] transition-opacity">&gt;</span>
-						Support
+					<router-link to="/studentdashboard" @click="activTab='absences'" :class="['group flex items-center rounded-sm px-4 py-3 text-[10px] font-bold uppercase tracking-widest transition-all', activTab === 'absences' ? 'bg-[#1d1d21] text-white' : 'text-gray-500 hover:bg-[#1d1d21] hover:text-white']">
+						<span :class="activTab === 'absences' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'" class="mr-2 text-[#00babc] transition-opacity">&gt;</span>
+						Absences
 					</router-link>
 				</nav>
 
@@ -295,6 +295,83 @@
 							</div>
 						</div>
 						</section>
+						<section v-if="activTab==='absences'" id="absences" class="rounded-2xl border border-white/10 bg-[#121215] p-5 md:p-6">
+							<div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+								<div>
+									<h2 class="text-sm font-black uppercase tracking-wider text-white md:text-base">Absences And Delay</h2>
+									<p class="mt-1 text-[10px] text-gray-500">Overview of your recent absences</p>
+								</div>
+								<span class="inline-flex items-center rounded-full border border-[#00babc]/30 bg-[#00babc]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[#00babc]">Records</span>
+							</div>
+
+							<div class="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
+								<div
+									v-for="absence in studentAbsences || []"
+									:key="absence.id"
+									class="rounded-2xl border border-white/10 bg-[#0c0f14] p-4"
+								>
+									<div class="mb-3 flex items-start justify-between gap-3">
+										<div>
+											<h3 class="mt-1 text-sm font-semibold text-white">{{ absence.jour }}</h3>
+										</div>
+										<span class="rounded-full px-3 p-2 text-[10px] font-bold uppercase tracking-widest" :class="absence.status ? 'bg-red-500 text-white' : 'bg-amber-500/15 text-amber-300'">
+											{{ absence.status }}
+										</span>
+									</div>
+
+									<div class="space-y-2 text-[11px] text-gray-300">
+										<p><span class="text-gray-500">Start:</span> {{ absence.heure_debut || '-' }}</p>
+										<p><span class="text-gray-500">Duration:</span> {{ absence.duree_retard > '04:00:00' ? 'absent' : absence.duree_retard + ' retard' }}</p>
+										<p><span class="text-gray-500">Motif:</span> {{ absence.motif || 'No motif provided' }}</p>
+									</div>
+
+									<div class="mt-4 flex items-center justify-end">
+										<button type="button" @click="toggle('JustificateModal', absence.id)" class="rounded-xl border border-[#00babc]/30 bg-[#00babc]/10 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#00babc] transition-colors hover:bg-[#00babc]/20">Justify</button>
+									</div>
+								</div>
+							</div>
+
+							<div v-if="!studentAbsences || !studentAbsences.length" class="rounded-2xl border border-dashed border-white/10 bg-white/5 p-6 text-center">
+								<p class="text-[11px] text-gray-400">No absences found.</p>
+							</div>
+						</section>
+
+						<div id="JustificateModal" class="hidden fixed inset-0 z-50 items-center justify-center bg-black/85 px-4 py-6 backdrop-blur-md">
+							<div class="relative w-full max-w-3xl overflow-hidden rounded-3xl border border-white/10 bg-[#11131a] shadow-[0_30px_100px_rgba(0,0,0,0.7)]">
+								<div class="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(0,186,188,0.8),transparent)]"></div>
+								<div class="border-b border-white/10 bg-[linear-gradient(90deg,rgba(0,186,188,0.14),rgba(255,255,255,0.03))] px-6 py-5 md:px-7">
+									<div class="flex items-start justify-between gap-4">
+										<div>
+											<h2 class="mt-2 text-xl font-black uppercase tracking-wider text-white md:text-2xl">Justify Absence</h2>
+												<p class="mt-2 max-w-lg text-[11px] leading-relaxed text-gray-400">Absence ID: {{ absence_id || '-' }}</p>
+										</div>
+										<button type="button" @click="toggle('JustificateModal')" class="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-lg font-bold text-gray-300 transition-colors hover:border-red-400/40 hover:bg-red-500/10 hover:text-red-300">×</button>
+									</div>
+								</div>
+
+								<form class="grid grid-cols-1 gap-4 px-6 py-6 md:grid-cols-2 md:px-7" @submit.prevent="submitJustification">
+									
+									<div class="space-y-1.5 md:col-span-2">
+										<label class="block text-[10px] uppercase tracking-[0.22em] text-gray-400">Document</label>
+										<input type="url" v-model="fichier_path" class="w-full rounded-2xl border border-white/10 bg-[#0c0f14] px-4 py-3 text-sm text-gray-300 outline-none transition-colors placeholder:text-gray-500 focus:border-[#00babc] focus:bg-[#0f1218]" placeholder="Link to justification document" required="">
+									</div>
+
+									<div class="space-y-1.5 md:col-span-2">
+										<label class="block text-[10px] uppercase tracking-[0.22em] text-gray-400">Document Type</label>
+										<select v-model="type_document" class="w-full rounded-2xl border border-white/10 bg-[#0c0f14] px-4 py-3 text-sm text-gray-300 outline-none transition-colors focus:border-[#00babc] focus:bg-[#0f1218]">
+											<option value="">Select a type</option>
+											<option value="medical">Medical Certificate</option>
+											<option value="family">Family Emergency</option>
+											<option value="other">Other</option>
+										</select>
+									</div>
+
+									<div class="md:col-span-2 flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
+										<button type="submit" class="rounded-2xl bg-[#00babc] px-5 py-3 text-xs font-bold uppercase tracking-[0.22em] text-[#121215] transition-colors hover:bg-[#00d1d3]">Submit Justification</button>
+									</div>
+								</form>
+							</div>
+						</div>
 					</main>
 				</div>
 			</div>
@@ -316,6 +393,7 @@ export default {
 	    studentClass: 'Class A1',
 		studentClassLogo: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
 		studentFormateur: 'Formateur Name',
+		studentClasseDelegate: 'Delegate Name',
 		studentCampus: 'Campus',
 		studentAvatar: '',
 		studentStatus: 'active',
@@ -331,7 +409,11 @@ export default {
 		countActivite: 0,
 		Livrables: [],
 		activite_id: '',
+		studentAbsences: [],
 		studentClassId: null,
+		fichier_path: '',
+		type_document: '',
+		absence_id: null,
 		lien_github: '',
 		commentaire: '',
 		countCompletedTasks: 0,
@@ -360,7 +442,7 @@ export default {
 				const response = await api.get('/studentdata')
 				const studentData = response.data?.studentData
 
-				this.studentId = studentData?.id || this.studentId
+				this.studentId = studentData?.user_id || this.studentId
 				this.studentName = studentData?.user?.fullname || this.studentName
 				this.studentEmail = studentData?.user?.email || this.studentEmail
 				this.studentUsername = studentData?.user?.username || this.studentUsername
@@ -374,8 +456,10 @@ export default {
 				this.studentActivite = studentData?.activites || this.studentActivite
 				this.countActivite = this.count(this.studentActivite) || this.countActivite
 				this.Livrables = studentData?.livrables || this.Livrables
+				this.studentAbsences = studentData?.absences || this.studentAbsences
 
 				console.log('formateur:', this.studentFormateur);
+				console.log('absences:', this.studentAbsences);
 				this.ActiviteStatus(this.studentActivite);
 				// console.log('Fetched student data:', response.data)
 				console.log('Student Activities:', this.studentActivite)
@@ -395,10 +479,11 @@ export default {
 			localStorage.removeItem('user')
 			this.$router.push('/')
 		},
-		toggle(id, activiteId) {
+		toggle(id, Id) {
 			const modal = document.getElementById(id)
 			if (modal) {
-				this.activite_id = activiteId || this.activite_id;
+				this.activite_id = Id || this.activite_id;
+				this.absence_id = Id || this.absence_id;
 				modal.classList.toggle('hidden')
 				modal.classList.toggle('flex')
 			}
@@ -437,6 +522,28 @@ export default {
 
 			await this.getStudentData()
 			return response
+		},
+		async submitJustification()
+		{
+			try{
+				const dateDepot = new Date().toISOString().split('T')[0];
+				const response = await api.post('/absencejustification',
+				{
+					absence_id: this.absence_id,
+					user_id: this.studentId,
+					fichier_path: this.fichier_path,
+					type_document: this.type_document || null,
+					date_depot: dateDepot,
+				});
+	
+				await this.getStudentData()
+				this.toggle('JustificateModal')
+				this.fichier_path = ''
+				this.type_document = ''
+				return response
+			} catch (error) {
+				console.error('Failed to submit justification', error)
+			}
 		}
 		
 	},

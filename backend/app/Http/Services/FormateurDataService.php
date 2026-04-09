@@ -28,6 +28,10 @@ class FormateurDataService
     {
         return $this->FormateurDataRepository->getActivites($formateurId);
     }
+    public function getStudentAbsences($formateurId)
+    {
+        return $this->FormateurDataRepository->getStudentAbsences($formateurId);
+    }
 
 }
 ?>

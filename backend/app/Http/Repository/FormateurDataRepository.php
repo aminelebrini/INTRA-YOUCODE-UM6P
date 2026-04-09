@@ -51,6 +51,14 @@ class FormateurDataRepository
 
         return $activites;
     }
+    public function getStudentAbsences($formateurId)
+    {
+        $studentAbsences = Absence::with('users', 'users.student')
+        ->where('users.student.formateur_id', $formateurId)
+        ->get();
+
+        return $studentAbsences;
+    }
 }
 
 ?>

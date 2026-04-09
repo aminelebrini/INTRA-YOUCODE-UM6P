@@ -57,7 +57,7 @@ class DataRepository
     }
     public function getAbsences()
     {
-        return Absence::with('users')->get();
+        return Absence::with('users', 'students','justification')->get();
     }
 }
 

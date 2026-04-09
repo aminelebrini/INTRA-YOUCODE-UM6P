@@ -6,14 +6,12 @@ use App\Models\Justification;
 
 class AbsenceRepository
 {
-    public function dedicateAbsence($userId,$jour, $heureDebut, $dureeRetard, $status)
+    public function dedicateAbsence($userId,$jour, $dureeRetard)
     {
         return Absence::create([
             'user_id' => $userId,
             'jour' => $jour,
-            'heure_debut' => $heureDebut,
             'duree_retard' => $dureeRetard,
-            'status' => $status
         ]);
     }
     public function createJustification($absenceId, $userId, $fichierPath, $typeDocument, $dateDepot)
@@ -23,7 +21,7 @@ class AbsenceRepository
             'user_id' => $userId,
             'fichier_path' => $fichierPath,
             'type_document' => $typeDocument,
-            'date_depot' => now()
+            'date_depot' => $dateDepot
         ]);
     }
 }
