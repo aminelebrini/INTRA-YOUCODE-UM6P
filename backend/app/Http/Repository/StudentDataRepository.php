@@ -12,5 +12,12 @@ class StudentDataRepository
 
         return $studentData;
     }
+    public function getLeaderboardData()
+    {
+        $leaderboard = Student::with('user', 'classe')
+            ->orderByDesc('points')
+            ->get();
+
+        return $leaderboard;
+    }
 }
-?>

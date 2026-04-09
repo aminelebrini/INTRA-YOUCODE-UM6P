@@ -15,6 +15,10 @@ class StudentDataService
     {
         return $this->studentDataRepository->getStudentData($userId);
     }
+    public function getLeaderboardData()
+    {
+        return $this->studentDataRepository->getLeaderboardData();
+    }
 }
 
 ?>
