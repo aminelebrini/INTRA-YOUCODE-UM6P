@@ -21,4 +21,12 @@ class Absence extends Model
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
+    public function justification()
+    {
+        return $this->hasOne(Justification::class, 'absence_id', 'id');
+    }
+    public function students()
+    {
+        return $this->belongsTo(Student::class, 'user_id', 'user_id');
+    }
 }

@@ -233,11 +233,66 @@
               Detect Absences
             </button>
           </div>
-          <div v-if="absences && absences.length > 0" class="w-full overflow-hidden mt-8">
-            <div v-for="absence in absences" :key="absence.id">
-              <p class="text-sm text-gray-200 font-medium mt-4">
-                {{ absence.student.fullname }} - {{ formatDate(absence.date) }} - {{ absence.status }}
-              </p>
+          <div v-if="absences && absences.length > 0" class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div
+              v-for="absence in absences"
+              :key="absence.id"
+              class="rounded-xl border border-white/10 bg-[#0f0f12] p-4"
+            >
+              <div class="flex items-start justify-between gap-3">
+                <p class="text-sm font-semibold text-white">
+                  {{ absence.users?.fullname || 'Unknown student' }}
+                </p>
+                <span
+                  class="rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider"
+                  :class="absence.status ? 'bg-red-500 text-white' : 'bg-yellow-500/20 text-yellow-400'">
+                  {{ absence.status || 'Pending' }}
+                </span>
+              </div>
+
+              <div class="mt-3 space-y-1 text-[11px] text-gray-300">
+                <p>
+                  <span class="text-gray-500">Date:</span>
+                  {{ absence.jour ? formatDate(absence.jour) : '-' }}
+                </p>
+                <p>
+                  <span class="text-gray-500">Duration:</span>
+                  {{ absence.duree_retard || '-' }}
+                </p>
+                <p>
+                  <span class="text-gray-500">Motif:</span>
+                  {{ absence.motif || '-' }}
+                </p>
+                <p>
+                  <span class="text-gray-500">Type document:</span>
+                  {{ absence.justification?.type_document || '-' }}
+                </p>
+                <p>
+                  <span class="text-gray-500">Fichier path:</span>
+                  <span class="break-all">{{ absence.justification?.fichier_path || '-' }}</span>
+                </p>
+                <p>
+                  <span class="text-gray-500">Date dépôt:</span>
+                  {{ absence.justification?.date_depot ? formatDate(absence.justification.date_depot) : '-' }}
+                </p>
+              </div>
+
+              <div class="mt-4 flex flex-wrap items-center justify-end gap-2">
+                <button
+                  type="button"
+                  class="rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-emerald-300 transition-colors hover:bg-emerald-400/20 disabled:cursor-not-allowed disabled:opacity-40"
+                  @click="AbsenceStatus(absence.id, 'justifie',absence.type_document)"
+                >
+                Justified
+                </button>
+                <button
+                  type="button"
+                  class="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-red-300 transition-colors hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-40"
+                  @click="AbsenceStatus(absence.id, 'not_justifie', absence.type_document)"
+                >
+                Not Justified
+                </button>
+              </div>
             </div>
           </div>
           <div v-else class="mt-10 pt-6 border-t border-white/5 flex items-center justify-between">
@@ -480,6 +535,20 @@ const submitClassAssignRegistration = async () => {
     assignclass_id.value = '';
   } catch (error) {
     console.error('Error assigning formateur to class:', error?.response?.data || error);
+  }
+};
+
+const AbsenceStatus = async (id, status, typeDocument) => {
+  try {
+    await api.post('/validateabsence', {
+      absence_id: id,
+      status: status,
+      type_document: typeDocument
+    });
+
+    await Data();
+  } catch (error) {
+    console.error('Error validating absence:', error?.response?.data || error);
   }
 };
 

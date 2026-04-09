@@ -56,4 +56,15 @@ class FormateurDataController extends Controller
             return response()->json(['message' => 'No activities found for this formateur'], 404);
         }
     }
+    public function getStudentAbsences()
+    {
+        $user = auth()->user();
+        $studentAbsences = $this->FormateurDataService->getStudentAbsences($user->id);
+
+        if ($studentAbsences) {
+            return response()->json(['studentAbsences' => $studentAbsences], 200);
+        } else {
+            return response()->json(['message' => 'No student absences found for this formateur'], 404);
+        }
+    }
 }

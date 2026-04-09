@@ -37,5 +37,9 @@ class Student extends Model
     {
         return $this->hasMany(Livrable::class, 'student_id', 'user_id');
     }
+    public function absences()
+    {
+        return $this->hasMany(Absence::class, 'user_id', 'user_id');
+    }
     
 }

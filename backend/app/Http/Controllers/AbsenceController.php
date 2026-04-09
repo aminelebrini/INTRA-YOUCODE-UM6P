@@ -16,19 +16,13 @@ class AbsenceController extends Controller
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'jour' => 'required|date',
-            'heure_debut' => 'required|date_format:H:i',
             'duree_retard' => 'required|date_format:H:i',
-            'status' => 'required|string|max:255',
         ]);
 
         $absence = $this->absenceService->dedicateAbsence(
             $request->user_id,
             $request->jour,
-            $request->heure_debut,
             $request->duree_retard,
-            $request->status,
-            $request->motif,
-            $request->justification
         );
 
         if ($absence) {

@@ -10,9 +10,9 @@ class ValidateAbsenceService
     {
         $this->ValidateAbsenceRepository = $ValidateAbsenceRepository;
     }
-    public function validateAbsence($absenceId, $userId)
+    public function validateAbsence($absenceId, $status, $typeDocument)
     {
-        return $this->ValidateAbsenceRepository->validateAbsence($absenceId, $userId);
+        return $this->ValidateAbsenceRepository->validateAbsence($absenceId, $status, $typeDocument);
     }
 }
 
