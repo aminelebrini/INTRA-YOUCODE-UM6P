@@ -46,7 +46,8 @@ class FormateurDataRepository
     }
     public function getActivites($formateurId)
     {
-        $activites = Activite::where('formateur_id', $formateurId)
+        $activites = Activite::with(['student', 'binome'])->
+        where('formateur_id', $formateurId)
         ->get();
 
         return $activites;

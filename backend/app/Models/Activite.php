@@ -22,4 +22,19 @@ class Activite extends Model
     {
         return $this->belongsTo(User::class, 'formateur_id');
     }
+
+    public function student()
+    {
+        return $this->belongsTo(User::class, 'student_id');
+    }
+
+    public function binome()
+    {
+        return $this->belongsTo(User::class, 'binome_id');
+    }
+
+    public function users()
+    {
+        return $this->student();
+    }
 }

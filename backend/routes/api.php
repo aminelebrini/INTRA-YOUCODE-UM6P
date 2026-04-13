@@ -32,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::post('/validateabsence',[ValidateAbsenceController::class,'validateAbsence']);
     Route::post('/createannouncement',[AnnouncementController::class,'createAnnouncement']);
     Route::get('/data', [DataController::class, 'data']);
+    Route::get('/alldata', [DataController::class, 'allData']);
     Route::get('/formateurdata', [FormateurDataController::class, 'Data']);
     Route::get('/studentdata', [StudentDataController::class, 'data']);
     Route::get('/leaderboard', [StudentDataController::class, 'Leaderboard']);

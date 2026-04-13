@@ -386,7 +386,10 @@
                   </div>
 
                   <p v-if="activity.description" class="text-[11px] text-gray-400 line-clamp-2 mb-3">{{ activity.description }}</p>
-
+                  <div>
+                    <img v-if="activity?.student" :src="activity?.student?.link_profile" alt="" class="w-8 h-8 rounded-full object-cover border border-white/10">
+                    <img v-if="activity?.binome" :src="activity.binome.link_profile" alt="" class="w-8 h-8 rounded-full object-cover border border-white/10">
+                  </div>
                   <div class="flex items-center justify-between mt-4 pt-3 border-t border-white/5">
                     <div>
                       <p class="text-[9px] text-gray-600 mb-1">Status</p>
@@ -409,7 +412,9 @@
                     </div>
                     <div v-if="activity.type != 'brief'">
                       <div v-if="activity.student_id">
-                        <a>Noter</a>
+                        <button @click="toggle('NoteStudentModal', activity.student_id, activity.binome_id)" class="text-[15px] text-[#00babc] hover:text-[#00d1d3] font-bold truncate border border-[#00babc]/30 rounded-lg px-3 py-1 transition-colors">
+                          Noter
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -631,15 +636,6 @@
           </div>
 
           <div>
-            <label class="text-[10px] uppercase tracking-widest text-gray-400">Status</label>
-            <select v-model="etat" required class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
-              <option value="pending">Pending</option>
-              <option value="in_progress">In Progress</option>
-              <option value="done">Done</option>
-            </select>
-          </div>
-
-          <div>
             <label class="text-[10px] uppercase tracking-widest text-gray-400">Start Date</label>
             <input v-model="date_debut" type="date" required class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
           </div>
@@ -784,6 +780,24 @@
         </form>
       </div>
     </div>
+    <div id="NoteStudentModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+      <div class="w-full max -w-md rounded-xl border border-white/10 bg-[#121215] p-5 md:p-6">
+        <div class="flex items-center justify-between mb-5">
+          <h2 class="text-sm md:text-base font-black uppercase tracking-widest text-[#00babc]">Grade Student</h2>
+          <button @click="toggle('NoteStudentModal')" class="text-gray-400 hover:text-red-400 text-xl leading-none">x</button>
+        </div>
+        <form @submit.prevent="submitGradeStudent" class="grid grid-cols-1 gap-4">
+          <div>
+            <label class="text-[10px] uppercase tracking-widest text-gray-400">Grade</label>
+            <input v-model="gradeValue" type="number" min="0" max="100" step="1" placeholder="Enter grade (0-100)" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]" required>
+          </div>
+
+          <button type="submit" class="bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold px-4 py-2 rounded text-xs uppercase tracking-widest">
+            Submit Grade
+          </button>
+        </form>
+      </div>
+    </div>
 </template>
 
 <script setup>
@@ -821,6 +835,8 @@ const showSidebar = ref(false);
 const today = new Date().toISOString().split('T')[0];
 const absence_jour = ref(today);
 const isDesktop = ref(window.innerWidth >= 768);
+const ActiviteStudentId = ref('');
+const ActiviteStudentId2 = ref('');
 
 
 const convertominutes = (minutes) => {
@@ -1020,12 +1036,29 @@ const submitAbsence = async () => {
       }
     };
 
+    const submitGradeStudent = async () => {
+      try{
+        const response = await api.post('/gradeStudent', {
+          student_id: ActiviteStudentId.value,
+          activite_id: ActiviteStudentId2.value,
+          grade: gradeValue.value
+        });
+        console.log('Grade submitted:', response.data);
+        
+        await getActivities();
+      }catch(error){
+        console.error('Error grading student:', error);
+      }
+    }
     onBeforeUnmount(() => {
       window.removeEventListener('resize', handleResize);
     });
 
-    function toggle(id)
+    function toggle(id, id2, id3)
     {
+      ActiviteStudentId.value = id2;
+      ActiviteStudentId2.value = id3;
+
       const element = document.getElementById(id);
       if(element.classList.contains('hidden'))
       {

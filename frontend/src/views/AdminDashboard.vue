@@ -164,6 +164,18 @@
           </div>
         </section>
 
+        <section v-if="activTab=== 'dashboard'" class="bg-[#121215] border border-white/5 p-4 sm:p-6 md:p-8 rounded-lg mt-6 flex items-center justify-center">
+          <div class="text-center">
+            <h2 class="text-[#00babc] text-2xl font-black uppercase italic tracking-widest mb-4">
+              Welcome to Admin Dashboard
+            </h2>
+            <p class="text-gray-500 font-mono text-[15px] tracking-[0.5em] uppercase animate-pulse">
+              // MANAGE_YOUR_INTRA
+            </p>
+          </div>
+
+        </section>
+
         <section v-if="activTab === 'classes'" class="bg-[#121215] border border-white/5 p-4 sm:p-6 md:p-8 rounded-lg mt-6">
           <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-8">
               <h3 class="text-xs font-black uppercase tracking-[0.3em] text-[#00babc] opacity-70">Classes Management</h3>
@@ -438,204 +450,194 @@
   
 </template>
 
-<script setup>
+<script>
 import api from '@/services/api';
-import { ref, onMounted, onBeforeUnmount } from 'vue';
 
-const activTab = ref('profile');
-const showSidebar = ref(false);
-const isDesktop = ref(false);
+export default {
+  name: 'AdminDashboard',
+  data() {
+    return {
+      activTab: 'profile',
+      showSidebar: false,
+      isDesktop: false,
+      user: null,
+      fullname: '',
+      campus: '',
+      role: '',
+      link_profile: '',
+      ville: '',
+      email: '',
+      password: '',
+      classename: '',
+      classecapacity: '',
+      link_logo: '',
+      promo: '',
+      classeCampus: '',
+      users: [],
+      classes: [],
+      absences: [],
+      assignformateurs: [],
+      assignclasses: [],
+      formator_id: '',
+      assignclass_id: '',
+      assignclass: '',
+      detectionDate: ''
+    };
+  },
+  methods: {
+    async submitRegistration() {
+      try {
+        await api.post('/createuser', {
+          fullname: this.fullname,
+          campus: this.campus,
+          role: this.role,
+          link_profile: this.link_profile,
+          ville: this.ville,
+          email: this.email,
+          password: this.password
+        });
 
-const user = ref(null);
-const fullname = ref('');
-const campus = ref('');
-const role = ref('');
-const link_profile = ref('');
-const ville = ref('');
-const email = ref('');
-const password = ref('');
+        await this.Data();
+        this.oppenToggle('CreatePersonnalModal');
 
-const classename = ref('');
-const classecapacity = ref('');
-const link_logo = ref('');
-const promo = ref('');
-const classeCampus = ref('');
+        this.fullname = '';
+        this.campus = '';
+        this.role = '';
+        this.link_profile = '';
+        this.ville = '';
+        this.email = '';
+        this.password = '';
+      } catch (error) {
+        console.error('Error creating user:', error?.response?.data || error);
+      }
+    },
 
-const users = ref([]);
-const classes = ref([]);
-const absences = ref([]);
-const assignformateurs = ref([]);
-const assignclasses = ref([]);
+    async submitClassRegistration() {
+      try {
+        await api.post('/createclasse', {
+          nom: this.classename,
+          capacite: Number(this.classecapacity),
+          promo: this.promo,
+          link_logo: this.link_logo,
+          campus: this.classeCampus
+        });
 
-const formator_id = ref('');
-const assignclass_id = ref('');
-const detectionDate = ref('');
+        await this.Data();
+        this.oppenToggle('createClassModal');
 
-const submitRegistration = async () => {
-  try {
-    await api.post('/createuser', {
-      fullname: fullname.value,
-      campus: campus.value,
-      role: role.value,
-      link_profile: link_profile.value,
-      ville: ville.value,
-      email: email.value,
-      password: password.value
-    });
+        this.classename = '';
+        this.classecapacity = '';
+        this.promo = '';
+        this.link_logo = '';
+        this.classeCampus = '';
+      } catch (error) {
+        console.error('Error creating class:', error?.response?.data || error);
+      }
+    },
 
-    await Data();
-    oppenToggle('CreatePersonnalModal');
+    async submitClassAssignRegistration() {
+      try {
+        console.log('Assign Formateur:', this.formator_id, 'to Class:', this.assignclass_id);
+        await api.post('/assignformateurclasse', {
+          formateur_id: this.formator_id,
+          classe_id: this.assignclass_id
+        });
 
-    fullname.value = '';
-    campus.value = '';
-    role.value = '';
-    link_profile.value = '';
-    ville.value = '';
-    email.value = '';
-    password.value = '';
-  } catch (error) {
-    console.error('Error creating user:', error?.response?.data || error);
+        await this.Data();
+        this.oppenToggle('AssignClassFormatorModal');
+        this.formator_id = '';
+        this.assignclass_id = '';
+      } catch (error) {
+        console.error('Error assigning formateur to class:', error?.response?.data || error);
+      }
+    },
+
+    async AbsenceStatus(id, status, typeDocument) {
+      try {
+        await api.post('/validateabsence', {
+          absence_id: id,
+          status,
+          type_document: typeDocument
+        });
+
+        await this.Data();
+      } catch (error) {
+        console.error('Error validating absence:', error?.response?.data || error);
+      }
+    },
+
+    logout() {
+      localStorage.clear();
+      window.location.href = '/';
+    },
+
+    async Data() {
+      try {
+        const response = await api.get('/data');
+        const data = response.data;
+
+        this.users = data.users;
+        this.classes = data.classes;
+        this.absences = data.absences || [];
+        this.assignformateurs = data.assignformateurs;
+        this.assignclasses = data.assignclasses;
+
+        console.log('Fetched Data:', {
+          users: this.users,
+          classes: this.classes,
+          absences: this.absences,
+          assignformateurs: this.assignformateurs,
+          assignclasses: this.assignclasses
+        });
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    },
+    async allData() {
+      try {
+        const response = await api.get('/alldata');
+        const Data = response.data;
+        console.log('All Data:', Data); 
+      } catch (error) {
+        console.error('Error fetching all data:', error);
+      }
+    },
+
+    formatDate(isDate) {
+      const date = new Date(isDate);
+      return date.toLocaleDateString();
+    },
+
+    oppenToggle(id) {
+      const modal = document.getElementById(id);
+      if (modal) {
+        modal.classList.toggle('hidden');
+      }
+    },
+
+    syncSidebarWithViewport() {
+      this.isDesktop = window.innerWidth >= 768;
+      this.showSidebar = this.isDesktop;
+    },
+
+    closeSidebar() {
+      if (!this.isDesktop) {
+        this.showSidebar = false;
+      }
+    }
+  },
+  mounted() {
+    this.Data();
+    this.syncSidebarWithViewport();
+    window.addEventListener('resize', this.syncSidebarWithViewport);
+
+    const data = localStorage.getItem('user');
+    if (data) {
+      this.user = JSON.parse(data);
+    }
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.syncSidebarWithViewport);
   }
 };
-
-const submitClassRegistration = async () => {
-  try {
-    await api.post('/createclasse', {
-      nom: classename.value,
-      capacite: Number(classecapacity.value),
-      promo: promo.value,
-      link_logo: link_logo.value,
-      campus: classeCampus.value
-    });
-
-    await Data();
-    oppenToggle('createClassModal');
-
-    classename.value = '';
-    classecapacity.value = '';
-    promo.value = '';
-    link_logo.value = '';
-    classeCampus.value = '';
-  } catch (error) {
-    console.error('Error creating class:', error?.response?.data || error);
-  }
-};
-
-const submitClassAssignRegistration = async () => {
-  try {
-    console.log('Assign Formateur:', formator_id.value, 'to Class:', assignclass_id.value);
-    await api.post('/assignformateurclasse', {
-      formateur_id: formator_id.value,
-      classe_id: assignclass_id.value
-    });
-
-    await Data();
-    oppenToggle('AssignClassFormatorModal');
-    formator_id.value = '';
-    assignclass_id.value = '';
-  } catch (error) {
-    console.error('Error assigning formateur to class:', error?.response?.data || error);
-  }
-};
-
-const AbsenceStatus = async (id, status, typeDocument) => {
-  try {
-    await api.post('/validateabsence', {
-      absence_id: id,
-      status: status,
-      type_document: typeDocument
-    });
-
-    await Data();
-  } catch (error) {
-    console.error('Error validating absence:', error?.response?.data || error);
-  }
-};
-
-// const submitAbsenceDetection = async () => {
-//   try {
-//     const response = await api.post('/detectabsences', {
-//       assignedClass: assignclass_id.value,
-//       date: detectionDate.value
-//     });
-
-//     if (response?.data?.absences) {
-//       absences.value = response.data.absences;
-//     } else {
-//       await Data();
-//     }
-
-//     oppenToggle('detectAbsencesModal');
-//     assignclass.value = '';
-//     detectionDate.value = '';
-//   } catch (error) {
-//     console.error('Error detecting absences:', error?.response?.data || error);
-//   }
-// };
-
-const logout = () => {
-  localStorage.clear();
-  window.location.href = '/';
-};
-
-const Data = async () => {
-  try {
-    const response = await api.get('/data');
-    const data = response.data;
-
-    users.value = data.users;
-    classes.value = data.classes;
-    absences.value = data.absences || [];
-    assignformateurs.value = data.assignformateurs;
-    assignclasses.value = data.assignclasses;
-
-    console.log('Fetched Data:', {
-      users: users.value,
-      classes: classes.value,
-      absences: absences.value,
-      assignformateurs: assignformateurs.value,
-      assignclasses: assignclasses.value
-    });
-  } catch (error) {
-    console.error('Error fetching users:', error);
-  }
-};
-
-function formatDate(isDate) {
-  const date = new Date(isDate);
-  return date.toLocaleDateString();
-}
-
-function oppenToggle(id) {
-  const modal = document.getElementById(id);
-  if (modal) {
-    modal.classList.toggle('hidden');
-  }
-}
-
-function syncSidebarWithViewport() {
-  isDesktop.value = window.innerWidth >= 768;
-  showSidebar.value = isDesktop.value;
-}
-
-function closeSidebar() {
-  if (!isDesktop.value) {
-    showSidebar.value = false;
-  }
-}
-
-onMounted(() => {
-  Data();
-  syncSidebarWithViewport();
-  window.addEventListener('resize', syncSidebarWithViewport);
-
-  const data = localStorage.getItem('user');
-  if (data) {
-    user.value = JSON.parse(data);
-  }
-});
-
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', syncSidebarWithViewport);
-});
 </script>

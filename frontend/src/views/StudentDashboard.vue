@@ -308,19 +308,21 @@
 								<div class="xl:col-span-2 overflow-hidden rounded-2xl border border-white/10 bg-[#0c0f14]">
 									<div class="grid grid-cols-12 border-b border-white/10 px-4 py-3 text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500">
 										<p class="col-span-2">Rank</p>
-										<p class="col-span-4">Student</p>
-										<p class="col-span-4">Classe</p>
+										<p class="col-span-3">Student</p>
+										<p class="col-span-3">Classe</p>
+										<p class="col-span-2">Campus</p>
 										<p class="col-span-2 text-right">Points</p>
 									</div>
 
 									<div class="space-y-1 p-3">
 										<div v-for="leader in leaderboard" :key="leader.id" class="grid grid-cols-12 items-center rounded-xl border border-[#00babc]/35 bg-[#00babc]/12 px-3 py-3">
 											<div class="col-span-2"><span class="inline-flex h-7 w-7 items-center justify-center rounded-full border border-[#00babc]/50 bg-[#00babc]/25 text-[10px] font-black text-[#b7ffff]">1</span></div>
-											<div class="col-span-4 flex items-center gap-2">
+											<div class="col-span-3 flex items-center gap-2">
 												<img :src="leader.user.link_profile" alt="student_profile" class="h-8 w-8 rounded-full border border-[#00babc]/40 bg-[#00babc]/20 object-cover inline-block mr-2">
 												<p class="text-sm font-semibold text-white">{{ leader.user.fullname }}</p>
 											</div>
-											<p class="col-span-4 text-[10px] uppercase tracking-widest text-gray-300">{{ leader.classe.nom }}</p>
+											<p class="col-span-3 text-[10px] uppercase tracking-widest text-gray-300">{{ leader.classe.nom }}</p>
+											<p class="col-span-2 text-[10px] uppercase tracking-widest text-gray-300">{{ leader.classe.campus }}</p>
 											<p class="col-span-2 text-right text-sm font-black text-[#a8ffff]">{{ leader.points }}</p>
 										</div>
 									</div>
@@ -412,9 +414,9 @@
 </template>
 <script>
 import api from '@/services/api';
+
 export default {
-  name: 'StudentDashboard',
-  data() {
+	data() {
 	return {
 		activTab: 'profile',
 		userData: null,
@@ -602,6 +604,8 @@ export default {
 			console.error('Invalid user data in localStorage', error)
 		}
 	}
-}
+	
+};
+
 </script>
 
