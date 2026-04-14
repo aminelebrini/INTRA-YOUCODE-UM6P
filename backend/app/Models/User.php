@@ -42,6 +42,10 @@ class User extends Authenticatable
         {
             return $this->belongsToMany(Classe::class, 'formateur_classe', 'formateur_id', 'classe_id');
         }
+        public function delegate()
+        {
+            return $this->belongsToMany(Classe::class, 'delegues', 'student_id', 'classe_id');
+        }
         public function absences()
         {
             return $this->hasMany(Absence::class, 'user_id', 'id');
