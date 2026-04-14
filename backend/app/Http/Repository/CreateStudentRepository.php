@@ -11,9 +11,10 @@ class CreateStudentRepository
     {
         $normalizedRole = strtolower(trim((string) $role));
 
+        $username = strtolower(str_replace(' ', '', $fullname));
         $user = User::create([
             'fullname' => $fullname,
-            'username' => $fullname,
+            'username' => $username,
             'link_profile' => $studentImage,
             'email' => $email,
             'password' => Hash::make($password),
