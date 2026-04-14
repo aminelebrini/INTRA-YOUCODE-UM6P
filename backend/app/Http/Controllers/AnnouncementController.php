@@ -35,4 +35,9 @@ class AnnouncementController extends Controller
             return response()->json(['message' => 'Failed to create announcement'], 500);
         }
     }
+    public function getAnnouncements()
+    {
+        $announcements = $this->announcementService->getAnnouncements();
+        return response()->json(['announcements' => $announcements], 200);
+    }
 }

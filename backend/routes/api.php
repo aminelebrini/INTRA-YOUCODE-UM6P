@@ -16,11 +16,13 @@ use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AssignDelegateController;
 use App\Http\Controllers\SendLivrableController;
 use App\Http\Controllers\StudentDataController; 
+use App\Http\Controllers\UpdateUserController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function (){
     Route::post('/createuser', [CreateStudentController::class, 'create']);
+    Route::put('/updateusers', [UpdateUserController::class, 'update']);
     Route::post('/sendlivrable', [SendLivrableController::class, 'sendLivrable']);
     Route::post('/createclasse', [CreateClasseController::class, 'create']);
     Route::post('/assignformateurclasse', [AssignFormateurClasseController::class, 'assign']);
@@ -31,6 +33,7 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::post('/absencejustification',[AbsenceController::class,'Absencejustification']);
     Route::post('/validateabsence',[ValidateAbsenceController::class,'validateAbsence']);
     Route::post('/createannouncement',[AnnouncementController::class,'createAnnouncement']);
+    Route::get('/getannouncements',[AnnouncementController::class,'getAnnouncements']);
     Route::get('/data', [DataController::class, 'data']);
     Route::get('/alldata', [DataController::class, 'allData']);
     Route::get('/formateurdata', [FormateurDataController::class, 'Data']);

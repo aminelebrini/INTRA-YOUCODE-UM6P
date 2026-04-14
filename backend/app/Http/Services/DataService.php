@@ -38,6 +38,14 @@ class DataService
     {
         return $this->DataRepository->getAbsences();
     }
+    public function getAnnouncements()
+    {
+        return $this->DataRepository->getAnnouncements();
+    }
+    public function getAllData()
+    {
+        return $this->DataRepository->getAllData();
+    }
 }
 
 ?>

@@ -6,6 +6,7 @@ use App\Models\Student;
 use App\Models\User;
 use App\Models\Classe;
 use App\Models\Absence;
+use App\Models\Announcement;
 use Illuminate\Support\Facades\DB;
 
 class DataRepository
@@ -58,6 +59,15 @@ class DataRepository
     public function getAbsences()
     {
         return Absence::with('users', 'students','justification')->get();
+    }
+    public function getAnnouncements()
+    {
+        return Announcement::latest()->get();
+    }
+    public function getAllData()
+    {
+        $allData = User::with('students','classes.formateurs', 'absences','justifications')->get();
+        return $allData;
     }
 }
 

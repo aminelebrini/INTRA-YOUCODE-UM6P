@@ -107,17 +107,19 @@ export default {
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
       
-      if (user && user.role === 'admin') {
-        this.$router.push('/admindashboard');
-      } else if(user && user.role === 'formateur') {
-        this.$router.push('/formateurdashboard');
-      }else if(user && user.role === 'etudiant') {
-        this.$router.push('/studentdashboard');
+      if(user.etat !== 'abandonned')
+      {
+          if (user && user.role === 'admin') {
+            this.$router.push('/admindashboard');
+          } else if(user && user.role === 'formateur') {
+            this.$router.push('/formateurdashboard');
+          }else if(user && user.role === 'etudiant') {
+            this.$router.push('/studentdashboard');
+          }
       }
     }
   } catch (error) {
     console.error('Erreur de connexion au serveur (502) ou identifiants :', error.message);
-    alert("Le serveur Laravel ne répond pas. Vérifiez qu'il est lancé.");
   }
 }
     },

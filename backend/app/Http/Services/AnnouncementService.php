@@ -15,5 +15,9 @@ class AnnouncementService
     {
         return $this->AnnouncementRepository->createAnnouncement($titre, $description, $status, $categorie, $cible);
     }
+    public function getAnnouncements()
+    {
+        return $this->AnnouncementRepository->getAnnouncements();
+    }
 }
 ?>
