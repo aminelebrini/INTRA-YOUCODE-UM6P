@@ -162,7 +162,6 @@
               </tbody>
             </table>
           </div>
-
           <div v-else class="mt-10 pt-6 border-t border-white/5 flex items-center justify-between">
             <p class="text-[10px] text-gray-600 font-mono italic tracking-widest">
               System_Ready_Waiting_For_Data
@@ -240,14 +239,14 @@
                 <div class="flex items-center gap-3 flex-1">
                   <img :src="classe?.link_logo || 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Google_Classroom_Logo.svg/250px-Google_Classroom_Logo.svg.png'" alt="" class="w-10 h-10 rounded-lg object-cover">
                   <div class="min-w-0 flex-1">
-                    <h4 class="text-white font-bold text-sm truncate">{{ classe?.nom || 'Unnamed Class' }}</h4>
+                    <h4 class="text-white font-bold text-sm truncate">{{ classe?.classe_name || 'Unnamed Class' }}</h4>
                     <p class="text-gray-500 text-xs">{{ classe?.promo || 'N/A' }}</p>
                   </div>
                 </div>
                 <span :class="['px-2.5 py-1 rounded text-[7px] font-bold whitespace-nowrap',
-                  classe?.formateur ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
+                  classe?.formateur_name ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
                 ]">
-                  {{ classe?.formateur ? 'Assigned' : 'Unassigned' }}
+                  {{ classe?.formateur_name ? 'Assigned' : 'Unassigned' }}
                 </span>
               </div>
 
@@ -260,7 +259,7 @@
                 </div>
                 <div class="flex justify-between items-center">
                   <span class="text-gray-500">Formator</span>
-                  <span class="text-gray-300 text-xs truncate max-w-[140px]">{{ classe.formateurs?.fullname || 'None' }}</span>
+                  <span class="text-gray-300 text-xs truncate max-w-[140px]">{{ classe.formateur_name || 'None' }}</span>
                 </div>
                 <div class="flex justify-between items-center">
                   <span class="text-gray-500">Campus</span>
@@ -508,7 +507,7 @@
         <label for="assignclass" class="text-[#00babc] text-[11px] uppercase tracking-widest">Class</label>
         <select id="assignclass" v-model="assignclass_id" class="w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required>
           <option value="" disabled>Select Class</option>
-          <option v-for="c in assignclasses" :key="c.classe_id" :value="c.classe_id">{{ c.classe_name }}</option>
+          <option v-for="c in assignclasses" :key="c.id" :value="c.id">{{ c.nom }}</option>
         </select>
         <button type="submit" class="w-full bg-[#00babc] text-[#121215] font-bold py-3 rounded mt-2 hover:bg-[#00d1d3] transition-all uppercase tracking-widest text-xs">
           Assign

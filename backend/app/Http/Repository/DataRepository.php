@@ -19,7 +19,12 @@ class DataRepository
     }
     public function getClasses()
     {
-        $classes = Classe::with('formateurs')->get();
+        $classes = DB::table('classes')
+        ->leftJoin('formateur_classe', 'classes.id', '=', 'formateur_classe.classe_id')
+        ->leftJoin('users', 'formateur_classe.formateur_id', '=', 'users.id')
+        ->select('classes.id as classe_id', 'classes.nom as classe_name', 'users.fullname as formateur_name', 
+        'classes.campus as campus', 'classes.capacite as capacite', 'classes.created_at', 'classes.promo')
+        ->get();
 
         return $classes;  
     }
