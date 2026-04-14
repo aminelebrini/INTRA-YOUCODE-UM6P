@@ -190,7 +190,10 @@
 									</div>
 									<div class="rounded-xl border border-white/10 bg-white/5 p-3">
 										<p class="mb-1 text-[9px] uppercase tracking-widest text-gray-500">Delegate</p>
-										<p class="truncate text-sm font-semibold text-white">{{ studentDelegate }}</p>
+										<div class="flex items-center gap-2">
+											<img :src="studentClasseDelegate[0]?.link_profile" alt="userlogo" class="w-8 h-8 rounded-full">
+											<p class="truncate text-sm font-semibold text-white">{{ studentClasseDelegate[0]?.fullname }}</p>
+										</div>
 									</div>
 									<div class="rounded-xl border border-white/10 bg-white/5 p-3">
 										<p class="mb-1 text-[9px] uppercase tracking-widest text-gray-500">Capacity</p>
@@ -517,8 +520,8 @@ export default {
 				this.studentClass = studentData?.classe?.nom || 'Class Not Assigned Yet'
 				this.studentClassId = studentData?.classe?.id || this.studentClassId
 				this.studentAnnee = studentData?.classe?.annee || this.studentAnnee
-				this.studentClasseDelegate = studentData?.classe?.delegate?.fullname || this.studentClasseDelegate
 				this.studentClassCapacity = studentData?.classe?.capacite || this.studentCapacity
+				this.studentClasseDelegate = studentData?.classe?.delegate || this.studentClasseDelegate
 				this.studentClassLogo = studentData?.classe?.link_logo || this.studentClassLogo
 				this.studentFormateur = studentData?.classe?.formateurs?.[0]?.fullname || studentData?.formateur?.fullname || this.studentFormateur
 				this.studentCampus = studentData?.user?.campus || this.studentCampus
@@ -529,6 +532,8 @@ export default {
 				this.Livrables = studentData?.livrables || this.Livrables
 				this.studentAbsences = studentData?.absences || this.studentAbsences
 
+				console.log('student data', studentData);
+				console.log('delegate', this.studentClasseDelegate);
 				console.log('formateur:', this.studentFormateur);
 				console.log('absences:', this.studentAbsences);
 				this.ActiviteStatus(this.studentActivite);

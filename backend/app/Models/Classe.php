@@ -19,4 +19,8 @@ class Classe extends Model
     {
         return $this->belongsToMany(User::class, 'formateur_classe', 'classe_id', 'formateur_id');
     }
+    public function delegate()
+    {
+        return $this->belongsToMany(User::class, 'delegues', 'classe_id', 'student_id');
+    }
 }

@@ -553,19 +553,10 @@
                   <h1 class="text-white text-lg md:text-xl font-black uppercase tracking-wide">Absences</h1>
                   <p class="text-[11px] text-gray-500 mt-1">Suivi des absences et validation des justifications</p>
                 </div>
-
-                <div class="flex items-center gap-2">
-                  <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase border border-amber-400/25 bg-amber-400/10 text-amber-300">
-                    3 Pending
-                  </span>
-                  <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase border border-emerald-400/25 bg-emerald-400/10 text-emerald-300">
-                    8 Justified
-                  </span>
-                </div>
                 <button @click="toggle('AbsenceModal')" class="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold text-gray-300 transition-colors hover:border-[#00babc]/40 hover:bg-[#00babc]/10 hover:text-[#00babc]">Detect Absence</button>
               </div>
 
-              <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+              <div v-if="studentAbsences" class="grid grid-cols-1 xl:grid-cols-3 gap-4">
                 <article v-for="Absences in studentAbsences" :key="Absences.id" class="rounded-2xl border border-white/10 bg-[#0f0f12] p-4 sm:p-5 hover:border-[#00babc]/40 transition-colors">
                   <div class="flex items-start justify-between gap-3 mb-4">
                     <div>
@@ -586,6 +577,15 @@
                     <p class="text-[10px] text-gray-500 uppercase tracking-widest">Waiting for justification</p>
                   </div>
                 </article>
+              </div>
+              <div v-else class="mt-10 pt-6 border-t border-white/5 flex items-center justify-between">
+                <p class="text-[10px] text-gray-600 font-mono italic tracking-widest">
+                  System_Ready_Waiting_For_Data
+                </p>
+                <div class="flex gap-1">
+                  <span class="w-1 h-1 bg-[#00babc] rounded-full animate-ping"></span>
+                  <span class="w-1 h-1 bg-[#00babc] rounded-full opacity-50"></span>
+                </div>  
               </div>
             </section>
           </main>
