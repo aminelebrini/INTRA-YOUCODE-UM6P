@@ -34,6 +34,23 @@ class User extends Authenticatable
         'updated_at',
     ];
 
+        public function students()
+        {
+            return $this->hasOne(Student::class, 'user_id', 'id');
+        }
+        public function classes()
+        {
+            return $this->belongsToMany(Classe::class, 'formateur_classe', 'formateur_id', 'classe_id');
+        }
+        public function absences()
+        {
+            return $this->hasMany(Absence::class, 'user_id', 'id');
+        }
+        public function justifications()
+        {
+            return $this->hasMany(Justification::class, 'user_id', 'id');
+        }
+
     
     /**
      * The attributes that should be hidden for serialization.

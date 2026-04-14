@@ -38,6 +38,11 @@
           <span class="text-[#00babc] opacity-0 group-hover:opacity-100 transition-opacity mr-2">></span>
           ABSENCES
         </router-link>
+
+        <router-link to="/admindashboard" :class="activTab==='annance'" @click="activTab = 'annance'" class="nav-link group flex items-center px-4 py-3 text-[10px] sm:text-[11px] font-bold text-gray-500 hover:text-white hover:bg-[#1d1d21] rounded-sm transition-all uppercase tracking-widest">
+          <span class="text-[#00babc] opacity-0 group-hover:opacity-100 transition-opacity mr-2">></span>
+          ANNANCE
+        </router-link>
       </nav>
 
       <div class="p-6 md:p-10 bg-[#0c0c0e] border-t border-white/5">
@@ -148,6 +153,11 @@
                      {{ u?.role || 'User' }}
                     </span>
                   </td>
+                  <td class="py-5 text-right">
+                    <button @click="oppenToggle('EditPersonnelModal', u)" class="text-[10px] font-bold px-2 py-1 rounded bg-white/5 border border-white/10 text-gray-300 uppercase tracking-tighter hover:bg-[#00babc] hover:text-[#121215] transition-colors">
+                      Edit
+                    </button>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -164,14 +174,48 @@
           </div>
         </section>
 
-        <section v-if="activTab=== 'dashboard'" class="bg-[#121215] border border-white/5 p-4 sm:p-6 md:p-8 rounded-lg mt-6 flex items-center justify-center">
+        <section v-if="activTab=== 'dashboard'" class="bg-[#121215] border border-white/5 p-4 sm:p-6 md:p-8 rounded-lg mt-6 flex flex-col items-start justify-center">
           <div class="text-center">
             <h2 class="text-[#00babc] text-2xl font-black uppercase italic tracking-widest mb-4">
               Welcome to Admin Dashboard
             </h2>
-            <p class="text-gray-500 font-mono text-[15px] tracking-[0.5em] uppercase animate-pulse">
-              // MANAGE_YOUR_INTRA
-            </p>
+          </div>
+          <div class="flex items-center justify-center gap-6 mt-6 w-full">
+            <div class="bg-[#1a1a1e] border border-white/10 rounded-lg p-6 w-full max-w-xs text-center">
+              <div class="flex items-center justify-center gap-2 mb-3 text-[#00babc]">
+                <i class="fas fa-users text-xl"></i>
+                <p class="text-[11px] text-gray-400 font-mono uppercase tracking-wider">Total Users</p>
+              </div>
+              <p class="text-4xl font-black text-white leading-none">{{ totalUsers }}</p>
+            </div>
+            <div class="bg-[#1a1a1e] border border-white/10 rounded-lg p-6 w-full max-w-xs text-center">
+              <div class="flex items-center justify-center gap-2 mb-3 text-[#00babc]">
+                <i class="fas fa-chalkboard-teacher text-xl"></i>
+                <p class="text-[11px] text-gray-400 font-mono uppercase tracking-wider">Total Classes</p>
+              </div>
+              <p class="text-4xl font-black text-white leading-none">{{ totalClasses }}</p>
+            </div>
+            <div class="bg-[#1a1a1e] border border-white/10 rounded-lg p-6 w-full max-w-xs text-center">
+              <div class="flex items-center justify-center gap-2 mb-3 text-[#00babc]">
+                <i class="fas fa-user-tie text-xl"></i>
+                <p class="text-[11px] text-gray-400 font-mono uppercase tracking-wider">Total Formateurs</p>
+              </div>
+              <p class="text-4xl font-black text-white leading-none">{{ totalFormateurs }}</p>
+            </div>
+            <div class="bg-[#1a1a1e] border border-white/10 rounded-lg p-6 w-full max-w-xs text-center">
+              <div class="flex items-center justify-center gap-2 mb-3 text-[#00babc]">
+                <i class="fas fa-user-slash text-xl"></i>
+                <p class="text-[11px] text-gray-400 font-mono uppercase tracking-wider">Total Absences</p>
+              </div>
+              <p class="text-4xl font-black text-white leading-none">{{ totalAbsences }}</p>
+            </div>
+              <div class="bg-[#1a1a1e] border border-white/10 rounded-lg p-6 w-full max-w-xs text-center">
+                <div class="flex items-center justify-center gap-2 mb-3 text-[#00babc]">
+                  <i class="fas fa-user-slash text-xl"></i>
+                  <p class="text-[11px] text-gray-400 font-mono uppercase tracking-wider">Abandoned Students</p>
+                </div>
+                <p class="text-4xl font-black text-white leading-none">{{ totalAbandonedStudents }}</p>
+              </div>
           </div>
 
         </section>
@@ -315,6 +359,48 @@
             </div>
           </div>
         </section>
+
+        <section v-if="activTab === 'annance'" class="bg-[#121215] border border-white/5 p-4 sm:p-6 md:p-8 rounded-lg mt-6">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-8">
+            <h3 class="text-xs font-black uppercase tracking-[0.3em] text-[#00babc] opacity-70">Annance Management</h3>
+            <span class="text-[10px] text-gray-500 uppercase tracking-widest">Admin Only | {{ announcements.length }} total</span>
+          </div>
+
+          <div class="mb-8">
+            <h4 class="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-4">Existing Annances</h4>
+            <div v-if="announcements && announcements.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div v-for="annance in announcements" :key="annance.id" class="rounded-xl border border-white/10 hover:border-[#00babc]/40 bg-[#0f0f12] p-5 hover:shadow-lg hover:shadow-[#00babc]/10 transition-all">
+                <div class="flex items-start justify-between gap-3 mb-3">
+                  <div class="flex-1">
+                    <p class="text-[9px] uppercase tracking-widest font-bold text-[#00babc] mb-1">{{ annance.categorie || 'information' }}</p>
+                    <h5 class="text-sm font-bold text-white line-clamp-2">{{ annance.titre }}</h5>
+                  </div>
+                  <span class="rounded-full px-2.5 py-1 text-[8px] font-bold uppercase tracking-wider whitespace-nowrap flex-shrink-0" :class="annance.status === 'active' ? 'bg-green-500/20 text-green-300 border border-green-500/30' : 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'">{{ annance.status || 'pending' }}</span>
+                </div>
+                <p class="text-[12px] text-gray-300 leading-relaxed mb-4 line-clamp-3">{{ annance.description }}</p>
+                <div class="space-y-2 border-t border-white/5 pt-3">
+                  <div class="flex items-center justify-between text-[10px]">
+                    <span class="text-gray-500">Target:</span>
+                    <span class="text-[#00babc] font-bold uppercase">{{ annance.cible || 'tout' }}</span>
+                  </div>
+                  <div class="flex items-center justify-between text-[10px]">
+                    <span class="text-gray-500">Posted:</span>
+                    <span class="text-gray-400">{{ formatDate(annance.created_at) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-else class="rounded-2xl border border-dashed border-white/10 bg-white/5 p-6 text-center">
+              <p class="text-[11px] text-gray-400">📢 No annance found yet.</p>
+            </div>
+          </div>
+
+          <div class="pt-6 border-t border-white/5 flex justify-end">
+            <button @click="oppenToggle('createAnnanceModal')" class="w-full sm:w-auto bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] text-[11px] font-bold uppercase tracking-widest py-3 px-6 rounded-lg transition-all duration-300">
+              + Create New Annance
+            </button>
+          </div>
+        </section>
       </main>
     </div>
   </div>
@@ -344,6 +430,36 @@
         <input type="text" id="role" v-model="role" placeholder="Formateur" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]">
         <button type="submit" class="w-full bg-[#00babc] text-[#121215] font-bold py-3 rounded mt-2 hover:bg-[#00d1d3] transition-all uppercase tracking-widest text-xs">
           Create Account
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4" id="EditPersonnelModal">
+    <div class="bg-[#121215] border border-white/10 p-8 rounded-lg w-[100%] max-w-md shadow-2xl overflow-y-auto max-h-[90vh]">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-[#00babc] font-black uppercase tracking-widest text-sm">Edit Personnel</h1>
+        <button @click="oppenToggle('EditPersonnelModal')" class="text-[#00babc] hover:text-red-500 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+      <form v-if="personnel" class="flex flex-col justify-center items-start gap-4 w-[100%]" @submit.prevent="submitEditPersonnel">
+        <label for="edit_fullname" class="text-[#00babc] text-[11px] uppercase tracking-widest">FULL NAME</label>
+        <input type="text" id="edit_fullname" v-model="personnel.fullname" placeholder="FULL NAME" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]" required>
+        <label for="edit_email" class="text-[#00babc] text-[11px] uppercase tracking-widest">EMAIL ADDRESS</label>
+        <input type="email" id="edit_email" v-model="personnel.email" placeholder="EMAIL ADDRESS" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]" required>
+        <label for="edit_role" class="text-[#00babc] text-[11px] uppercase tracking-widest">ROLE</label>
+        <input type="text" id="edit_role" v-model="personnel.role" placeholder="formateur" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]" required>
+        <label for="edit_campus" class="text-[#00babc] text-[11px] uppercase tracking-widest">CAMPUS</label>
+        <input type="text" id="edit_campus" v-model="personnel.campus" placeholder="CAMPUS" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]" required>
+        <label for="edit_ville" class="text-[#00babc] text-[11px] uppercase tracking-widest">VILLE</label>
+        <input type="text" id="edit_ville" v-model="personnel.ville" placeholder="VILLE" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]" required>
+        <label for="edit_link_profile" class="text-[#00babc] text-[11px] uppercase tracking-widest">LINK PROFILE</label>
+        <input type="url" id="edit_link_profile" v-model="personnel.link_profile" placeholder="https://..." class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]">
+        <label for="edit_etat" class="text-[#00babc] text-[11px] uppercase tracking-widest">Etat</label>
+        <input type="text" id="edit_etat" v-model="personnel.etat" placeholder="Leave empty to keep current password" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]">
+        <button type="submit" class="w-full bg-[#00babc] text-[#121215] font-bold py-3 rounded mt-2 hover:bg-[#00d1d3] transition-all uppercase tracking-widest text-xs">
+          Save Changes
         </button>
       </form>
     </div>
@@ -397,6 +513,64 @@
         <button type="submit" class="w-full bg-[#00babc] text-[#121215] font-bold py-3 rounded mt-2 hover:bg-[#00d1d3] transition-all uppercase tracking-widest text-xs">
           Assign
         </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4" id="createAnnanceModal">
+    <div class="bg-[#121215] border border-white/10 p-8 rounded-lg w-[100%] max-w-2xl shadow-2xl overflow-y-auto max-h-[90vh]">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-[#00babc] font-black uppercase tracking-widest text-sm">Create New Annance</h2>
+        <button @click="oppenToggle('createAnnanceModal')" class="text-[#00babc] hover:text-red-500 transition-colors">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <form @submit.prevent="submitAnnouncement" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="md:col-span-2">
+          <label for="modal_annance_titre" class="text-[#00babc] text-[11px] uppercase tracking-widest font-bold">Title</label>
+          <input id="modal_annance_titre" type="text" v-model="announcementTitre" placeholder="Announcement title" class="mt-2 w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required>
+        </div>
+
+        <div class="md:col-span-2">
+          <label for="modal_annance_description" class="text-[#00babc] text-[11px] uppercase tracking-widest font-bold">Description</label>
+          <textarea id="modal_annance_description" v-model="announcementDescription" rows="5" placeholder="Write announcement details" class="mt-2 w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required></textarea>
+        </div>
+
+        <div>
+          <label for="modal_annance_status" class="text-[#00babc] text-[11px] uppercase tracking-widest font-bold">Status</label>
+          <select id="modal_annance_status" v-model="announcementStatus" class="mt-2 w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required>
+            <option value="active">active</option>
+            <option value="pending">pending</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="modal_annance_category" class="text-[#00babc] text-[11px] uppercase tracking-widest font-bold">Category</label>
+          <select id="modal_annance_category" v-model="announcementCategorie" class="mt-2 w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required>
+            <option value="information">information</option>
+            <option value="cme">cme</option>
+            <option value="workshop">workshop</option>
+            <option value="evenement">evenement</option>
+          </select>
+        </div>
+
+        <div class="md:col-span-2">
+          <label for="modal_annance_target" class="text-[#00babc] text-[11px] uppercase tracking-widest font-bold">Target Audience</label>
+          <select id="modal_annance_target" v-model="announcementCible" class="mt-2 w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required>
+            <option value="tout">All Students</option>
+            <option value="A1">A1</option>
+            <option value="A2">A2</option>
+          </select>
+        </div>
+
+        <div class="md:col-span-2 flex justify-end gap-2">
+          <button type="button" @click="oppenToggle('createAnnanceModal')" class="w-full sm:w-auto bg-gray-700 hover:bg-gray-600 text-white text-[11px] font-bold uppercase tracking-widest py-3 px-6 rounded-lg transition-all duration-300">
+            Cancel
+          </button>
+          <button type="submit" class="w-full sm:w-auto bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] text-[11px] font-bold uppercase tracking-widest py-3 px-6 rounded-lg transition-all duration-300">
+            Create Annance
+          </button>
+        </div>
       </form>
     </div>
   </div>
@@ -455,6 +629,23 @@ import api from '@/services/api';
 
 export default {
   name: 'AdminDashboard',
+  computed: {
+    totalUsers() {
+      return Array.isArray(this.users) ? this.users.length : 0;
+    },
+    totalClasses() {
+      return Array.isArray(this.classes) ? this.classes.length : 0;
+    },
+    totalFormateurs() {
+      return Array.isArray(this.users.filter(user => user.role === 'formateur')) ? this.users.filter(user => user.role === 'formateur').length : 0;
+    },
+    totalAbsences() {
+      return Array.isArray(this.absences) ? this.absences.length : 0;
+    },
+    totalAbandonedStudents() {
+      return Array.isArray(this.users.filter(user => user.role === 'student' && user.etat === 'abandoned')) ? this.users.filter(user => user.role === 'student' && user.etat === 'abandoned').length : 0;
+    } 
+  },
   data() {
     return {
       activTab: 'profile',
@@ -481,7 +672,9 @@ export default {
       formator_id: '',
       assignclass_id: '',
       assignclass: '',
-      detectionDate: ''
+      detectionDate: '',
+      personnel: null,
+      announcements: [],
     };
   },
   methods: {
@@ -551,7 +744,6 @@ export default {
         console.error('Error assigning formateur to class:', error?.response?.data || error);
       }
     },
-
     async AbsenceStatus(id, status, typeDocument) {
       try {
         await api.post('/validateabsence', {
@@ -563,6 +755,56 @@ export default {
         await this.Data();
       } catch (error) {
         console.error('Error validating absence:', error?.response?.data || error);
+      }
+    },
+    async submitEditPersonnel()
+    {
+      try{
+        await api.put('/updateusers', {
+          id: this.personnel.id,
+          fullname: this.personnel.fullname,
+          email: this.personnel.email,
+          role: this.personnel.role,
+          campus: this.personnel.campus,
+          ville: this.personnel.ville,
+          link_profile: this.personnel.link_profile,
+          etat: this.personnel.etat
+        });
+
+      }catch(error)
+      {
+        console.error('Error updating personnel:', error?.response?.data || error);
+      }
+      await this.Data();
+      this.oppenToggle('EditPersonnelModal');
+    },
+
+    async submitAnnouncement() {
+      try {
+        await api.post('/createannouncement', {
+          titre: this.announcementTitre,
+          description: this.announcementDescription,
+          status: this.announcementStatus,
+          categorie: this.announcementCategorie,
+          cible: this.announcementCible
+        });
+
+        this.announcementTitre = '';
+        this.announcementDescription = '';
+        this.announcementStatus = 'active';
+        this.announcementCategorie = 'information';
+        this.announcementCible = 'tout';
+      } catch (error) {
+        console.error('Error creating announcement:', error?.response?.data || error);
+      }
+    },
+    async getAnnouncements() {
+      try {
+        const response = await api.get('/getannouncements');
+        this.announcements = response.data.announcements || [];
+        console.log('Fetched Announcements:', this.announcements);
+      } catch (error) {
+        console.error('Error fetching announcements:', error?.response?.data || error);
       }
     },
 
@@ -608,7 +850,9 @@ export default {
       return date.toLocaleDateString();
     },
 
-    oppenToggle(id) {
+    oppenToggle(id, user) {
+     this.personnel = user || null;
+
       const modal = document.getElementById(id);
       if (modal) {
         modal.classList.toggle('hidden');
@@ -628,6 +872,8 @@ export default {
   },
   mounted() {
     this.Data();
+    this.allData();
+    this.getAnnouncements();
     this.syncSidebarWithViewport();
     window.addEventListener('resize', this.syncSidebarWithViewport);
 

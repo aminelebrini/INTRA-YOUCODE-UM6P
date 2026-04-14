@@ -41,5 +41,5 @@ class Student extends Model
     {
         return $this->hasMany(Absence::class, 'user_id', 'user_id');
     }
-    
+   
 }

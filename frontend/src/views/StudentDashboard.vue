@@ -36,6 +36,10 @@
 						<span :class="activTab === 'absences' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'" class="mr-2 text-[#00babc] transition-opacity">&gt;</span>
 						Absences
 					</router-link>
+					<router-link to="/studentdashboard" @click="activTab='annance'" :class="['group flex items-center rounded-sm px-4 py-3 text-[10px] font-bold uppercase tracking-widest transition-all', activTab === 'annance' ? 'bg-[#1d1d21] text-white' : 'text-gray-500 hover:bg-[#1d1d21] hover:text-white']">
+						<span :class="activTab === 'annance' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'" class="mr-2 text-[#00babc] transition-opacity">&gt;</span>
+						Annance
+					</router-link>
 				</nav>
 
 				<div class="border-t border-white/5 bg-[#0c0c0e] p-6">
@@ -189,12 +193,8 @@
 										<p class="truncate text-sm font-semibold text-white">{{ studentDelegate }}</p>
 									</div>
 									<div class="rounded-xl border border-white/10 bg-white/5 p-3">
-										<p class="mb-1 text-[9px] uppercase tracking-widest text-gray-500">Current Module</p>
-										<p class="truncate text-sm font-semibold text-white">{{ studentCurrentModule }}</p>
-									</div>
-									<div class="rounded-xl border border-white/10 bg-white/5 p-3">
 										<p class="mb-1 text-[9px] uppercase tracking-widest text-gray-500">Capacity</p>
-										<p class="truncate text-sm font-semibold text-white">{{ studentCapacity }}</p>
+										<p class="truncate text-sm font-semibold text-white">{{ studentClassCapacity }}</p>
 									</div>
 								</div>
 							</div>
@@ -370,6 +370,36 @@
 							</div>
 						</section>
 
+						<section v-if="activTab==='annance'" id="annance" class="rounded-2xl border border-white/10 bg-[#121215] p-5 md:p-6">
+							<div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+								<div>
+									<h2 class="text-sm font-black uppercase tracking-wider text-white md:text-base">Annance</h2>
+									<p class="mt-1 text-[10px] text-gray-500">Latest announcements for your class</p>
+								</div>
+								<span class="inline-flex items-center rounded-full border border-[#00babc]/30 bg-[#00babc]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[#00babc]">{{ announcements.length }} Items</span>
+							</div>
+
+							<div v-if="announcements.length" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+								<div v-for="annance in announcements" :key="annance.id" class="rounded-2xl border border-white/10 bg-[#0c0f14] p-4">
+									<div class="mb-3 flex items-start justify-between gap-3">
+										<div>
+											<p class="text-[9px] uppercase tracking-widest text-[#00babc]">{{ annance.categorie || 'information' }}</p>
+											<h3 class="mt-1 text-sm font-semibold text-white">{{ annance.titre }}</h3>
+										</div>
+										<span class="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest" :class="annance.status === 'active' ? 'bg-green-500/20 text-green-300 border border-green-500/30' : 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'">
+											{{ annance.status || 'pending' }}
+										</span>
+									</div>
+									<p class="text-[12px] leading-relaxed text-gray-300">{{ annance.description }}</p>
+									<p class="mt-3 text-[10px] uppercase tracking-widest text-gray-500">Target: {{ annance.cible || 'tout' }}</p>
+								</div>
+							</div>
+
+							<div v-else class="rounded-2xl border border-dashed border-white/10 bg-white/5 p-6 text-center">
+								<p class="text-[11px] text-gray-400">No announcement available for your class.</p>
+							</div>
+						</section>
+
 						<div id="JustificateModal" class="hidden fixed inset-0 z-50 items-center justify-center bg-black/85 px-4 py-6 backdrop-blur-md">
 							<div class="relative w-full max-w-3xl overflow-hidden rounded-3xl border border-white/10 bg-[#11131a] shadow-[0_30px_100px_rgba(0,0,0,0.7)]">
 								<div class="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(0,186,188,0.8),transparent)]"></div>
@@ -429,6 +459,8 @@ export default {
 		studentFormateur: 'Formateur Name',
 		studentClasseDelegate: 'Delegate Name',
 		studentCampus: 'Campus',
+		studentClassCapacity: 30,
+		studentAnnee: 'A1',
 		studentAvatar: '',
 		studentStatus: 'active',
 		studentPoints: 0,
@@ -437,6 +469,7 @@ export default {
 	    upcomingTasks: 4,
 	    averageScore: 14.8,
 	    studentActivite: [],
+		announcements: [],
 		todoActivite: [],
 		doingActivite: [],
 		doneActivite: [],
@@ -483,6 +516,9 @@ export default {
 				this.studentUsername = studentData?.user?.username || this.studentUsername
 				this.studentClass = studentData?.classe?.nom || 'Class Not Assigned Yet'
 				this.studentClassId = studentData?.classe?.id || this.studentClassId
+				this.studentAnnee = studentData?.classe?.annee || this.studentAnnee
+				this.studentClasseDelegate = studentData?.classe?.delegate?.fullname || this.studentClasseDelegate
+				this.studentClassCapacity = studentData?.classe?.capacite || this.studentCapacity
 				this.studentClassLogo = studentData?.classe?.link_logo || this.studentClassLogo
 				this.studentFormateur = studentData?.classe?.formateurs?.[0]?.fullname || studentData?.formateur?.fullname || this.studentFormateur
 				this.studentCampus = studentData?.user?.campus || this.studentCampus
@@ -588,12 +624,22 @@ export default {
 			} catch (error) {
 				console.error('Failed to fetch leaderboard data', error)
 			}
+		},
+		async getAnnouncements() {
+			try {
+				const response = await api.get('/getannouncements')
+				this.announcements = response.data?.announcements.filter(announcement => announcement.cible === this.studentAnnee || announcement.cible === 'tout') || []
+				console.log('Fetched announcements:', this.announcements)
+			} catch (error) {
+				console.error('Failed to fetch announcements', error)
+			}
 		}
 		
 	},
 	mounted() {
 		this.getStudentData()
 		this.getLeaderboard()
+		this.getAnnouncements()
 		const data = localStorage.getItem('user');
 		if (!data) return
 		console.log('Student Initial:', this.today);
