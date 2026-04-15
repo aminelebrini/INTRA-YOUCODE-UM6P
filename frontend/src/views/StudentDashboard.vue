@@ -105,6 +105,10 @@
 									<div class="flex flex-wrap items-center gap-2 md:justify-end">
 										<span class="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[15px] font-bold uppercase tracking-widest text-gray-200">{{ studentClass }}</span>
 										<span class="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[15px] font-bold uppercase tracking-widest text-gray-200"><i class="fas fa-school"></i> {{ studentCampus }}</span>
+										<button type="button" @click="openProfileEditModal" class="rounded-full border border-[#00babc]/30 bg-[#00babc]/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-[#00babc] transition-colors hover:bg-[#00babc]/20">
+											<i class="fas fa-edit mr-1"></i>
+											Edit Profile
+										</button>
 									</div>
 								</div>
 
@@ -121,44 +125,8 @@
 										<p class="text-[9px] uppercase tracking-widest text-gray-500">Completed tasks</p>
 										<p class="mt-2 text-sm font-bold text-white md:text-base">{{ countCompletedTasks || 0 }}</p>
 									</div>
-									<div class="rounded-xl border border-white/10 bg-black/30 p-3 md:p-4">
-										<p class="text-[9px] uppercase tracking-widest text-gray-500">Score</p>
-										<p class="mt-2 text-sm font-bold text-[#00babc] md:text-base">14.8</p>
-									</div>
 								</div>
-
-								<div class="rounded-2xl border border-white/10 bg-black/25 p-4 md:p-5">
-									<div class="mb-4 flex items-center justify-between gap-3">
-										<div>
-											<p class="text-[9px] uppercase tracking-widest text-gray-500">Profile Links</p>
-											<h2 class="mt-1 text-sm font-black uppercase tracking-wider text-white md:text-base">Social Media & Portfolio</h2>
-										</div>
-										<button class="rounded-[5px] w-10 h-8 flex items-center justify-center border border-white/10 bg-white/5 text-[10px] font-bold uppercase tracking-widest text-gray-200 hover:bg-white/10">
-											<i class="fas fa-plus"></i>
-										</button>
-									</div>
-
-									<div v-if="profileLinks.length" class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-										<a
-											v-for="link in profileLinks"
-											:key="link.label"
-											:href="link.url"
-											target="_blank"
-											rel="noreferrer"
-											class="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-left transition-colors hover:border-[#00babc]/40 hover:bg-white/10"
-										>
-											<div class="min-w-0">
-												<p class="text-[9px] uppercase tracking-widest text-gray-500">{{ link.label }}</p>
-												<p class="truncate text-sm font-semibold text-white">{{ link.value }}</p>
-											</div>
-											<span class="text-[#00babc]">&gt;</span>
-										</a>
-									</div>
-
-									<div v-else class="rounded-xl border border-dashed border-white/10 bg-white/5 p-4 text-center">
-										<p class="text-[11px] italic tracking-wide text-gray-400">No social links or portfolio URL available yet.</p>
-									</div>
-								</div>
+								<LienView :profileLinks="profileLinks" :liens="studentLinks" :user_id="studentId" />
 							</div>
 						</header>
 						<section v-if="activTab==='classroom'" id="classroom" class="rounded-2xl border border-white/10 bg-[#121215] p-5 md:p-6">
@@ -202,6 +170,32 @@
 								</div>
 							</div>
 						</section>
+
+						<div class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4" id="EditProfileModal">
+							<div class="bg-[#121215] border border-white/10 p-8 rounded-lg w-[100%] max-w-md shadow-2xl overflow-y-auto max-h-[90vh]">
+								<div class="flex justify-between items-center mb-6">
+									<h1 class="text-[#00babc] font-black uppercase tracking-widest text-sm">Edit My Profile</h1>
+									<button @click="toggle('EditProfileModal')" class="text-[#00babc] hover:text-red-500 transition-colors">
+										<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+									</button>
+								</div>
+								<form class="flex flex-col justify-center items-start gap-4 w-[100%]" @submit.prevent="submitEditProfile">
+									<label for="admin_fullname" class="text-[#00babc] text-[11px] uppercase tracking-widest">FULL NAME</label>
+									<input type="text" id="admin_fullname" v-model="editProfileForm.fullname" placeholder="FULL NAME" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]" required>
+									<label for="admin_email" class="text-[#00babc] text-[11px] uppercase tracking-widest">EMAIL ADDRESS</label>
+									<input type="email" id="admin_email" v-model="editProfileForm.email" placeholder="EMAIL ADDRESS" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]" required>
+									<label for="admin_campus" class="text-[#00babc] text-[11px] uppercase tracking-widest">CAMPUS</label>
+									<input type="text" id="admin_campus" v-model="editProfileForm.campus" placeholder="CAMPUS" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]">
+									<label for="admin_ville" class="text-[#00babc] text-[11px] uppercase tracking-widest">VILLE</label>
+									<input type="text" id="admin_ville" v-model="editProfileForm.ville" placeholder="VILLE" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]">
+									<label for="admin_link_profile" class="text-[#00babc] text-[11px] uppercase tracking-widest">LINK PROFILE</label>
+									<input type="url" id="admin_link_profile" v-model="editProfileForm.link_profile" placeholder="https://..." class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]">
+									<button type="submit" class="w-full bg-[#00babc] text-[#121215] font-bold py-3 rounded mt-2 hover:bg-[#00d1d3] transition-all uppercase tracking-widest text-xs">
+										Save Changes
+									</button>
+								</form>
+							</div>
+						</div>
 
 						<section v-if="activTab==='activities'" id="activities" class="rounded-2xl border border-white/10 bg-[#11131a] p-5 md:p-6 shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
 							<div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -439,6 +433,7 @@
 								</form>
 							</div>
 						</div>
+
 					</main>
 				</div>
 			</div>
@@ -447,10 +442,15 @@
 </template>
 <script>
 import api from '@/services/api';
+import LienView from '@/components/LienView.vue';
 
 export default {
+	components: {
+		LienView
+	},
 	data() {
-	return {
+		
+	 return {
 		activTab: 'profile',
 		userData: null,
 		studentId: null,
@@ -478,6 +478,7 @@ export default {
 		doneActivite: [],
 		countActivite: 0,
 		Livrables: [],
+		studentLinks: [],
 		activite_id: '',
 		studentAbsences: [],
 		studentClassId: null,
@@ -488,6 +489,13 @@ export default {
 		commentaire: '',
 		countCompletedTasks: 0,
 		leaderboard: [],
+		editProfileForm: {
+			fullname: '',
+			email: '',
+			campus: '',
+			ville: '',
+			link_profile: '',
+		},
 		today: new Date().toISOString().split('T')[0],
 	   }
 	},
@@ -496,18 +504,55 @@ export default {
 			const name = this.studentName || ''
 			return name.trim().charAt(0).toUpperCase() || 'S'
 		},
-		profileLinks() {
-			const user = this.userData || {}
-			return [
-				{ label: 'Portfolio', value: user.portfolio_url || user.portfolio || user.website || '', url: user.portfolio_url || user.portfolio || user.website || '' },
-				{ label: 'GitHub', value: user.github_url || user.github || '', url: user.github_url || user.github || '' },
-				{ label: 'LinkedIn', value: user.linkedin_url || user.linkedin || '', url: user.linkedin_url || user.linkedin || '' },
-				{ label: 'Instagram', value: user.instagram_url || user.instagram || '', url: user.instagram_url || user.instagram || '' },
-				{ label: 'Twitter / X', value: user.twitter_url || user.twitter || '', url: user.twitter_url || user.twitter || '' },
-			].filter((link) => link.value)
-		}
 	},
 	methods:{
+		normalizeRole(role) {
+			const value = String(role || '').toLowerCase().trim()
+			if (value === 'student') return 'etudiant'
+			if (value === 'teacher') return 'formateur'
+			return value || 'etudiant'
+		},
+		openProfileEditModal() {
+			this.editProfileForm = {
+				fullname: this.studentName || this.userData?.fullname || '',
+				email: this.studentEmail || this.userData?.email || '',
+				campus: this.studentCampus || this.userData?.campus || '',
+				ville: this.userData?.ville || '',
+				link_profile: this.studentAvatar || this.userData?.link_profile || '',
+			}
+			this.toggle('EditProfileModal')
+		},
+		async submitEditProfile() {
+			try {
+				await api.put('/updateusers', {
+					id: this.studentId,
+					fullname: this.editProfileForm.fullname,
+					email: this.editProfileForm.email,
+					role: this.normalizeRole(this.userData?.role),
+					campus: this.editProfileForm.campus || null,
+					ville: this.editProfileForm.ville || null,
+					link_profile: this.editProfileForm.link_profile || null,
+					etat: this.userData?.etat || this.studentStatus || 'active',
+				})
+
+				const storedUser = JSON.parse(localStorage.getItem('user') || '{}')
+				const updatedUser = {
+					...storedUser,
+					fullname: this.editProfileForm.fullname,
+					email: this.editProfileForm.email,
+					campus: this.editProfileForm.campus || null,
+					ville: this.editProfileForm.ville || null,
+					link_profile: this.editProfileForm.link_profile || null,
+				}
+				localStorage.setItem('user', JSON.stringify(updatedUser))
+				this.userData = updatedUser
+
+				await this.getStudentData()
+				this.toggle('EditProfileModal')
+			} catch (error) {
+				console.error('Failed to update student profile', error?.response?.data || error)
+			}
+		},
 		async getStudentData() {
 			try {
 				const response = await api.get('/studentdata')
@@ -534,6 +579,7 @@ export default {
 				this.studentActivite = studentData?.activites || this.studentActivite
 				this.countActivite = this.count(this.studentActivite) || this.countActivite
 				this.Livrables = studentData?.livrables || this.Livrables
+				this.studentLinks = studentData?.liens || this.studentLinks
 				this.studentAbsences = studentData?.absences || this.studentAbsences
 
 				console.log('student data', studentData);

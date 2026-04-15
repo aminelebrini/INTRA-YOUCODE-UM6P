@@ -24,6 +24,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function (){
     Route::post('/createuser', [CreateStudentController::class, 'create']);
     Route::put('/updateusers', [UpdateUserController::class, 'update']);
+    Route::post('/send-lien', [UpdateUserController::class, 'SendLien']);
     Route::post('/sendlivrable', [SendLivrableController::class, 'sendLivrable']);
     Route::post('/createclasse', [CreateClasseController::class, 'create']);
     Route::post('/assignformateurclasse', [AssignFormateurClasseController::class, 'assign']);

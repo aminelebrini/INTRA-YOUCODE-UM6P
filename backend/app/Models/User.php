@@ -54,6 +54,10 @@ class User extends Authenticatable
         {
             return $this->hasMany(Justification::class, 'user_id', 'id');
         }
+        public function liens()
+        {
+            return $this->hasMany(Lien::class, 'user_id', 'id');
+        }
 
     
     /**

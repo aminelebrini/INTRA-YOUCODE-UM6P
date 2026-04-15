@@ -113,9 +113,14 @@
                   </div>
                 </div>
               </div>
+              
             </header>
-
-            <section v-if="activTab === 'profile'" class="flex flex-col gap-6">
+            <LienView
+                :profileLinks="formateurProfileLinks"
+                :liens="formateurLiens"
+                :user_id="user?.id || null"
+              />
+            <section v-if="activTab === 'profile'" class="flex flex-col gap-6 mt-6">
               <div class="bg-[#121215] border border-white/10 rounded-xl p-6">
                 <div class="flex items-center justify-between mb-6">
                   <h3 class="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Personal Information</h3>
@@ -162,7 +167,6 @@
                 </div>
               </div>
             </section>
-
             <div v-if="activTab === 'dashboard'" class="flex flex-col items-start justify-center w-full">
             <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 p-2 sm:p-4 w-full">
               <div class="bg-white/5 border border-white/10 p-5 rounded-2xl backdrop-blur-sm hover:bg-white/10 transition-all cursor-default">
@@ -278,8 +282,8 @@
                   >
                     <div class="flex items-start gap-3 mb-4">
                       <img
-                        v-if="student?.user?.link_profile"
-                        :src="student.user.link_profile"
+                        v-if="student.user?.link_profile"
+                        :src="student.user?.link_profile"
                         alt="Student Image"
                         class="w-12 h-12 rounded-full object-cover border border-white/10"
                       >
@@ -287,12 +291,12 @@
                         v-else
                         class="w-12 h-12 rounded-full bg-[#00babc]/20 border border-[#00babc]/30 flex items-center justify-center text-[#00babc] font-black"
                       >
-                        {{ student.user.fullname.charAt(0) || 'S' }}
+                        {{ student.user?.fullname.charAt(0) || 'S' }}
                       </div>
 
                       <div class="min-w-0 flex-1">
-                        <h3 class="text-white font-bold text-sm truncate">{{ student.user.fullname || 'Unknown Student' }}</h3>
-                        <p class="text-[11px] text-gray-500 truncate">{{ student.user.email || 'No email' }}</p>
+                        <h3 class="text-white font-bold text-sm truncate">{{ student.user?.fullname || 'Unknown Student' }}</h3>
+                        <p class="text-[11px] text-gray-500 truncate">{{ student.user?.email || 'No email' }}</p>
                         <div class="mt-2 flex flex-wrap gap-2">
                           <span class="text-[9px] px-2 py-1 rounded bg-[#00babc]/15 text-[#00babc] border border-[#00babc]/25 uppercase tracking-widest font-bold">
                             {{ student.classe.nom || formateurData?.classe_name || 'N/A' }}
@@ -312,12 +316,12 @@
 
                       <div class="rounded-lg border border-white/5 bg-[#0c0c0e] p-3">
                         <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Status</p>
-                        <p class="text-sm font-semibold text-white">{{ student.status || 'N/A' }}</p>
+                        <p class="text-sm font-semibold text-white">{{ student.user?.status || 'N/A' }}</p>
                       </div>
 
                       <div class="rounded-lg border border-white/5 bg-[#0c0c0e] p-3">
                         <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Status</p>
-                        <p class="text-sm font-semibold text-white">{{ student.ville || 'N/A' }}</p>
+                        <p class="text-sm font-semibold text-white">{{ student.user?.ville || 'N/A' }}</p>
                       </div>
 
                       <div class="rounded-lg border border-white/5 bg-[#0c0c0e] p-3">
@@ -818,8 +822,27 @@
 
 <script>
 import api from '@/services/api';
+import LienView from '@/components/LienView.vue';
 
 export default {
+  components: {
+    LienView,
+  },
+  computed: {
+    formateurProfileLinks() {
+      const user = this.user || {};
+      return [
+        { label: 'Portfolio', value: user.portfolio_url || user.portfolio || user.website || '', url: user.portfolio_url || user.portfolio || user.website || '' },
+        { label: 'GitHub', value: user.github_url || user.github || '', url: user.github_url || user.github || '' },
+        { label: 'LinkedIn', value: user.linkedin_url || user.linkedin || '', url: user.linkedin_url || user.linkedin || '' },
+        { label: 'Instagram', value: user.instagram_url || user.instagram || '', url: user.instagram_url || user.instagram || '' },
+        { label: 'Twitter / X', value: user.twitter_url || user.twitter || '', url: user.twitter_url || user.twitter || '' },
+      ].filter((link) => link.value);
+    },
+    formateurLiens() {
+      return Array.isArray(this.user?.liens) ? this.user.liens : [];
+    }
+  },
   data() {
     const today = new Date().toISOString().split('T')[0];
 

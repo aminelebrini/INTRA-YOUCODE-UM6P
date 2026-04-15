@@ -111,9 +111,25 @@
                     Role: {{ user?.role || 'ADMIN' }}
                   </span>
               </div>
+              <button
+                type="button"
+                @click="openAdminProfileModal"
+                class="mt-3 w-full md:w-auto rounded-lg border border-[#00babc]/30 bg-[#00babc]/10 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#00babc] transition-colors hover:bg-[#00babc]/20"
+              >
+                <i class="fas fa-edit mr-1"></i>
+                Edit Profile
+              </button>
             </div>
           </div>
         </header>
+
+        <section v-if="activTab === 'profile'" class="mb-6">
+          <LienView
+            :profileLinks="adminProfileLinks"
+            :liens="adminLiens"
+            :user_id="user?.id || null"
+          />
+        </section>
 
         <section v-if="activTab === 'personnel'" class="bg-[#121215] border border-white/5 p-4 sm:p-6 md:p-8 rounded-xl shadow-2xl">
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-8 md:mb-10">
@@ -464,6 +480,32 @@
     </div>
   </div>
 
+  <div class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4" id="EditAdminProfileModal">
+    <div class="bg-[#121215] border border-white/10 p-8 rounded-lg w-[100%] max-w-md shadow-2xl overflow-y-auto max-h-[90vh]">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-[#00babc] font-black uppercase tracking-widest text-sm">Edit My Profile</h1>
+        <button @click="oppenToggle('EditAdminProfileModal')" class="text-[#00babc] hover:text-red-500 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+      <form class="flex flex-col justify-center items-start gap-4 w-[100%]" @submit.prevent="submitEditAdminProfile">
+        <label for="admin_fullname" class="text-[#00babc] text-[11px] uppercase tracking-widest">FULL NAME</label>
+        <input type="text" id="admin_fullname" v-model="adminProfileForm.fullname" placeholder="FULL NAME" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]" required>
+        <label for="admin_email" class="text-[#00babc] text-[11px] uppercase tracking-widest">EMAIL ADDRESS</label>
+        <input type="email" id="admin_email" v-model="adminProfileForm.email" placeholder="EMAIL ADDRESS" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]" required>
+        <label for="admin_campus" class="text-[#00babc] text-[11px] uppercase tracking-widest">CAMPUS</label>
+        <input type="text" id="admin_campus" v-model="adminProfileForm.campus" placeholder="CAMPUS" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]">
+        <label for="admin_ville" class="text-[#00babc] text-[11px] uppercase tracking-widest">VILLE</label>
+        <input type="text" id="admin_ville" v-model="adminProfileForm.ville" placeholder="VILLE" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]">
+        <label for="admin_link_profile" class="text-[#00babc] text-[11px] uppercase tracking-widest">LINK PROFILE</label>
+        <input type="url" id="admin_link_profile" v-model="adminProfileForm.link_profile" placeholder="https://..." class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]">
+        <button type="submit" class="w-full bg-[#00babc] text-[#121215] font-bold py-3 rounded mt-2 hover:bg-[#00d1d3] transition-all uppercase tracking-widest text-xs">
+          Save Changes
+        </button>
+      </form>
+    </div>
+  </div>
+
   <div class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4" id="createClassModal">
     <div class="bg-[#121215] border border-white/10 p-8 rounded-lg w-[100%] max-w-md shadow-2xl overflow-y-auto max-h-[90vh]">
       <div class="flex justify-between items-center mb-6">
@@ -625,9 +667,13 @@
 
 <script>
 import api from '@/services/api';
+import LienView from '@/components/LienView.vue';
 
 export default {
   name: 'AdminDashboard',
+  components: {
+    LienView,
+  },
   computed: {
     totalUsers() {
       return Array.isArray(this.users) ? this.users.length : 0;
@@ -643,7 +689,20 @@ export default {
     },
     totalAbandonedStudents() {
       return Array.isArray(this.users.filter(user => user.role === 'student' && user.etat === 'abandoned')) ? this.users.filter(user => user.role === 'student' && user.etat === 'abandoned').length : 0;
-    } 
+    },
+    adminProfileLinks() {
+      const user = this.user || {};
+      return [
+        { label: 'Portfolio', value: user.portfolio_url || user.portfolio || user.website || '', url: user.portfolio_url || user.portfolio || user.website || '' },
+        { label: 'GitHub', value: user.github_url || user.github || '', url: user.github_url || user.github || '' },
+        { label: 'LinkedIn', value: user.linkedin_url || user.linkedin || '', url: user.linkedin_url || user.linkedin || '' },
+        { label: 'Instagram', value: user.instagram_url || user.instagram || '', url: user.instagram_url || user.instagram || '' },
+        { label: 'Twitter / X', value: user.twitter_url || user.twitter || '', url: user.twitter_url || user.twitter || '' },
+      ].filter((link) => link.value);
+    },
+    adminLiens() {
+      return Array.isArray(this.user?.liens) ? this.user.liens : [];
+    }
   },
   data() {
     return {
@@ -673,10 +732,63 @@ export default {
       assignclass: '',
       detectionDate: '',
       personnel: null,
+      adminProfileForm: {
+        fullname: '',
+        email: '',
+        campus: '',
+        ville: '',
+        link_profile: ''
+      },
       announcements: [],
     };
   },
   methods: {
+    normalizeRole(role) {
+      const value = String(role || '').toLowerCase().trim();
+      if (value === 'student') return 'etudiant';
+      if (value === 'teacher') return 'formateur';
+      return value || 'admin';
+    },
+    openAdminProfileModal() {
+      this.adminProfileForm = {
+        fullname: this.user?.fullname || '',
+        email: this.user?.email || '',
+        campus: this.user?.campus || '',
+        ville: this.user?.ville || '',
+        link_profile: this.user?.link_profile || '',
+      };
+      this.oppenToggle('EditAdminProfileModal');
+    },
+    async submitEditAdminProfile() {
+      try {
+        await api.put('/updateusers', {
+          id: this.user?.id,
+          fullname: this.adminProfileForm.fullname,
+          email: this.adminProfileForm.email,
+          role: this.normalizeRole(this.user?.role),
+          campus: this.adminProfileForm.campus || null,
+          ville: this.adminProfileForm.ville || null,
+          link_profile: this.adminProfileForm.link_profile || null,
+          etat: this.user?.etat || 'active'
+        });
+
+        const updatedUser = {
+          ...(this.user || {}),
+          fullname: this.adminProfileForm.fullname,
+          email: this.adminProfileForm.email,
+          campus: this.adminProfileForm.campus || null,
+          ville: this.adminProfileForm.ville || null,
+          link_profile: this.adminProfileForm.link_profile || null,
+        };
+
+        this.user = updatedUser;
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        await this.Data();
+        this.oppenToggle('EditAdminProfileModal');
+      } catch (error) {
+        console.error('Error updating admin profile:', error?.response?.data || error);
+      }
+    },
     async submitRegistration() {
       try {
         await api.post('/createuser', {

@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Repository;
 use App\Models\User;
+use App\Models\Lien;
 
 class UpdateUserRepository
 {
@@ -19,6 +20,15 @@ class UpdateUserRepository
         $user->etat = $etat;
         $user->save();
         return $user;
+    }
+    public function SendLien($UserId, $nom, $url)
+    {
+        $Lien = Lien::create([
+            'user_id' => $UserId,
+            'nom' => $nom,
+            'lien' => $url
+        ]);
+        return $Lien;
     }
 }
 
