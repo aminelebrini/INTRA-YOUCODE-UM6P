@@ -207,11 +207,11 @@
                       {{ formateurData ? 'Assigned' : 'Unassigned' }}
                     </span>
                   </div>
-
-                  <div v-if="formateurData" class="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-5">
+                  <div v-if="formateurData" class="mt-2">
+                  <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-5">
                     <div class="lg:col-span-2">
                       <img
-                        :src="formateurData?.link_logo || formateurData?.class_logo || 'https://www.freecodecamp.org/news/content/images/2022/02/arnold-francisca-f77Bh3inUpE-unsplash.jpg'"
+                        :src="formateurData?.classes?.link_logo || formateurData?.class_logo || 'https://www.freecodecamp.org/news/content/images/2022/02/arnold-francisca-f77Bh3inUpE-unsplash.jpg'"
                         alt="class_logo"
                         class="w-full h-44 sm:h-52 object-cover rounded-xl border border-white/10"
                       >
@@ -220,12 +220,12 @@
                     <div class="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div class="bg-white/5 border border-white/10 rounded-xl p-3">
                         <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-1">Class Name</p>
-                        <p class="text-sm md:text-base font-semibold text-white truncate">{{ formateurData?.classe_name || 'N/A' }}</p>
+                        <p class="text-sm md:text-base font-semibold text-white truncate">{{ formateurData.classes?.nom || 'N/A' }}</p>
                       </div>
 
                       <div class="bg-white/5 border border-white/10 rounded-xl p-3">
                         <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-1">Formator</p>
-                        <p class="text-sm md:text-base font-semibold text-white truncate">{{ formateurData?.formateur_name || 'N/A' }}</p>
+                        <p class="text-sm md:text-base font-semibold text-white truncate">{{ formateurData?.fullname || 'N/A' }}</p>
                       </div>
 
                       <div class="bg-white/5 border border-white/10 rounded-xl p-3">
@@ -248,7 +248,7 @@
                     </div>
                   </div>
                   
-
+                  </div>
                   <div v-else class="mt-2 rounded-xl border border-white/10 bg-white/5 p-4 flex items-center justify-between">
                     <p class="text-[11px] text-gray-400 italic tracking-wide">No class assigned yet for this formateur.</p>
                     <div class="flex gap-1">
@@ -612,7 +612,7 @@
               <option value="brief">Briefs</option>
               <option value="live-coding">Live Coding</option>
               <option value="workshop">Workshop</option>
-              <option value="tech-watch">Tech Watch</option>
+              <option value="veille">Veille</option>
               <option value="debriefing">Debriefing</option>
             </select>
           </div>
@@ -781,17 +781,33 @@
       </div>
     </div>
     <div id="NoteStudentModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-      <div class="w-full max -w-md rounded-xl border border-white/10 bg-[#121215] p-5 md:p-6">
+      <div class="w-full max-w-md rounded-xl border border-white/10 bg-[#121215] p-5 md:p-6">
         <div class="flex items-center justify-between mb-5">
           <h2 class="text-sm md:text-base font-black uppercase tracking-widest text-[#00babc]">Grade Student</h2>
           <button @click="toggle('NoteStudentModal')" class="text-gray-400 hover:text-red-400 text-xl leading-none">x</button>
         </div>
         <form @submit.prevent="submitGradeStudent" class="grid grid-cols-1 gap-4">
+          
           <div>
-            <label class="text-[10px] uppercase tracking-widest text-gray-400">Grade</label>
-            <input v-model="gradeValue" type="number" min="0" max="100" step="1" placeholder="Enter grade (0-100)" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]" required>
+            <label for="maitrisesujet" class="text-[10px] uppercase tracking-widest text-gray-400">Maitrise du Sujet</label>
+            <input v-model="maitrisesujet" id="maitrisesujet" type="number" min="0" max="25" step="1" placeholder="Enter grade (0-25)" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]" required>
           </div>
 
+          <div>
+            <label for="applicationtechnique" class="text-[10px] uppercase tracking-widest text-gray-400">Application Technique</label>
+            <input v-model="applicationtechnique" id="applicationtechnique" type="number" min="0" max="30" step="1" placeholder="Enter grade (0-30)" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]" required>
+          </div>
+
+          <div>
+            <label for="communicationpedagogique" class="text-[10px] uppercase tracking-widest text-gray-400">Communication Pedagogique</label>
+            <input v-model="communicationpedagogique" id="communicationpedagogique" type="number" min="0" max="30" step="1" placeholder="Enter grade (0-30)" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]" required>
+          </div>
+
+          <p class="text-sm text-gray-400">Grade: {{ GradeResult }}</p>
+
+          <button type="button" @click="calculateGrade" class="bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold px-4 py-2 rounded text-xs uppercase tracking-widest">
+            Calcul Grade
+          </button>
           <button type="submit" class="bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold px-4 py-2 rounded text-xs uppercase tracking-widest">
             Submit Grade
           </button>
@@ -800,196 +816,203 @@
     </div>
 </template>
 
-<script setup>
+<script>
 import api from '@/services/api';
-import {onBeforeUnmount, onMounted, ref } from 'vue';
 
-const activTab = ref('profile');
-const user = ref(null);
-const students = ref([]);
-const activites = ref([]);
-const formateurData = ref([]);
-const nom = ref('');
-const description = ref('');
-const type = ref('briefs');
-const ressource = ref('');
-const etat = ref('pending');
-const date_debut = ref('');
-const date_fin = ref('');
-const student_id = ref('');
-const binome_id = ref('');
-const allStudents = ref([]);
-const selectedStudentId = ref('');
-const promotion = ref('');
-const annee = ref(String(new Date().getFullYear()));
-const selectedDelegateStudentId = ref('');
-const activiteStatus = ref('');
-const studentAbsences = ref([]);
-const absence_user_id = ref('');
-const absence_heure_debut = ref('');
-const absence_duree_minute_retard = ref('');
-const absence_duree_heure_retard = ref('');
-const absence_duree_retard = ref('');  
-const absence_status = ref('late');
-const showSidebar = ref(false);
-const today = new Date().toISOString().split('T')[0];
-const absence_jour = ref(today);
-const isDesktop = ref(window.innerWidth >= 768);
-const ActiviteStudentId = ref('');
-const ActiviteStudentId2 = ref('');
+export default {
+  data() {
+    const today = new Date().toISOString().split('T')[0];
 
-
-const convertominutes = (minutes) => {
+    return {
+      activTab: 'profile',
+      user: null,
+      students: [],
+      activites: [],
+      formateurData: null,
+      nom: '',
+      description: '',
+      type: 'brief',
+      ressource: '',
+      etat: 'pending',
+      date_debut: '',
+      date_fin: '',
+      student_id: '',
+      binome_id: '',
+      allStudents: [],
+      selectedStudentId: '',
+      promotion: '',
+      annee: String(new Date().getFullYear()),
+      selectedDelegateStudentId: '',
+      activiteStatus: '',
+      studentAbsences: [],
+      absence_user_id: '',
+      absence_heure_debut: '',
+      absence_duree_minute_retard: '',
+      absence_duree_heure_retard: '',
+      absence_duree_retard: '',
+      absence_status: 'late',
+      showSidebar: false,
+      today,
+      absence_jour: today,
+      isDesktop: false,
+      ActiviteStudentId: '',
+      ActiviteStudentId2: '',
+      maitrisesujet: 0,
+      applicationtechnique: 0,
+      communicationpedagogique: 0,
+      GradeResult: 0,
+    };
+  },
+  methods: {
+    convertominutes(minutes) {
       const hour = Math.floor(minutes / 60);
       const min = minutes % 60;
-      return `${String(hour).padStart(2,'0')}:${String(min).padStart(2,'0')}`;
-    };
-const handleResize = () => {
-  isDesktop.value = window.innerWidth >= 768;
-  if (isDesktop.value) {
-    showSidebar.value = false;
-  }
-};
+      return `${String(hour).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+    },
+    handleResize() {
+      this.isDesktop = window.innerWidth >= 768;
+      if (this.isDesktop) {
+        this.showSidebar = false;
+      }
+    },
+    closeSidebar() {
+      this.showSidebar = false;
+    },
+    calculateGrade() {
+      const avg = (this.maitrisesujet + this.applicationtechnique + this.communicationpedagogique) / 3;
+      const grade = Math.floor(avg) + 10;
+      this.GradeResult = grade;
 
-const closeSidebar = () => {
-  showSidebar.value = false;
-};
+    },
+    async submitCreateActivity() {
+      const classeId = this.formateurData?.classe_id || this.formateurData?.id;
+      const formateurId = this.formateurData?.formateur_id || this.user?.id;
 
+      try {
+        await api.post('/createactivites', {
+          nom: this.nom,
+          description: this.description,
+          type: this.type,
+          formateur_id: formateurId,
+          student_id: this.student_id || null,
+          binome_id: this.binome_id || null,
+          classe_id: classeId,
+          ressource: this.ressource || '',
+          etat: this.etat,
+          date_debut: this.date_debut,
+          date_fin: this.date_fin,
+        });
 
+        await this.getActivities();
+        this.resetActivityForm();
+        this.toggle('CreateActivityModal');
+      } catch (error) {
+        console.error('Error creating activity:', error);
+      }
+    },
+    resetActivityForm() {
+      this.nom = '';
+      this.description = '';
+      this.type = 'brief';
+      this.ressource = '';
+      this.etat = 'pending';
+      this.date_debut = '';
+      this.date_fin = '';
+      this.student_id = '';
+      this.binome_id = '';
+    },
+    async submitAbsence() {
+      try {
+        const dureeMinutes = Number(this.absence_duree_heure_retard || 0) * 60 + Number(this.absence_duree_minute_retard || 0);
+        const dureeRetard = this.convertominutes(dureeMinutes);
 
-const submitCreateActivity = async () => {
-  const classeId = formateurData.value?.classe_id || formateurData.value?.id;
-  const formateurId = formateurData.value?.formateur_id || user.value?.id;
-  
-  try {
-    await api.post('/createactivites', {
-      nom:nom.value,
-      description: description.value,
-      type: type.value,
-      formateur_id: formateurId,
-      student_id: student_id.value || null,
-      binome_id: binome_id.value || null,
-      classe_id: classeId,
-      ressource: ressource.value || '',
-      etat: etat.value,
-      date_debut: date_debut.value,
-      date_fin: date_fin.value
-    });
+        this.absence_duree_retard = dureeRetard;
 
-    await getActivities();
-    resetActivityForm();
-    toggle('CreateActivityModal');
-  } catch (error) {
-    console.error('Error creating activity:', error);
-  }
-};
+        await api.post('/absences', {
+          user_id: this.absence_user_id,
+          jour: this.absence_jour,
+          duree_retard: dureeRetard,
+        });
 
-const resetActivityForm = () => {
-  nom.value = '';
-  description.value = '';
-  type.value = 'brief';
-  ressource.value = '';
-  etat.value = 'pending';
-  date_debut.value = '';
-  date_fin.value = '';
-  student_id.value = '';
-  binome_id.value = '';
-};
+        console.log('Absence submitted:', this.absence_user_id, this.absence_jour, dureeRetard);
 
-
-
-const submitAbsence = async () => {
-  try {
-    const dureeMinutes = Number(absence_duree_heure_retard.value || 0) * 60 + Number(absence_duree_minute_retard.value || 0);
-    const dureeRetard = convertominutes(dureeMinutes);
-
-    absence_duree_retard.value = dureeRetard;
-
-    await api.post('/absences', {
-      user_id: absence_user_id.value,
-      jour: absence_jour.value,
-      duree_retard: dureeRetard,
-    });
-
-    console.log('Absence submitted:', absence_user_id.value, absence_jour.value, dureeRetard);
-
-    await getStudents();
-    toggle('AbsenceModal');
-  } catch (error) {
-    console.error('Error creating absence:', error);
-  }
-};
-    const getAllStudents = async () => {
-      try{
+        await this.getStudents();
+        this.toggle('AbsenceModal');
+      } catch (error) {
+        console.error('Error creating absence:', error);
+      }
+    },
+    async getAllStudents() {
+      try {
         const response = await api.get('/getstudents');
-        allStudents.value = response.data?.allStudents || [];
-        console.log('Fetched all students:', allStudents.value);
-      }
-      catch(error){
+        this.allStudents = response.data?.allStudents || [];
+        console.log('Fetched all students:', this.allStudents);
+      } catch (error) {
         console.error('Error fetching students:', error);
       }
-    }
-    const getStudents = async () => {
-      try{
+    },
+    async getStudents() {
+      try {
         const response = await api.get('/students');
-        students.value = response.data.students || [];
-        studentAbsences.value = response.data.studentAbsences || [];
-        console.log('Fetched student absences:', studentAbsences.value);
-        console.log('Fetched students:', students.value);
-      }
-      catch(error){
+        this.students = response.data.students || [];
+        this.studentAbsences = response.data.studentAbsences || [];
+        console.log('Fetched student absences:', this.studentAbsences);
+        console.log('Fetched students:', this.students);
+      } catch (error) {
         console.error('Error fetching students:', error);
       }
-    }
-    const getActivities = async () => {
-      try{
+    },
+    async getActivities() {
+      try {
         const response = await api.get('/activites');
-        activites.value = response.data.activites || [];
-        console.log('Fetched activities:', activites.value);
-      }
-      catch(error){
+        this.activites = response.data.activites || [];
+        console.log('Fetched activities:', this.activites);
+      } catch (error) {
         console.error('Error fetching activities:', error);
       }
-    }
-
-    const getFormateurData = async () => {
-      try{
+    },
+    async getFormateurData() {
+      try {
         const response = await api.get('/formateurdata');
-        formateurData.value = response.data.formateurData[0];
-           
-        console.log('Fetched formateur data:', formateurData.value);
-      }
-      catch(error){
+        const raw = response.data?.formateurData?.[0] || null;
+
+        if (!raw) {
+          this.formateurData = null;
+          return;
+        }
+
+        const currentClass = Array.isArray(raw.classes) ? raw.classes[0] : null;
+        const delegate = Array.isArray(currentClass?.delegate) ? currentClass.delegate[0] : null;
+
+        this.formateurData = {
+          ...raw,
+          formateur_id: raw.id,
+          formateur_name: raw.fullname,
+          classe_id: currentClass?.id || null,
+          classe_name: currentClass?.nom || null,
+          capacite: currentClass?.capacite || null,
+          class_logo: currentClass?.link_logo || null,
+          delegate_name: delegate?.fullname || null,
+          classes: currentClass,
+        };
+
+        console.log('Fetched formateur data:', this.formateurData);
+      } catch (error) {
         console.error('Error fetching formateur data:', error);
       }
-    }
-    function formatDate(isDate)
-    {
+    },
+    formatDate(isDate) {
       const isdate = new Date(isDate);
       return isdate.toLocaleDateString();
-    }
-    const logout = () => {
-        localStorage.clear();
-        window.location.href = '/';
-    };
-    onMounted(() => {
-        const data = localStorage.getItem('user');
-        if (data) {
-            user.value = JSON.parse(data);
-            // console.log('User data loaded:', user.value);
-        }
-        getStudents();
-        getAllStudents();
-      getFormateurData();
-      getActivities();
-      window.addEventListener('resize', handleResize);
-      handleResize();
-    });
-
-    const submitAddStudent = async () => {
+    },
+    logout() {
+      localStorage.clear();
+      window.location.href = '/';
+    },
+    async submitAddStudent() {
       try {
-        const formateurId = formateurData.value?.formateur_id || user.value?.id;
-        const classeId = formateurData.value?.classe_id;
+        const formateurId = this.formateurData?.formateur_id || this.user?.id;
+        const classeId = this.formateurData?.classe_id;
 
         if (!formateurId || !classeId) {
           console.error('Missing formateur_id or classe_id. Ensure the formateur is assigned to a class.');
@@ -997,76 +1020,91 @@ const submitAbsence = async () => {
         }
 
         await api.post('/assignstudentclasse', {
-          user_id: selectedStudentId.value,
+          user_id: this.selectedStudentId,
           points: 0,
-          promotion: promotion.value,
-          annee: annee.value,
+          promotion: this.promotion,
+          annee: this.annee,
           formateur_id: formateurId,
-          classe_id: classeId
-        })
-        await getStudents();
-        selectedStudentId.value = '';
-        promotion.value = '';
-        toggle('AddStudentModal');
+          classe_id: classeId,
+        });
+        await this.getStudents();
+        this.selectedStudentId = '';
+        this.promotion = '';
+        this.toggle('AddStudentModal');
       } catch (error) {
         console.error('Error assigning student to class:', error);
       }
-    };
-
-    const submitAssignDelegate = async () => {
+    },
+    async submitAssignDelegate() {
       try {
-        const classeId = formateurData.value?.classe_id;
+        const classeId = this.formateurData?.classe_id;
 
-        if (!selectedDelegateStudentId.value || !classeId) {
+        if (!this.selectedDelegateStudentId || !classeId) {
           console.error('Please select a student and ensure a class is assigned.');
           return;
         }
 
         await api.post('/assigndelegate', {
-          student_id: selectedDelegateStudentId.value,
-          classe_id: classeId
+          student_id: this.selectedDelegateStudentId,
+          classe_id: classeId,
         });
 
-        await getStudents();
-        selectedDelegateStudentId.value = '';
-        toggle('AssignDelegateModal');
+        await this.getStudents();
+        this.selectedDelegateStudentId = '';
+        this.toggle('AssignDelegateModal');
         console.log('Delegate assigned successfully');
       } catch (error) {
         console.error('Error assigning delegate:', error);
       }
-    };
-
-    const submitGradeStudent = async () => {
-      try{
-        const response = await api.post('/gradeStudent', {
-          student_id: ActiviteStudentId.value,
-          activite_id: ActiviteStudentId2.value,
-          grade: gradeValue.value
+    },
+    async submitGradeStudent() {
+      this.calculateGrade();
+      console.log('Submitting grade for student_id:', this.ActiviteStudentId, 'binome_id:', this.ActiviteStudentId2, 'grade:', this.GradeResult);
+      try {
+         await api.post('/gradestudent', {
+          student_id: this.ActiviteStudentId ||null,
+          binome_id: this.ActiviteStudentId2 || null,
+          grade: this.GradeResult,
         });
-        console.log('Grade submitted:', response.data);
         
-        await getActivities();
-      }catch(error){
+
+        await this.getActivities();
+        this.toggle('NoteStudentModal');
+      } catch (error) {
         console.error('Error grading student:', error);
       }
-    }
-    onBeforeUnmount(() => {
-      window.removeEventListener('resize', handleResize);
-    });
+    },
+    toggle(id, id2, id3) {
+      this.ActiviteStudentId = id2 || '';
+      this.ActiviteStudentId2 = id3 || '';
 
-    function toggle(id, id2, id3)
-    {
-      ActiviteStudentId.value = id2;
-      ActiviteStudentId2.value = id3;
+      console.log('Toggling modal:', id, 'with student_id:', this.ActiviteStudentId, 'and binome_id:', this.ActiviteStudentId2);
 
       const element = document.getElementById(id);
-      if(element.classList.contains('hidden'))
-      {
+      if (!element) return;
+
+      if (element.classList.contains('hidden')) {
         element.classList.remove('hidden');
-      }
-      else
-      {
+      } else {
         element.classList.add('hidden');
       }
+    },
+  },
+  mounted() {
+    const data = localStorage.getItem('user');
+    if (data) {
+      this.user = JSON.parse(data);
     }
+
+    this.getStudents();
+    this.getAllStudents();
+    this.getFormateurData();
+    this.getActivities();
+    window.addEventListener('resize', this.handleResize);
+    this.handleResize();
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.handleResize);
+  },
+};
 </script>
