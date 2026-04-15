@@ -278,8 +278,8 @@
                   >
                     <div class="flex items-start gap-3 mb-4">
                       <img
-                        v-if="student.student_image"
-                        :src="student.student_image"
+                        v-if="student?.user?.link_profile"
+                        :src="student.user.link_profile"
                         alt="Student Image"
                         class="w-12 h-12 rounded-full object-cover border border-white/10"
                       >
@@ -287,15 +287,15 @@
                         v-else
                         class="w-12 h-12 rounded-full bg-[#00babc]/20 border border-[#00babc]/30 flex items-center justify-center text-[#00babc] font-black"
                       >
-                        {{ student.student_name?.charAt(0) || 'S' }}
+                        {{ student.user.fullname.charAt(0) || 'S' }}
                       </div>
 
                       <div class="min-w-0 flex-1">
-                        <h3 class="text-white font-bold text-sm truncate">{{ student.student_name || 'Unknown Student' }}</h3>
-                        <p class="text-[11px] text-gray-500 truncate">{{ student.email || 'No email' }}</p>
+                        <h3 class="text-white font-bold text-sm truncate">{{ student.user.fullname || 'Unknown Student' }}</h3>
+                        <p class="text-[11px] text-gray-500 truncate">{{ student.user.email || 'No email' }}</p>
                         <div class="mt-2 flex flex-wrap gap-2">
                           <span class="text-[9px] px-2 py-1 rounded bg-[#00babc]/15 text-[#00babc] border border-[#00babc]/25 uppercase tracking-widest font-bold">
-                            {{ student.classe_name || formateurData?.classe_name || 'N/A' }}
+                            {{ student.classe.nom || formateurData?.classe_name || 'N/A' }}
                           </span>
                           <span class="text-[9px] px-2 py-1 rounded bg-white/5 text-gray-300 border border-white/10 uppercase tracking-widest font-bold">
                             {{ student.annee || 'N/A' }}
@@ -465,13 +465,13 @@
                     <div class="min-w-0">
                       <div class="flex items-center gap-3 mb-2">
                         <div class="w-10 h-10 rounded-full bg-[#00babc]/20 border border-[#00babc]/40 flex items-center justify-center text-[10px] font-bold text-[#00babc]">
-                          <img :src="student.student_image" alt="Student Image" class="w-10 h-10 rounded-full">
+                          <img :src="student.user?.link_profile" alt="Student Image" class="w-10 h-10 rounded-full">
                         </div>
                         <span class="text-[15px] text-[#00babc] font-bold">{{ student.points || 0 }} POINTS</span>
                       </div>
 
-                      <h3 class="text-white font-bold text-sm truncate">{{ student.student_name || 'Unknown Student' }}</h3>
-                      <p class="text-[11px] text-gray-500 truncate mt-1">{{ student.email || 'No email' }}</p>
+                      <h3 class="text-white font-bold text-sm truncate">{{ student.user?.fullname || 'Unknown Student' }}</h3>
+                      <p class="text-[11px] text-gray-500 truncate mt-1">{{ student.user?.email || 'No email' }}</p>
                     </div>
                     <span class="text-[9px] px-2 py-1 rounded bg-[#00babc]/15 text-[#00babc] border border-[#00babc]/25 uppercase tracking-widest font-bold">
                       Student
@@ -827,7 +827,7 @@ export default {
       activTab: 'profile',
       user: null,
       students: [],
-      activites: [],
+      activites:null,
       formateurData: null,
       nom: '',
       description: '',
