@@ -17,6 +17,7 @@ use App\Http\Controllers\AssignDelegateController;
 use App\Http\Controllers\SendLivrableController;
 use App\Http\Controllers\StudentDataController; 
 use App\Http\Controllers\UpdateUserController;
+use App\Http\Controllers\GradeStudentController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -33,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::post('/absencejustification',[AbsenceController::class,'Absencejustification']);
     Route::post('/validateabsence',[ValidateAbsenceController::class,'validateAbsence']);
     Route::post('/createannouncement',[AnnouncementController::class,'createAnnouncement']);
+    Route::post('/gradestudent',[GradeStudentController::class,'gradeStudent']);
     Route::get('/getannouncements',[AnnouncementController::class,'getAnnouncements']);
     Route::get('/data', [DataController::class, 'data']);
     Route::get('/alldata', [DataController::class, 'allData']);
@@ -42,6 +44,7 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::get('/students', [FormateurDataController::class, 'getStudents']);
     Route::get('/activites', [FormateurDataController::class, 'getActivites']);
     Route::get('/getstudents', [FormateurDataController::class, 'getAllStudents']);
+
 
 });
 

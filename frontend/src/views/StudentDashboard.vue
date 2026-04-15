@@ -321,11 +321,11 @@
 										<div v-for="leader in leaderboard" :key="leader.id" class="grid grid-cols-12 items-center rounded-xl border border-[#00babc]/35 bg-[#00babc]/12 px-3 py-3">
 											<div class="col-span-2"><span class="inline-flex h-7 w-7 items-center justify-center rounded-full border border-[#00babc]/50 bg-[#00babc]/25 text-[10px] font-black text-[#b7ffff]">1</span></div>
 											<div class="col-span-3 flex items-center gap-2">
-												<img :src="leader.user.link_profile" alt="student_profile" class="h-8 w-8 rounded-full border border-[#00babc]/40 bg-[#00babc]/20 object-cover inline-block mr-2">
-												<p class="text-sm font-semibold text-white">{{ leader.user.fullname }}</p>
+												<img :src="leader?.user?.link_profile || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'" alt="student_profile" class="h-8 w-8 rounded-full border border-[#00babc]/40 bg-[#00babc]/20 object-cover inline-block mr-2">
+												<p class="text-sm font-semibold text-white">{{ leader?.user?.fullname || 'Unknown Student' }}</p>
 											</div>
-											<p class="col-span-3 text-[10px] uppercase tracking-widest text-gray-300">{{ leader.classe.nom }}</p>
-											<p class="col-span-2 text-[10px] uppercase tracking-widest text-gray-300">{{ leader.classe.campus }}</p>
+											<p class="col-span-3 text-[10px] uppercase tracking-widest text-gray-300">{{ leader?.classe?.nom || leader?.classe?.class_name || 'Class N/A' }}</p>
+											<p class="col-span-2 text-[10px] uppercase tracking-widest text-gray-300">{{ leader?.classe?.campus || 'Campus N/A' }}</p>
 											<p class="col-span-2 text-right text-sm font-black text-[#a8ffff]">{{ leader.points }}</p>
 										</div>
 									</div>
@@ -512,6 +512,10 @@ export default {
 			try {
 				const response = await api.get('/studentdata')
 				const studentData = response.data?.studentData
+				const delegateData = studentData?.classe?.delegate
+				const delegateName = Array.isArray(delegateData)
+					? (delegateData[0]?.fullname || 'No Delegate')
+					: (delegateData?.fullname || delegateData || 'No Delegate')
 
 				this.studentId = studentData?.user_id || this.studentId
 				this.studentName = studentData?.user?.fullname || this.studentName
@@ -521,7 +525,7 @@ export default {
 				this.studentClassId = studentData?.classe?.id || this.studentClassId
 				this.studentAnnee = studentData?.classe?.annee || this.studentAnnee
 				this.studentClassCapacity = studentData?.classe?.capacite || this.studentCapacity
-				this.studentClasseDelegate = studentData?.classe?.delegate || this.studentClasseDelegate
+				this.studentClasseDelegate = delegateName
 				this.studentClassLogo = studentData?.classe?.link_logo || this.studentClassLogo
 				this.studentFormateur = studentData?.classe?.formateurs?.[0]?.fullname || studentData?.formateur?.fullname || this.studentFormateur
 				this.studentCampus = studentData?.user?.campus || this.studentCampus
@@ -625,6 +629,7 @@ export default {
 			try {
 				const response = await api.get('/leaderboard')
 				this.leaderboard = response.data?.leaderboard || []
+				this.leaderboard = this.leaderboard.filter(leader => leader.classe !== null);
 				console.log('Leaderboard data:', this.leaderboard)
 			} catch (error) {
 				console.error('Failed to fetch leaderboard data', error)
