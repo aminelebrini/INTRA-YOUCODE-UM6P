@@ -8,7 +8,7 @@ class StudentDataRepository
     public function getStudentData($userId)
     {
         $studentData = Student::where('user_id', $userId)
-        ->with(['user', 'classe.formateurs', 'activites', 'livrables', 'absences', 'classe.delegate'])
+        ->with(['user', 'classe.formateurs', 'activites', 'livrables', 'absences', 'classe.delegate', 'liens'])
         ->first();
 
         return $studentData;

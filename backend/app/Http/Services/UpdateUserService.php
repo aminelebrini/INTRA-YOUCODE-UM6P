@@ -14,7 +14,8 @@ class UpdateUserService
     {
         return $this->UpdateUserRepository->updateUser($id, $fullname, $email, $role, $campus, $ville, $link_profile, $etat);
     }
+    public function SendLien($UserId, $nom, $url)
+    {
+        return $this->UpdateUserRepository->SendLien($UserId, $nom, $url);
+    }
 }
-
-
-?>

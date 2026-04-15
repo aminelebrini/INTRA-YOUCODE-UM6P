@@ -45,5 +45,9 @@ class Student extends Model
     {
         return $this->belongsTo(User::class, 'formateur_id', 'id');
     }
+    public function liens()
+    {
+        return $this->hasMany(Lien::class, 'user_id', 'user_id');
+    }
    
 }

@@ -33,4 +33,20 @@ class UpdateUserController extends Controller
             return response()->json(['message' => 'Failed to update user'], 500);   
         }
     }
+    public function SendLien(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|integer|exists:users,id',
+            'nom' => 'required|string|max:255',
+            'lien' => 'required|url|max:255'
+        ]);
+        
+        $update = $this->UpdateUserService->SendLien($request->user_id, $request->nom, $request->lien);
+        if($update)
+        {            
+            return response()->json(['message' => 'Lien sent successfully'], 200);
+        } else {
+            return response()->json(['message' => 'Failed to send lien'], 500);   
+        }
+    }
 }
