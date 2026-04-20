@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('promo');
             $table->string('link_logo')->nullable();
             $table->string('campus');
+            $table->foreignId('formateur_id')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
     }

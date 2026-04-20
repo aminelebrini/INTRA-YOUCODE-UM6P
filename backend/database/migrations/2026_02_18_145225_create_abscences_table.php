@@ -15,9 +15,10 @@ return new class extends Migration
         $table->id();
         $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
         $table->date('jour');
-        $table->time('heure_debut')->default('09:00:00'); 
-        $table->time('duree_retard')->nullable();        
-        $table->enum('status', ['justifie', 'non justifie'])->default('non justifie');
+        $table->time('heure_debut')->default('09:00:00');
+        $table->time('duree_retard')->nullable();
+        $table->enum('type_absence', ['retard', 'absence'])->default('retard');
+        $table->enum('status', ['pending', 'justifie', 'not_justifie'])->default('pending');
         $table->string('motif')->nullable();
         $table->string('justification')->nullable();
         $table->timestamps();

@@ -1,16 +1,23 @@
 <?php
 
 namespace App\Http\Repository;
-use Illuminate\Support\Facades\DB;
+use App\Models\Classe;
+use App\Models\Student;
 
 class AssignFormateurClasseRepository
 {
     public function assign($formator, $assignedClass)
     {
-        $result = DB::table('formateur_classe')->insert([
+        $result = Classe::where('id', $assignedClass)->update([
             'formateur_id' => $formator,
-            'classe_id' => $assignedClass,
         ]);
+
+        if ($result) {
+            Student::where('classe_id', $assignedClass)->update([
+                'formateur_id' => $formator,
+            ]);
+        }
+
         return $result;
     }
 }

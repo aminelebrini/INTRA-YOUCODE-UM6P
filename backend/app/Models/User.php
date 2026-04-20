@@ -40,7 +40,7 @@ class User extends Authenticatable
         }
         public function classes()
         {
-            return $this->belongsToMany(Classe::class, 'formateur_classe', 'formateur_id', 'classe_id');
+            return $this->hasMany(Classe::class, 'formateur_id', 'id');
         }
         public function delegate()
         {

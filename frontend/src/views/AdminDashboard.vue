@@ -123,12 +123,37 @@
           </div>
         </header>
 
-        <section v-if="activTab === 'profile'" class="mb-6">
-          <LienView
-            :profileLinks="adminProfileLinks"
-            :liens="adminLiens"
-            :user_id="user?.id || null"
-          />
+        <section v-if="activTab === 'profile'" class="mb-6 bg-[#121215] border border-white/5 p-4 sm:p-6 md:p-8 rounded-xl">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xs font-black uppercase tracking-[0.3em] text-[#00babc] opacity-70">User Information</h3>
+            <span class="text-[10px] uppercase tracking-widest text-gray-500">Admin Profile</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div class="rounded-lg border border-white/10 bg-[#0f0f12] p-4">
+              <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Full Name</p>
+              <p class="text-sm font-semibold text-white truncate">{{ user?.fullname || 'Admin' }}</p>
+            </div>
+            <div class="rounded-lg border border-white/10 bg-[#0f0f12] p-4">
+              <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Email</p>
+              <p class="text-sm font-semibold text-white truncate">{{ user?.email || 'admin@youcode.ma' }}</p>
+            </div>
+            <div class="rounded-lg border border-white/10 bg-[#0f0f12] p-4">
+              <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Username</p>
+              <p class="text-sm font-semibold text-white truncate">{{ user?.username || 'admin' }}</p>
+            </div>
+            <div class="rounded-lg border border-white/10 bg-[#0f0f12] p-4">
+              <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Role</p>
+              <p class="text-sm font-semibold text-[#00babc] uppercase">{{ user?.role || 'admin' }}</p>
+            </div>
+            <div class="rounded-lg border border-white/10 bg-[#0f0f12] p-4">
+              <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Campus</p>
+              <p class="text-sm font-semibold text-white truncate">{{ user?.campus || 'N/A' }}</p>
+            </div>
+            <div class="rounded-lg border border-white/10 bg-[#0f0f12] p-4">
+              <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Ville</p>
+              <p class="text-sm font-semibold text-white truncate">{{ user?.ville || 'N/A' }}</p>
+            </div>
+          </div>
         </section>
 
         <section v-if="activTab === 'personnel'" class="bg-[#121215] border border-white/5 p-4 sm:p-6 md:p-8 rounded-xl shadow-2xl">
@@ -185,6 +210,36 @@
             <div class="flex gap-1">
               <span class="w-1 h-1 bg-[#00babc] rounded-full animate-ping"></span>
               <span class="w-1 h-1 bg-[#00babc] rounded-full opacity-50"></span>
+            </div>
+          </div>
+
+          <div class="mt-8 border-t border-white/5 pt-6">
+            <h4 class="text-[11px] font-bold uppercase tracking-widest text-[#00babc] mb-4">Admin Information</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div class="rounded-lg border border-white/10 bg-[#0f0f12] p-4">
+                <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Full Name</p>
+                <p class="text-sm font-semibold text-white truncate">{{ user?.fullname || 'Admin' }}</p>
+              </div>
+              <div class="rounded-lg border border-white/10 bg-[#0f0f12] p-4">
+                <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Email</p>
+                <p class="text-sm font-semibold text-white truncate">{{ user?.email || 'admin@youcode.ma' }}</p>
+              </div>
+              <div class="rounded-lg border border-white/10 bg-[#0f0f12] p-4">
+                <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Username</p>
+                <p class="text-sm font-semibold text-white truncate">{{ user?.username || 'admin' }}</p>
+              </div>
+              <div class="rounded-lg border border-white/10 bg-[#0f0f12] p-4">
+                <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Role</p>
+                <p class="text-sm font-semibold text-[#00babc] uppercase">{{ user?.role || 'admin' }}</p>
+              </div>
+              <div class="rounded-lg border border-white/10 bg-[#0f0f12] p-4">
+                <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Campus</p>
+                <p class="text-sm font-semibold text-white truncate">{{ user?.campus || 'N/A' }}</p>
+              </div>
+              <div class="rounded-lg border border-white/10 bg-[#0f0f12] p-4">
+                <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Ville</p>
+                <p class="text-sm font-semibold text-white truncate">{{ user?.ville || 'N/A' }}</p>
+              </div>
             </div>
           </div>
         </section>
@@ -637,43 +692,15 @@
         </button>
       </form>
     </div>
-  </div>
-
-  <!-- <div class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4" id="legacyDetectAbsencesModal">
-    <div class="bg-[#121215] border border-white/10 p-8 rounded-lg w-full max-w-md shadow-2xl">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-white font-black uppercase tracking-widest text-sm">Scan / Detect Absences</h2>
-        <button @click="oppenToggle('detectAbsencesModal')" class="text-gray-400 hover:text-red-500 transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-        </button>
-      </div>
-      <form @submit.prevent="submitClassAssignRegistration" class="space-y-4">
-        <select v-model="formator" class="w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm">
-          <option value="" disabled selected>Select Formator</option>
-          <option v-for="f in assignformateurs" :key="f.id" :value="f.id">{{ f.formateur_name }}</option>
-        </select>
-        <select v-model="assignclass" class="w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm">
-          <option value="" disabled selected>Select Class</option>
-          <option v-for="c in assignclasses" :key="c.id" :value="c.id">{{ c.classe_name }}</option>
-        </select>
-         <button type="submit" class="w-full bg-[#00babc] text-[#121215] font-bold py-3 rounded mt-2 hover:bg-[#00d1d3] transition-all uppercase tracking-widest text-xs">
-          Start Detection
-        </button>
-      </form>
-    </div>
-  </div>  -->
-  
+  </div>  
 </template>
 
 <script>
 import api from '@/services/api';
-import LienView from '@/components/LienView.vue';
 
 export default {
   name: 'AdminDashboard',
-  components: {
-    LienView,
-  },
+  
   computed: {
     totalUsers() {
       return Array.isArray(this.users) ? this.users.length : 0;
@@ -690,19 +717,6 @@ export default {
     totalAbandonedStudents() {
       return Array.isArray(this.users.filter(user => user.role === 'student' && user.etat === 'abandoned')) ? this.users.filter(user => user.role === 'student' && user.etat === 'abandoned').length : 0;
     },
-    adminProfileLinks() {
-      const user = this.user || {};
-      return [
-        { label: 'Portfolio', value: user.portfolio_url || user.portfolio || user.website || '', url: user.portfolio_url || user.portfolio || user.website || '' },
-        { label: 'GitHub', value: user.github_url || user.github || '', url: user.github_url || user.github || '' },
-        { label: 'LinkedIn', value: user.linkedin_url || user.linkedin || '', url: user.linkedin_url || user.linkedin || '' },
-        { label: 'Instagram', value: user.instagram_url || user.instagram || '', url: user.instagram_url || user.instagram || '' },
-        { label: 'Twitter / X', value: user.twitter_url || user.twitter || '', url: user.twitter_url || user.twitter || '' },
-      ].filter((link) => link.value);
-    },
-    adminLiens() {
-      return Array.isArray(this.user?.liens) ? this.user.liens : [];
-    }
   },
   data() {
     return {
