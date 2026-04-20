@@ -126,46 +126,9 @@
 										<p class="mt-2 text-sm font-bold text-white md:text-base">{{ countCompletedTasks || 0 }}</p>
 									</div>
 								</div>
-
+								<LienView :profileLinks="profileLinks" :liens="studentLinks" :user_id="studentId" />
 							</div>
 						</header>
-
-						<section v-if="activTab==='profile'" class="rounded-2xl border border-white/10 bg-[#121215] p-5 md:p-6">
-							<div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-								<div>
-									<h2 class="text-sm font-black uppercase tracking-wider text-white md:text-base">User Information</h2>
-									<p class="mt-1 text-[10px] text-gray-500">Detailed student profile information</p>
-								</div>
-								<span class="inline-flex items-center rounded-full border border-[#00babc]/30 bg-[#00babc]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[#00babc]">Student Profile</span>
-							</div>
-
-							<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-								<div class="rounded-xl border border-white/10 bg-white/5 p-3">
-									<p class="mb-1 text-[9px] uppercase tracking-widest text-gray-500">Full Name</p>
-									<p class="truncate text-sm font-semibold text-white">{{ studentName || 'N/A' }}</p>
-								</div>
-								<div class="rounded-xl border border-white/10 bg-white/5 p-3">
-									<p class="mb-1 text-[9px] uppercase tracking-widest text-gray-500">Email</p>
-									<p class="truncate text-sm font-semibold text-white">{{ studentEmail || 'N/A' }}</p>
-								</div>
-								<div class="rounded-xl border border-white/10 bg-white/5 p-3">
-									<p class="mb-1 text-[9px] uppercase tracking-widest text-gray-500">Username</p>
-									<p class="truncate text-sm font-semibold text-white">{{ studentUsername || 'N/A' }}</p>
-								</div>
-								<div class="rounded-xl border border-white/10 bg-white/5 p-3">
-									<p class="mb-1 text-[9px] uppercase tracking-widest text-gray-500">Class</p>
-									<p class="truncate text-sm font-semibold text-white">{{ studentClass || 'N/A' }}</p>
-								</div>
-								<div class="rounded-xl border border-white/10 bg-white/5 p-3">
-									<p class="mb-1 text-[9px] uppercase tracking-widest text-gray-500">Campus</p>
-									<p class="truncate text-sm font-semibold text-white">{{ studentCampus || 'N/A' }}</p>
-								</div>
-								<div class="rounded-xl border border-white/10 bg-white/5 p-3">
-									<p class="mb-1 text-[9px] uppercase tracking-widest text-gray-500">Status</p>
-									<p class="truncate text-sm font-semibold text-green-400 uppercase">{{ studentStatus || 'active' }}</p>
-								</div>
-							</div>
-						</section>
 						<section v-if="activTab==='classroom'" id="classroom" class="rounded-2xl border border-white/10 bg-[#121215] p-5 md:p-6">
 							<div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 								<div>
@@ -397,7 +360,6 @@
 										<button type="button" v-if="!absence.status" @click="toggle('JustificateModal', absence.id)" class="rounded-xl border border-[#00babc]/30 bg-[#00babc]/10 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#00babc] transition-colors hover:bg-[#00babc]/20">Justify</button>
 									</div>
 								</div>
-								<p>{{ countAbcence }}</p>
 							</div>
 
 							<div v-if="!studentAbsences || !studentAbsences.length" class="rounded-2xl border border-dashed border-white/10 bg-white/5 p-6 text-center">
@@ -480,8 +442,12 @@
 </template>
 <script>
 import api from '@/services/api';
+import LienView from '@/components/LienView.vue';
 
 export default {
+	components: {
+		LienView
+	},
 	data() {
 		
 	 return {
@@ -512,6 +478,7 @@ export default {
 		doneActivite: [],
 		countActivite: 0,
 		Livrables: [],
+		studentLinks: [],
 		activite_id: '',
 		studentAbsences: [],
 		studentClassId: null,
@@ -612,6 +579,7 @@ export default {
 				this.studentActivite = studentData?.activites || this.studentActivite
 				this.countActivite = this.count(this.studentActivite) || this.countActivite
 				this.Livrables = studentData?.livrables || this.Livrables
+				this.studentLinks = studentData?.liens || this.studentLinks
 				this.studentAbsences = studentData?.absences || this.studentAbsences
 
 				console.log('student data', studentData);

@@ -115,6 +115,11 @@
               </div>
               
             </header>
+            <LienView
+                :profileLinks="formateurProfileLinks"
+                :liens="formateurLiens"
+                :user_id="user?.id || null"
+              />
             <section v-if="activTab === 'profile'" class="flex flex-col gap-6 mt-6">
               <div class="bg-[#121215] border border-white/10 rounded-xl p-6">
                 <div class="flex items-center justify-between mb-6">
@@ -817,8 +822,27 @@
 
 <script>
 import api from '@/services/api';
+import LienView from '@/components/LienView.vue';
 
 export default {
+  components: {
+    LienView,
+  },
+  computed: {
+    formateurProfileLinks() {
+      const user = this.user || {};
+      return [
+        { label: 'Portfolio', value: user.portfolio_url || user.portfolio || user.website || '', url: user.portfolio_url || user.portfolio || user.website || '' },
+        { label: 'GitHub', value: user.github_url || user.github || '', url: user.github_url || user.github || '' },
+        { label: 'LinkedIn', value: user.linkedin_url || user.linkedin || '', url: user.linkedin_url || user.linkedin || '' },
+        { label: 'Instagram', value: user.instagram_url || user.instagram || '', url: user.instagram_url || user.instagram || '' },
+        { label: 'Twitter / X', value: user.twitter_url || user.twitter || '', url: user.twitter_url || user.twitter || '' },
+      ].filter((link) => link.value);
+    },
+    formateurLiens() {
+      return Array.isArray(this.user?.liens) ? this.user.liens : [];
+    }
+  },
   data() {
     const today = new Date().toISOString().split('T')[0];
 
