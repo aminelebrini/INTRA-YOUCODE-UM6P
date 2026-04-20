@@ -13,6 +13,7 @@ class Absence extends Model
         'jour',
         'heure_debut',
         'duree_retard',
+        'type_absence',
         'status',
         'motif',
         'justification',
