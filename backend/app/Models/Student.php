@@ -49,5 +49,10 @@ class Student extends Model
     {
         return $this->hasMany(Lien::class, 'user_id', 'user_id');
     }
+
+    public function squads()
+    {
+        return $this->belongsToMany(Squad::class, 'squad_student', 'user_id', 'squad_id', 'user_id', 'id');
+    }
    
 }

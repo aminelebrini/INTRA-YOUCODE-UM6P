@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Services\FormateurDataService;
+use Illuminate\Support\Facades\Auth;
+
 
 class FormateurDataController extends Controller
 {
@@ -15,7 +17,7 @@ class FormateurDataController extends Controller
     }
     public function Data()
     {
-        $user = auth()->user();
+        $user = Auth::user();
         $formateurData = $this->FormateurDataService->getFormateurData($user->id);
 
        if($formateurData) {
@@ -26,7 +28,7 @@ class FormateurDataController extends Controller
     }
     public function getStudents()
     {
-        $user = auth()->user();
+        $user = Auth::user();
         $students = $this->FormateurDataService->getStudents($user->id);
 
         if ($students) {
@@ -47,7 +49,7 @@ class FormateurDataController extends Controller
     }
     public function getActivites()
     {
-        $user = auth()->user();
+        $user = Auth::user();
         $activites = $this->FormateurDataService->getActivites($user->id);
 
         if ($activites) {
@@ -58,7 +60,7 @@ class FormateurDataController extends Controller
     }
     public function getStudentAbsences()
     {
-        $user = auth()->user();
+        $user = Auth::user();
         $studentAbsences = $this->FormateurDataService->getStudentAbsences($user->id);
 
         if ($studentAbsences) {
@@ -66,5 +68,13 @@ class FormateurDataController extends Controller
         } else {
             return response()->json(['message' => 'No student absences found for this formateur'], 404);
         }
+    }
+
+    public function getSquads()
+    {
+        $user = Auth::user();
+        $squads = $this->FormateurDataService->getSquads($user->id);
+
+        return response()->json(['squads' => $squads], 200);
     }
 }

@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('etat')->default('en_attente');
             $table->timestamps();
         });
-    }
+    }   
     /**
      * Reverse the migrations.
      */

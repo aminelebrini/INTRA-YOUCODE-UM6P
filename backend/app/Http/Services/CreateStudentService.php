@@ -12,18 +12,16 @@ class CreateStudentService
     {
         $this->CreateStudentRepository = $CreateStudentRepository;
     }
-    public function create($fullname, $campus, $role, $studentImage, $ville, $email, $password)
+    public function create($fullname, $campus, $role, $linkProfile, $ville, $email, $password)
     {
         return $this->CreateStudentRepository->create(
             $fullname, 
             $campus, 
             $role, 
-            $studentImage, 
+            $linkProfile, 
             $ville, 
             $email, 
             $password
         );
     }
 }
-
-?>

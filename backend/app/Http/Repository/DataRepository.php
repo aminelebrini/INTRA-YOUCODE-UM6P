@@ -24,15 +24,14 @@ class DataRepository
     }
     public function getFormateurs()
     {
-        // Get all formateurs without assigned classes
-        $unarrangedFormateurs = Formateur::doesntHave('classes')->get();
+        $unarrangedFormateurs = Formateur::with('users')->whereNull('classe_id')->get();
         
         return $unarrangedFormateurs;
     }
 
     public function getNotAssignedClasses()
     {
-        $assignedClasses = Classe::whereNull('formateur_id')->get();
+        $assignedClasses = Classe::whereDoesntHave('formateur')->get();
 
         return $assignedClasses;
     }
@@ -53,7 +52,7 @@ class DataRepository
     }
     public function getAllData()
     {
-        $allData = User::with('students','classes.formateur', 'absences','justifications')->get();
+        $allData = User::with('students','formateur', 'absences','justifications')->get();
         return $allData;
     }
 }

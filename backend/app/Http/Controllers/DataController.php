@@ -25,7 +25,8 @@ class DataController extends Controller
             $absences = $this->DataService->getAbsences();
             $announcements = $this->DataService->getAnnouncements();
 
-            return response()->json(['users' => $users, 
+            return response()->json([
+            'users' => $users, 
             'classes' => $classes, 
             'assignformateurs' => $assignformateurs, 
             'assignclasses' => $assignclasses, 

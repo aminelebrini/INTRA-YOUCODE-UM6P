@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('formateur_classe', function (Blueprint $table) {
+        Schema::create('squad_student', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('formateur_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('classe_id')->constrained('classes')->onDelete('cascade');
+            $table->foreignId('squad_id')->constrained('squades')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
+            $table->unique(['squad_id', 'user_id']);
         });
     }
 
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('formateur_classe');
+        Schema::dropIfExists('squad_student');
     }
 };

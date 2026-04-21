@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Formateur;
 
 class Classe extends Model
 {
@@ -12,17 +13,12 @@ class Classe extends Model
         'promo',
         'link_logo',
         'campus',
-        'formateur_id',
         'created_at',
         'updated_at',
     ];
     public function formateur()
     {
-        return $this->belongsTo(User::class, 'formateur_id', 'id');
-    }
-    public function formateurs()
-    {
-        return $this->hasMany(User::class, 'id', 'formateur_id');
+        return $this->hasOneThrough(User::class, Formateur::class, 'classe_id', 'id', 'id', 'user_id');
     }
     public function delegate()
     {

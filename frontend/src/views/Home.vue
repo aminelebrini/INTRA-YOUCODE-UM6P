@@ -128,14 +128,18 @@ export default {
         const token = localStorage.getItem('token');
         const data = localStorage.getItem('user');
         const user = data ? JSON.parse(data) : null;
-        if (token && user && user.role === 'admin') 
-        {
-          this.$router.push('/admindashboard');
+        if (user) {
+          if(user.etat !== 'abandonned')
+          {
+              if (token && user.role === 'admin') {
+                this.$router.push('/admindashboard');
+              } else if(token && user.role === 'formateur') {
+                this.$router.push('/formateurdashboard');
+              }else if(token && user.role === 'etudiant') {
+                this.$router.push('/studentdashboard');
+              }
+          }
         }
-        else if (token && user && user.role === 'formateur'){
-            this.$router.push('/formateurdashboard');
-        }
-
     }
 }
 </script>

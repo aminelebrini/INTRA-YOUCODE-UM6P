@@ -126,9 +126,58 @@
 										<p class="mt-2 text-sm font-bold text-white md:text-base">{{ countCompletedTasks || 0 }}</p>
 									</div>
 								</div>
-								<LienView :profileLinks="profileLinks" :liens="studentLinks" :user_id="studentId" />
 							</div>
 						</header>
+						<section v-if="activTab==='profile'" class="rounded-2xl border border-white/10 bg-[#121215] p-5 md:p-6">
+							<div class="flex items-center justify-between mb-6">
+								<h3 class="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Personal Information</h3>
+								<button type="button" @click="openProfileEditModal" class="bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold py-2 px-4 rounded-lg text-[10px] uppercase tracking-widest transition-colors flex items-center gap-2">
+									<i class="fas fa-edit"></i>
+									Edit Profile
+								</button>
+							</div>
+
+							<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+								<div class="border-b md:border-b-0 md:border-r border-white/10 pb-6 md:pb-0 md:pr-6">
+									<div class="mb-6">
+										<p class="text-[9px] text-gray-600 uppercase tracking-widest mb-2">Full Name</p>
+										<p class="text-base font-bold text-white">{{ userData?.fullname || studentName || 'N/A' }}</p>
+									</div>
+
+									<div class="mb-6">
+										<p class="text-[9px] text-gray-600 uppercase tracking-widest mb-2">Username</p>
+										<p class="text-base font-bold text-white">{{ userData?.username || studentUsername || 'N/A' }}</p>
+									</div>
+
+									<div>
+										<p class="text-[9px] text-gray-600 uppercase tracking-widest mb-2">Campus</p>
+										<p class="text-base font-bold text-white">{{ userData?.campus || studentCampus || 'N/A' }}</p>
+									</div>
+								</div>
+
+								<div class="md:pl-6">
+									<div class="mb-6">
+										<p class="text-[9px] text-gray-600 uppercase tracking-widest mb-2">Email</p>
+										<p class="text-base font-bold text-[#00babc] truncate">{{ userData?.email || studentEmail || 'N/A' }}</p>
+									</div>
+
+									<div class="mb-6">
+										<p class="text-[9px] text-gray-600 uppercase tracking-widest mb-2">Role</p>
+										<span class="inline-block text-[9px] px-3 py-1.5 rounded bg-[#00babc]/20 text-[#00babc] border border-[#00babc]/25 font-bold uppercase tracking-widest">
+											{{ userData?.role || 'etudiant' }}
+										</span>
+									</div>
+
+									<div>
+										<p class="text-[9px] text-gray-600 uppercase tracking-widest mb-2">Status</p>
+										<div class="flex items-center gap-2">
+											<span class="w-2 h-2 bg-green-500 rounded-full"></span>
+											<span class="text-base font-bold text-green-400">{{ userData?.status || studentStatus || 'active' }}</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</section>
 						<section v-if="activTab==='classroom'" id="classroom" class="rounded-2xl border border-white/10 bg-[#121215] p-5 md:p-6">
 							<div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 								<div>
@@ -166,6 +215,19 @@
 									<div class="rounded-xl border border-white/10 bg-white/5 p-3">
 										<p class="mb-1 text-[9px] uppercase tracking-widest text-gray-500">Capacity</p>
 										<p class="truncate text-sm font-semibold text-white">{{ studentClassCapacity }}</p>
+									</div>
+									<div class="rounded-xl border border-white/10 bg-white/5 p-3 sm:col-span-2">
+										<p class="mb-2 text-[9px] uppercase tracking-widest text-gray-500">Squads</p>
+										<div v-if="Array.isArray(studentSquads) && studentSquads.length" class="flex flex-wrap gap-2">
+											<span
+												v-for="squad in studentSquads"
+												:key="`student-squad-${squad.id}`"
+												class="rounded-full border border-amber-300/25 bg-amber-400/15 px-2 py-1 text-[9px] font-bold uppercase tracking-widest text-amber-300"
+											>
+												{{ squad.nom }}
+											</span>
+										</div>
+										<p v-else class="text-xs text-gray-400">No squad assigned.</p>
 									</div>
 								</div>
 							</div>
@@ -442,11 +504,9 @@
 </template>
 <script>
 import api from '@/services/api';
-import LienView from '@/components/LienView.vue';
 
 export default {
 	components: {
-		LienView
 	},
 	data() {
 		
@@ -478,9 +538,9 @@ export default {
 		doneActivite: [],
 		countActivite: 0,
 		Livrables: [],
-		studentLinks: [],
 		activite_id: '',
 		studentAbsences: [],
+		studentSquads: [],
 		studentClassId: null,
 		fichier_path: '',
 		type_document: '',
@@ -579,8 +639,8 @@ export default {
 				this.studentActivite = studentData?.activites || this.studentActivite
 				this.countActivite = this.count(this.studentActivite) || this.countActivite
 				this.Livrables = studentData?.livrables || this.Livrables
-				this.studentLinks = studentData?.liens || this.studentLinks
 				this.studentAbsences = studentData?.absences || this.studentAbsences
+				this.studentSquads = studentData?.squads || this.studentSquads
 
 				console.log('student data', studentData);
 				console.log('delegate', this.studentClasseDelegate);

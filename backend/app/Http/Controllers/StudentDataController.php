@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Services\StudentDataService;
+use Illuminate\Support\Facades\Auth;
 
 class StudentDataController extends Controller
 {
@@ -15,7 +16,7 @@ class StudentDataController extends Controller
     }
     public function data()
     {
-        $userId = auth()->user()->id;
+        $userId = Auth::id();
         $studentData = $this->studentDataService->getStudentData($userId);
         if ($studentData) {
             return response()->json(['studentData' => $studentData], 200);

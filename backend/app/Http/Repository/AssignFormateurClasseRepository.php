@@ -2,23 +2,15 @@
 
 namespace App\Http\Repository;
 use App\Models\Classe;
-use App\Models\Student;
+use App\Models\Formateur;
 
 class AssignFormateurClasseRepository
 {
     public function assign($formator, $assignedClass)
     {
-        $result = Classe::where('id', $assignedClass)->update([
-            'formateur_id' => $formator,
+        return Formateur::where('user_id', $formator)->update([
+            'classe_id' => $assignedClass,
         ]);
-
-        if ($result) {
-            Student::where('classe_id', $assignedClass)->update([
-                'formateur_id' => $formator,
-            ]);
-        }
-
-        return $result;
     }
 }
 

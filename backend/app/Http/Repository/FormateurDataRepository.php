@@ -6,6 +6,7 @@ use App\Models\Classe;
 use App\Models\Absence;
 use App\Models\Student;
 use App\Models\Activite;
+use App\Models\Squad;
 
 class FormateurDataRepository
 {
@@ -17,7 +18,7 @@ class FormateurDataRepository
     }
     public function getStudents($formateurId)
     {
-        $students = Student::with('user', 'classe', 'formateur')->where('formateur_id', $formateurId)->get();
+        $students = Student::with('user', 'classe', 'formateur', 'squads')->where('formateur_id', $formateurId)->get();
 
         return $students;
     }
@@ -46,6 +47,20 @@ class FormateurDataRepository
         ->get();
 
         return $studentAbsences;
+    }
+
+    public function getSquads($formateurId)
+    {
+        $formateur = User::with('classes')->find($formateurId);
+        $classeId = $formateur?->classes?->id;
+
+        if (!$classeId) {
+            return collect();
+        }
+
+        return Squad::with(['students.user'])
+            ->where('classe_id', $classeId)
+            ->get();
     }
 }
 

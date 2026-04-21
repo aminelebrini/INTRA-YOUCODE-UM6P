@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('squades', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('nom');
+            $table->datetime('date_creation');
             $table->foreignId('classe_id')->constrained('classes')->onDelete('cascade');
             $table->timestamps();
         });

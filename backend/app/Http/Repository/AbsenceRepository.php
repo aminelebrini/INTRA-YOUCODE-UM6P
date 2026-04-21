@@ -8,10 +8,13 @@ class AbsenceRepository
 {
     public function dedicateAbsence($userId,$jour, $dureeRetard)
     {
+        $typeAbsence = $dureeRetard > '03:00' ? 'absence' : 'retard';
+
         return Absence::create([
             'user_id' => $userId,
             'jour' => $jour,
             'duree_retard' => $dureeRetard,
+            'type_absence' => $typeAbsence,
         ]);
     }
     public function createJustification($absenceId, $userId, $fichierPath, $typeDocument, $dateDepot)

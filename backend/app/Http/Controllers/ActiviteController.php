@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Services\ActiviteService;
-use Illuminate\Validation\Rule;
 
 
 class ActiviteController extends Controller
@@ -19,11 +18,7 @@ class ActiviteController extends Controller
             'nom' => 'required|string|max:255',
             'description' => 'nullable|string',
             'type' => 'required|string|max:255',
-            'formateur_id' => [
-                'required',
-                'integer',
-                Rule::exists('users', 'id')->where(fn ($query) => $query->where('role', 'formateur')),
-            ],
+            'formateur_id' => 'required|integer|exists:users,id',
             'student_id' => 'nullable|integer|exists:users,id',
             'binome_id' => 'nullable|integer|exists:users,id',
             'classe_id' => 'required|integer|exists:classes,id',
@@ -32,10 +27,12 @@ class ActiviteController extends Controller
             'date_debut' => 'required|date',
             'date_fin' => 'required|date',
         ]);
+
+        $type = $request->type === 'debriefing' ? 'diebrifing' : $request->type;
         
         $activite = $this->activiteService
         ->createActivite($request->nom,$request->description,
-            $request->type,
+            $type,
             $request->formateur_id,
             $request->student_id,
             $request->binome_id,

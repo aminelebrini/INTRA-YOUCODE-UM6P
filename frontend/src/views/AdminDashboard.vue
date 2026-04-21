@@ -111,24 +111,63 @@
                     Role: {{ user?.role || 'ADMIN' }}
                   </span>
               </div>
-              <button
-                type="button"
-                @click="openAdminProfileModal"
-                class="mt-3 w-full md:w-auto rounded-lg border border-[#00babc]/30 bg-[#00babc]/10 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#00babc] transition-colors hover:bg-[#00babc]/20"
-              >
-                <i class="fas fa-edit mr-1"></i>
-                Edit Profile
-              </button>
             </div>
           </div>
         </header>
 
-        <section v-if="activTab === 'profile'" class="mb-6">
-          <LienView
-            :profileLinks="adminProfileLinks"
-            :liens="adminLiens"
-            :user_id="user?.id || null"
-          />
+        <section v-if="activTab === 'profile'" class="bg-[#121215] border border-white/5 p-4 sm:p-6 md:p-8 rounded-xl shadow-2xl mb-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Personal Information</h3>
+            <button
+              type="button"
+              @click="openAdminProfileModal"
+              class="bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold py-2 px-4 rounded-lg text-[10px] uppercase tracking-widest transition-colors flex items-center gap-2"
+            >
+              <i class="fas fa-edit"></i>
+              Edit Profile
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="border-b md:border-b-0 md:border-r border-white/10 pb-6 md:pb-0 md:pr-6">
+              <div class="mb-6">
+                <p class="text-[9px] text-gray-600 uppercase tracking-widest mb-2">Full Name</p>
+                <p class="text-base font-bold text-white">{{ user?.fullname || 'N/A' }}</p>
+              </div>
+
+              <div class="mb-6">
+                <p class="text-[9px] text-gray-600 uppercase tracking-widest mb-2">Username</p>
+                <p class="text-base font-bold text-white">{{ user?.username || 'N/A' }}</p>
+              </div>
+
+              <div>
+                <p class="text-[9px] text-gray-600 uppercase tracking-widest mb-2">Campus</p>
+                <p class="text-base font-bold text-white">{{ user?.campus || 'N/A' }}</p>
+              </div>
+            </div>
+
+            <div class="md:pl-6">
+              <div class="mb-6">
+                <p class="text-[9px] text-gray-600 uppercase tracking-widest mb-2">Email</p>
+                <p class="text-base font-bold text-[#00babc] truncate">{{ user?.email || 'N/A' }}</p>
+              </div>
+
+              <div class="mb-6">
+                <p class="text-[9px] text-gray-600 uppercase tracking-widest mb-2">Role</p>
+                <span class="inline-block text-[9px] px-3 py-1.5 rounded bg-[#00babc]/20 text-[#00babc] border border-[#00babc]/25 font-bold uppercase tracking-widest">
+                  {{ user?.role || 'ADMIN' }}
+                </span>
+              </div>
+
+              <div>
+                <p class="text-[9px] text-gray-600 uppercase tracking-widest mb-2">Status</p>
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                  <span class="text-base font-bold text-green-400">{{ user?.status || 'Active' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
 
         <section v-if="activTab === 'personnel'" class="bg-[#121215] border border-white/5 p-4 sm:p-6 md:p-8 rounded-xl shadow-2xl">
@@ -255,14 +294,14 @@
                 <div class="flex items-center gap-3 flex-1">
                   <img :src="classe?.link_logo || 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Google_Classroom_Logo.svg/250px-Google_Classroom_Logo.svg.png'" alt="" class="w-10 h-10 rounded-lg object-cover">
                   <div class="min-w-0 flex-1">
-                    <h4 class="text-white font-bold text-sm truncate">{{ classe?.classe_name || 'Unnamed Class' }}</h4>
+                    <h4 class="text-white font-bold text-sm truncate">{{ classe?.nom || 'Unnamed Class' }}</h4>
                     <p class="text-gray-500 text-xs">{{ classe?.promo || 'N/A' }}</p>
                   </div>
                 </div>
                 <span :class="['px-2.5 py-1 rounded text-[7px] font-bold whitespace-nowrap',
-                  classe?.formateur_name ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
+                  classe?.formateur?.fullname ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
                 ]">
-                  {{ classe?.formateur_name ? 'Assigned' : 'Unassigned' }}
+                  {{ classe?.formateur?.fullname ? 'Assigned' : 'Unassigned' }}
                 </span>
               </div>
 
@@ -275,7 +314,7 @@
                 </div>
                 <div class="flex justify-between items-center">
                   <span class="text-gray-500">Formator</span>
-                  <span class="text-gray-300 text-xs truncate max-w-[140px]">{{ classe.formateur_name || 'None' }}</span>
+                  <span class="text-gray-300 text-xs truncate max-w-[140px]">{{ classe?.formateur?.fullname || 'None' }}</span>
                 </div>
                 <div class="flex justify-between items-center">
                   <span class="text-gray-500">Campus</span>
@@ -300,7 +339,7 @@
         <section v-if="activTab === 'absences'" class="bg-[#121215] border border-white/5 p-4 sm:p-6 md:p-8 rounded-lg mt-6">
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <h3 class="text-xs font-black uppercase tracking-[0.3em] text-[#00babc] opacity-70">Absences Management</h3>
-            <button @click="oppenToggle('detectAbsencesModal')" class="w-full sm:w-auto bg-[#00babc] text-[#121215] font-bold py-2 px-4 rounded hover:bg-[#00d1d3] transition-all text-[11px] uppercase tracking-widest">
+            <button @click="oppenToggle('DetectAbsenceModal')" class="w-full sm:w-auto bg-[#00babc] text-[#121215] font-bold py-2 px-4 rounded hover:bg-[#00d1d3] transition-all text-[11px] uppercase tracking-widest">
               Detect Absences
             </button>
           </div>
@@ -544,7 +583,7 @@
         <label for="formator" class="text-[#00babc] text-[11px] uppercase tracking-widest">Formator</label>
         <select id="formator" v-model="formator_id" class="w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required>
           <option value="" disabled>Select Formator</option>
-          <option v-for="f in assignformateurs" :key="f.formateur_id" :value="f.formateur_id">{{ f.formateur_name }}</option>
+          <option v-for="f in assignformateurs" :key="f.id" :value="f?.users?.id">{{ f?.users?.fullname }}</option>
         </select>
         <label for="assignclass" class="text-[#00babc] text-[11px] uppercase tracking-widest">Class</label>
         <select id="assignclass" v-model="assignclass_id" class="w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required>
@@ -615,64 +654,61 @@
       </form>
     </div>
   </div>
+  <div class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" id="DetectAbsenceModal">
+      <div class="w-full max-w-3xl overflow-hidden rounded-3xl border border-white/10 bg-[#121215] shadow-[0_30px_100px_rgba(0,0,0,0.75)] max-h-[90vh] overflow-y-auto">
+        <div class="border-b border-white/10 bg-[linear-gradient(90deg,rgba(0,186,188,0.12),rgba(255,255,255,0.03))] px-6 py-5 md:px-7">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h2 class="mt-2 text-xl font-black uppercase tracking-wider text-white md:text-2xl">Detect Absence</h2>
+            </div>
+            <button type="button" @click="toggle('DetectAbsenceModal')" class="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-lg font-bold text-gray-300 transition-colors hover:border-red-400/40 hover:bg-red-500/10 hover:text-red-300">×</button>
+          </div>
+        </div>
 
-  <div class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4" id="detectAbsencesModal">
-    <div class="bg-[#121215] border border-white/10 p-8 rounded-lg w-[100%] max-w-md shadow-2xl overflow-y-auto max-h-[90vh]">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-[#00babc] font-black uppercase tracking-widest text-sm">Detect Absences</h2>
-        <button @click="oppenToggle('detectAbsencesModal')" class="text-[#00babc] hover:text-red-500 transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-        </button>
-      </div>
-      <form @submit.prevent="submitAbsenceDetection" class="space-y-4 w-[100%]">
-        <label for="detectClass" class="text-[#00babc] text-[11px] uppercase tracking-widest">Class</label>
-        <select id="detectClass" v-model="assignclass" class="w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required>
-          <option value="" disabled>Select Class</option>
-          <option v-for="c in assignclasses" :key="c.id" :value="c.id">{{ c.classe_name }}</option>
-        </select>
-        <label for="detectionDate" class="text-[#00babc] text-[11px] uppercase tracking-widest">Date</label>
-        <input type="date" id="detectionDate" v-model="detectionDate" class="w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required>
-        <button type="submit" class="w-full bg-[#00babc] text-[#121215] font-bold py-3 rounded mt-2 hover:bg-[#00d1d3] transition-all uppercase tracking-widest text-xs">
-          Start Detection
-        </button>
-      </form>
-    </div>
-  </div>
+        <form @submit.prevent="submitAbsence" class="grid grid-cols-1 gap-4 px-6 py-6 md:grid-cols-2 md:px-7">
+          <div class="space-y-1.5 md:col-span-2">
+            <label class="block text-[10px] uppercase tracking-[0.22em] text-gray-400">Student</label>
+            <select v-model="absence_user_id" class="w-full rounded-2xl border border-white/10 bg-[#0c0f14] px-4 py-3 text-sm text-white outline-none transition-colors focus:border-[#00babc] focus:bg-[#0f1218]" required>
+              <option value="">Select User</option>
+              <option v-for="user in users" :key="user.id" :value="user.id">
+                {{ user.fullname }}
+              </option>
+            </select>
+          </div>
 
-  <!-- <div class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4" id="legacyDetectAbsencesModal">
-    <div class="bg-[#121215] border border-white/10 p-8 rounded-lg w-full max-w-md shadow-2xl">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-white font-black uppercase tracking-widest text-sm">Scan / Detect Absences</h2>
-        <button @click="oppenToggle('detectAbsencesModal')" class="text-gray-400 hover:text-red-500 transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-        </button>
+          <div class="space-y-1.5">
+            <label class="block text-[10px] uppercase tracking-[0.22em] text-gray-400">Duration</label>
+            <input v-model="absence_duree_heure_retard" type="number" min="0" max="4" step="1" placeholder="0" class="w-full rounded-2xl border border-white/10 bg-[#0c0f14] px-4 py-3 text-sm text-white outline-none transition-colors placeholder:text-gray-500 focus:border-[#00babc] focus:bg-[#0f1218]" required>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="block text-[10px] uppercase tracking-[0.22em] text-gray-400">Duration</label>
+            <input v-model="absence_duree_minute_retard" type="number" min="0" max="59" step="1" placeholder="15" class="w-full rounded-2xl border border-white/10 bg-[#0c0f14] px-4 py-3 text-sm text-white outline-none transition-colors placeholder:text-gray-500 focus:border-[#00babc] focus:bg-[#0f1218]" required>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="block text-[10px] uppercase tracking-[0.22em] text-gray-400">Status</label>
+            <select v-model="absence_status" class="w-full rounded-2xl border border-white/10 bg-[#0c0f14] px-4 py-3 text-sm text-white outline-none transition-colors focus:border-[#00babc] focus:bg-[#0f1218]" required>
+              <option value="late">Late</option>
+              <option value="absent">Absent</option>
+              <option value="excused">Excused</option>
+            </select>
+          </div>
+          <div class="md:col-span-2 flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
+            <button type="button" @click="toggle('AbsenceModal')" class="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-xs font-bold uppercase tracking-[0.22em] text-gray-300 transition-colors hover:bg-white/10 hover:text-white">Cancel</button>
+            <button type="submit" class="rounded-2xl bg-[#00babc] px-5 py-3 text-xs font-bold uppercase tracking-[0.22em] text-[#121215] transition-colors hover:bg-[#00d1d3]">Submit Absence</button>
+          </div>
+        </form>
       </div>
-      <form @submit.prevent="submitClassAssignRegistration" class="space-y-4">
-        <select v-model="formator" class="w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm">
-          <option value="" disabled selected>Select Formator</option>
-          <option v-for="f in assignformateurs" :key="f.id" :value="f.id">{{ f.formateur_name }}</option>
-        </select>
-        <select v-model="assignclass" class="w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm">
-          <option value="" disabled selected>Select Class</option>
-          <option v-for="c in assignclasses" :key="c.id" :value="c.id">{{ c.classe_name }}</option>
-        </select>
-         <button type="submit" class="w-full bg-[#00babc] text-[#121215] font-bold py-3 rounded mt-2 hover:bg-[#00d1d3] transition-all uppercase tracking-widest text-xs">
-          Start Detection
-        </button>
-      </form>
-    </div>
-  </div>  -->
-  
+    </div>  
 </template>
 
 <script>
 import api from '@/services/api';
-import LienView from '@/components/LienView.vue';
 
 export default {
   name: 'AdminDashboard',
   components: {
-    LienView,
   },
   computed: {
     totalUsers() {
@@ -689,22 +725,10 @@ export default {
     },
     totalAbandonedStudents() {
       return Array.isArray(this.users.filter(user => user.role === 'student' && user.etat === 'abandoned')) ? this.users.filter(user => user.role === 'student' && user.etat === 'abandoned').length : 0;
-    },
-    adminProfileLinks() {
-      const user = this.user || {};
-      return [
-        { label: 'Portfolio', value: user.portfolio_url || user.portfolio || user.website || '', url: user.portfolio_url || user.portfolio || user.website || '' },
-        { label: 'GitHub', value: user.github_url || user.github || '', url: user.github_url || user.github || '' },
-        { label: 'LinkedIn', value: user.linkedin_url || user.linkedin || '', url: user.linkedin_url || user.linkedin || '' },
-        { label: 'Instagram', value: user.instagram_url || user.instagram || '', url: user.instagram_url || user.instagram || '' },
-        { label: 'Twitter / X', value: user.twitter_url || user.twitter || '', url: user.twitter_url || user.twitter || '' },
-      ].filter((link) => link.value);
-    },
-    adminLiens() {
-      return Array.isArray(this.user?.liens) ? this.user.liens : [];
     }
   },
   data() {
+    const today = new Date().toISOString().split('T')[0];
     return {
       activTab: 'profile',
       showSidebar: false,
@@ -730,25 +754,29 @@ export default {
       formator_id: '',
       assignclass_id: '',
       assignclass: '',
+      selectedPersonnel: '',
       detectionDate: '',
+      motif: '',
+      type_document: '',
       personnel: null,
       adminProfileForm: {
         fullname: '',
         email: '',
         campus: '',
         ville: '',
-        link_profile: ''
+        link_profile: '',
       },
+      absence_jour: today,
       announcements: [],
+      absence_user_id: '',
+      absence_heure_debut: '',
+      absence_duree_minute_retard: '',
+      absence_duree_heure_retard: '',
+      absence_duree_retard: '',
+      absence_status: 'late',
     };
   },
   methods: {
-    normalizeRole(role) {
-      const value = String(role || '').toLowerCase().trim();
-      if (value === 'student') return 'etudiant';
-      if (value === 'teacher') return 'formateur';
-      return value || 'admin';
-    },
     openAdminProfileModal() {
       this.adminProfileForm = {
         fullname: this.user?.fullname || '',
@@ -772,17 +800,14 @@ export default {
           etat: this.user?.etat || 'active'
         });
 
-        const updatedUser = {
-          ...(this.user || {}),
-          fullname: this.adminProfileForm.fullname,
-          email: this.adminProfileForm.email,
-          campus: this.adminProfileForm.campus || null,
-          ville: this.adminProfileForm.ville || null,
-          link_profile: this.adminProfileForm.link_profile || null,
-        };
+        this.user = this.user || {};
+        this.user.fullname = this.adminProfileForm.fullname;
+        this.user.email = this.adminProfileForm.email;
+        this.user.campus = this.adminProfileForm.campus || null;
+        this.user.ville = this.adminProfileForm.ville || null;
+        this.user.link_profile = this.adminProfileForm.link_profile || null;
 
-        this.user = updatedUser;
-        localStorage.setItem('user', JSON.stringify(updatedUser));
+        localStorage.setItem('user', JSON.stringify(this.user));
         await this.Data();
         this.oppenToggle('EditAdminProfileModal');
       } catch (error) {
@@ -955,7 +980,12 @@ export default {
         console.error('Error fetching all data:', error);
       }
     },
-
+    convertominutes(minutes) {
+      const hour = Math.floor(minutes / 60);
+      const min = minutes % 60;
+      return `${String(hour).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+    }
+    ,
     formatDate(isDate) {
       const date = new Date(isDate);
       return date.toLocaleDateString();
@@ -978,6 +1008,24 @@ export default {
     closeSidebar() {
       if (!this.isDesktop) {
         this.showSidebar = false;
+      }
+    },
+    submitAbsence()
+    {
+      const dureeMinutes = Number(this.absence_duree_heure_retard || 0) * 60 + Number(this.absence_duree_minute_retard || 0);
+      const dureeRetard = this.convertominutes(dureeMinutes);
+
+      this.absence_duree_retard = dureeRetard;
+      try{
+        console.log(this.absence_jour);
+        api.post('/detectabsence', {
+          user_id: this.absence_user_id,
+          jour: this.absence_jour,
+          duree_retard: dureeRetard
+        });
+      } catch (error) {
+        console.error('Error submitting absence:', error?.response?.data || error);
+
       }
     }
   },

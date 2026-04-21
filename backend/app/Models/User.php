@@ -40,7 +40,7 @@ class User extends Authenticatable
         }
         public function classes()
         {
-            return $this->hasMany(Classe::class, 'formateur_id', 'id');
+            return $this->hasOneThrough(Classe::class, Formateur::class, 'user_id', 'id', 'id', 'classe_id');
         }
         public function delegate()
         {
@@ -54,9 +54,9 @@ class User extends Authenticatable
         {
             return $this->hasMany(Justification::class, 'user_id', 'id');
         }
-        public function liens()
+        public function formateur()
         {
-            return $this->hasMany(Lien::class, 'user_id', 'id');
+            return $this->hasOne(Formateur::class, 'user_id', 'id');
         }
 
     

@@ -115,16 +115,11 @@
               </div>
               
             </header>
-            <LienView
-                :profileLinks="formateurProfileLinks"
-                :liens="formateurLiens"
-                :user_id="user?.id || null"
-              />
             <section v-if="activTab === 'profile'" class="flex flex-col gap-6 mt-6">
               <div class="bg-[#121215] border border-white/10 rounded-xl p-6">
                 <div class="flex items-center justify-between mb-6">
                   <h3 class="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Personal Information</h3>
-                  <button class="bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold py-2 px-4 rounded-lg text-[10px] uppercase tracking-widest transition-colors flex items-center gap-2">
+                  <button @click="openFormateurProfileModal" class="bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold py-2 px-4 rounded-lg text-[10px] uppercase tracking-widest transition-colors flex items-center gap-2">
                     <i class="fas fa-edit"></i>
                     Edit Profile
                   </button>
@@ -166,6 +161,7 @@
                   </div>
                 </div>
               </div>
+
             </section>
             <div v-if="activTab === 'dashboard'" class="flex flex-col items-start justify-center w-full">
             <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 p-2 sm:p-4 w-full">
@@ -303,6 +299,13 @@
                           </span>
                           <span class="text-[9px] px-2 py-1 rounded bg-white/5 text-gray-300 border border-white/10 uppercase tracking-widest font-bold">
                             {{ student.annee || 'N/A' }}
+                          </span>
+                          <span
+                            v-for="squad in (student.squads || [])"
+                            :key="`overview-squad-${student.user_id || student.id}-${squad.id}`"
+                            class="text-[9px] px-2 py-1 rounded bg-amber-400/15 text-amber-300 border border-amber-300/25 uppercase tracking-widest font-bold"
+                          >
+                            {{ squad.nom }}
                           </span>
                         </div>
                       </div>
@@ -445,6 +448,12 @@
 
                 <div class="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
                   <button
+                    @click="openCreateSquadModal"
+                    class="w-full sm:w-auto bg-amber-400 hover:bg-amber-300 text-[#121215] font-bold py-2.5 px-4 rounded-lg text-[11px] uppercase tracking-widest transition-colors"
+                  >
+                    Create Squad
+                  </button>
+                  <button
                     @click="toggle('AddStudentModal')"
                     class="w-full sm:w-auto bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold py-2.5 px-4 rounded-lg text-[11px] uppercase tracking-widest transition-colors"
                   >
@@ -476,6 +485,15 @@
 
                       <h3 class="text-white font-bold text-sm truncate">{{ student.user?.fullname || 'Unknown Student' }}</h3>
                       <p class="text-[11px] text-gray-500 truncate mt-1">{{ student.user?.email || 'No email' }}</p>
+                      <div class="mt-2 flex flex-wrap gap-1" v-if="Array.isArray(student.squads) && student.squads.length">
+                        <span
+                          v-for="squad in student.squads"
+                          :key="`student-tab-squad-${student.user_id || student.id}-${squad.id}`"
+                          class="text-[9px] px-2 py-1 rounded bg-amber-400/15 text-amber-300 border border-amber-300/25 uppercase tracking-widest font-bold"
+                        >
+                          {{ squad.nom }}
+                        </span>
+                      </div>
                     </div>
                     <span class="text-[9px] px-2 py-1 rounded bg-[#00babc]/15 text-[#00babc] border border-[#00babc]/25 uppercase tracking-widest font-bold">
                       Student
@@ -548,6 +566,36 @@
                     <p class="text-base font-bold text-white">{{ Math.round((students.length / (formateurData?.capacite || 1)) * 100) }}%</p>
                   </div>
                 </div>
+
+                <div class="bg-[#0f0f12] border border-white/10 rounded-xl p-4">
+                  <div class="flex items-center justify-between mb-3">
+                    <p class="text-[9px] text-gray-600 uppercase tracking-widest font-bold">Squads</p>
+                    <span class="text-[10px] text-[#00babc] font-bold">{{ squads.length }}</span>
+                  </div>
+                  <div v-if="squads.length" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div
+                      v-for="squad in squads"
+                      :key="`class-tab-squad-${squad.id}`"
+                      class="rounded-lg border border-amber-300/25 bg-amber-400/10 p-3"
+                    >
+                      <div class="flex items-center justify-between mb-2">
+                        <p class="text-[11px] text-amber-300 uppercase tracking-widest font-bold">{{ squad.nom }}</p>
+                        <span class="text-[10px] text-gray-300">{{ squad.students?.length || 0 }} students</span>
+                      </div>
+                      <div v-if="squad.students?.length" class="flex flex-wrap gap-2">
+                        <span
+                          v-for="student in squad.students"
+                          :key="`class-tab-squad-student-${squad.id}-${student.user_id || student.id}`"
+                          class="text-[9px] px-2 py-1 rounded bg-white/5 text-gray-200 border border-white/10"
+                        >
+                          {{ student.user?.fullname || 'Unknown Student' }}
+                        </span>
+                      </div>
+                      <p v-else class="text-[10px] text-gray-400 italic">No students in this squad.</p>
+                    </div>
+                  </div>
+                  <p v-else class="text-[11px] text-gray-400 italic">No squads created for this class yet.</p>
+                </div>
               </div>
             </section>
 
@@ -560,21 +608,21 @@
                 <button @click="toggle('AbsenceModal')" class="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold text-gray-300 transition-colors hover:border-[#00babc]/40 hover:bg-[#00babc]/10 hover:text-[#00babc]">Detect Absence</button>
               </div>
 
-              <div v-if="studentAbsences" class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+              <div v-if="studentAbsences && studentAbsences.length" class="grid grid-cols-1 xl:grid-cols-3 gap-4">
                 <article v-for="Absences in studentAbsences" :key="Absences.id" class="rounded-2xl border border-white/10 bg-[#0f0f12] p-4 sm:p-5 hover:border-[#00babc]/40 transition-colors">
                   <div class="flex items-start justify-between gap-3 mb-4">
                     <div>
-                      <p class="text-[9px] uppercase tracking-[0.25em] text-gray-500">Absence #01</p>
-                      <h3 class="mt-1 text-sm font-bold text-white">Monday, 08:30</h3>
+                      <p class="text-[9px] uppercase tracking-[0.25em] text-gray-500">Absence #{{ Absences.id }}</p>
+                      <h3 class="mt-1 text-sm font-bold text-white">{{ Absences.jour ? formatDate(Absences.jour) : 'N/A' }}</h3>
                     </div>
-                    <span class="rounded-full border border-amber-400/25 bg-amber-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-amber-300">Pending</span>
+                    <span class="rounded-full border border-amber-400/25 bg-amber-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-amber-300">{{ Absences.status || 'pending' }}</span>
                   </div>
 
                   <div class="space-y-2 text-[11px] text-gray-300">
-                    <p><span class="text-gray-500">Student:</span> John Doe</p>
-                    <p><span class="text-gray-500">Duration:</span> 00:15</p>
-                    <p><span class="text-gray-500">Status:</span> Late</p>
-                    <p><span class="text-gray-500">Reason:</span> No reason added yet</p>
+                    <p><span class="text-gray-500">Student:</span> {{ Absences.user?.fullname || Absences.users?.fullname || 'Unknown Student' }}</p>
+                    <p><span class="text-gray-500">Duration:</span> {{ Absences.duree_retard || '00:00' }}</p>
+                    <p><span class="text-gray-500">Type:</span> {{ Absences.type_absence || 'retard' }}</p>
+                    <p><span class="text-gray-500">Reason:</span> {{ Absences.motif || 'No reason added yet' }}</p>
                   </div>
 
                   <div class="mt-5 flex items-center justify-between gap-3 border-t border-white/5 pt-4">
@@ -624,8 +672,8 @@
             <label class="text-[10px] uppercase tracking-widest text-gray-400">Student</label>
             <select v-model="student_id" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
               <option value="">Select Student</option>
-              <option v-for="student in students" :key="student.student_id" :value="student.student_id">
-                {{ student.student_name }}
+              <option v-for="student in students" :key="student.user_id || student.id" :value="student.user_id || student.id">
+                {{ student.user?.fullname || student.student_name || 'Unknown Student' }}
               </option>
             </select>
           </div>
@@ -633,8 +681,8 @@
             <label class="text-[10px] uppercase tracking-widest text-gray-400">Binome</label>
             <select v-model="binome_id" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
               <option value="">Select Student</option>
-              <option v-for="student in students" :key="student.student_id" :value="student.student_id">
-                {{ student.student_name }}
+              <option v-for="student in students" :key="student.user_id || student.id" :value="student.user_id || student.id">
+                {{ student.user?.fullname || student.student_name || 'Unknown Student' }}
               </option>
             </select>
           </div>
@@ -720,8 +768,8 @@
             <label class="text-[10px] uppercase tracking-widest text-gray-400">Select Student</label>
             <select v-model="selectedDelegateStudentId" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]" required>
               <option disabled value="" class="text-gray-400">Choose a delegate</option>
-              <option v-for="student in students" :key="student.student_id || student.id" :value="student.student_id || student.id" class="text-white">
-                {{ student.student_name || 'Unknown Student' }}
+              <option v-for="student in students" :key="student.user_id || student.id" :value="student.user_id || student.id" class="text-white">
+                {{ student.user?.fullname || student.student_name || 'Unknown Student' }}
               </option>
             </select>
           </div>
@@ -733,6 +781,59 @@
 
           <button type="submit" class="bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold px-4 py-2 rounded text-xs uppercase tracking-widest">
             Assign Delegate
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" id="CreateSquadModal">
+      <div class="w-full max-w-md rounded-xl border border-white/10 bg-[#121215] p-5 md:p-6 max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between mb-5">
+          <h2 class="text-sm md:text-base font-black uppercase tracking-widest text-amber-300">Create Squad</h2>
+          <button @click="toggle('CreateSquadModal')" class="text-gray-400 hover:text-red-400 text-xl leading-none">x</button>
+        </div>
+
+        <form @submit.prevent="submitCreateSquad" class="grid grid-cols-1 gap-4">
+          <div>
+            <label class="text-[10px] uppercase tracking-widest text-gray-400">Squad Name</label>
+            <input
+              v-model="squadName"
+              type="text"
+              placeholder="Ex: Alpha Team"
+              class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-amber-300"
+              required
+            >
+          </div>
+
+          <div>
+            <label class="text-[10px] uppercase tracking-widest text-gray-400">Select Students</label>
+            <div v-if="squadStudentsForCreate">
+              <div class="mt-2 space-y-2 max-h-56 overflow-y-auto rounded-lg border border-white/10 bg-[#0f0f12] p-3">
+                <label
+                  v-for="student in squadStudentsForCreate"
+                  :key="`create-squad-student-${student.userId}`"
+                  class="flex items-center gap-3 text-sm text-gray-200"
+                >
+                  <input
+                    type="checkbox"
+                    :value="student.userId"
+                    v-model="selectedSquadStudentUserIds"
+                    :disabled="selectedSquadStudentUserIds.length >= 5 && !selectedSquadStudentUserIds.includes(student.userId)"
+                    class="accent-amber-300"
+                  >
+                  <span class="min-w-0 flex-1">
+                    <span class="block truncate">{{ student.fullname }}</span>
+                  </span>
+                </label>
+              </div>
+              <p class="mt-2 text-[10px] text-amber-300/80">Maximum 5 students per squad.</p>
+            </div>
+            <div v-else class="mt-2 rounded-lg border border-dashed border-white/10 bg-black/20 p-3">
+              <p class="text-[11px] text-gray-400 italic">No students found in your class.</p>
+            </div>
+          </div>
+          <button type="submit" class="bg-amber-300 hover:bg-amber-200 text-[#121215] font-bold px-4 py-2 rounded text-xs uppercase tracking-widest">
+            Create Squad
           </button>
         </form>
       </div>
@@ -753,8 +854,8 @@
             <label class="block text-[10px] uppercase tracking-[0.22em] text-gray-400">Student</label>
             <select v-model="absence_user_id" class="w-full rounded-2xl border border-white/10 bg-[#0c0f14] px-4 py-3 text-sm text-white outline-none transition-colors focus:border-[#00babc] focus:bg-[#0f1218]" required>
               <option value="">Select student</option>
-              <option v-for="student in students" :key="student.student_id" :value="student.student_id">
-                {{ student.student_name }}
+              <option v-for="student in students" :key="student.user_id || student.id" :value="student.user_id || student.id">
+                {{ student.user?.fullname || student.student_name || 'Unknown Student' }}
               </option>
             </select>
           </div>
@@ -818,30 +919,51 @@
         </form>
       </div>
     </div>
+
+    <div class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4" id="EditFormateurProfileModal">
+      <div class="bg-[#121215] border border-white/10 p-8 rounded-lg w-[100%] max-w-md shadow-2xl overflow-y-auto max-h-[90vh]">
+        <div class="flex justify-between items-center mb-6">
+          <h1 class="text-[#00babc] font-black uppercase tracking-widest text-sm">Edit My Profile</h1>
+          <button @click="toggle('EditFormateurProfileModal')" class="text-[#00babc] hover:text-red-500 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+        <form class="flex flex-col justify-center items-start gap-4 w-[100%]" @submit.prevent="submitEditFormateurProfile">
+          <label for="formateur_fullname" class="text-[#00babc] text-[11px] uppercase tracking-widest">FULL NAME</label>
+          <input type="text" id="formateur_fullname" v-model="formateurProfileForm.fullname" placeholder="FULL NAME" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]" required>
+          <label for="formateur_email" class="text-[#00babc] text-[11px] uppercase tracking-widest">EMAIL ADDRESS</label>
+          <input type="email" id="formateur_email" v-model="formateurProfileForm.email" placeholder="EMAIL ADDRESS" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]" required>
+          <label for="formateur_campus" class="text-[#00babc] text-[11px] uppercase tracking-widest">CAMPUS</label>
+          <input type="text" id="formateur_campus" v-model="formateurProfileForm.campus" placeholder="CAMPUS" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]">
+          <label for="formateur_ville" class="text-[#00babc] text-[11px] uppercase tracking-widest">VILLE</label>
+          <input type="text" id="formateur_ville" v-model="formateurProfileForm.ville" placeholder="VILLE" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]">
+          <label for="formateur_link_profile" class="text-[#00babc] text-[11px] uppercase tracking-widest">LINK PROFILE</label>
+          <input type="url" id="formateur_link_profile" v-model="formateurProfileForm.link_profile" placeholder="https://..." class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]">
+          <button type="submit" class="w-full bg-[#00babc] text-[#121215] font-bold py-3 rounded mt-2 hover:bg-[#00d1d3] transition-all uppercase tracking-widest text-xs">
+            Save Changes
+          </button>
+        </form>
+      </div>
+    </div>
 </template>
 
 <script>
 import api from '@/services/api';
-import LienView from '@/components/LienView.vue';
 
 export default {
-  components: {
-    LienView,
-  },
   computed: {
-    formateurProfileLinks() {
-      const user = this.user || {};
-      return [
-        { label: 'Portfolio', value: user.portfolio_url || user.portfolio || user.website || '', url: user.portfolio_url || user.portfolio || user.website || '' },
-        { label: 'GitHub', value: user.github_url || user.github || '', url: user.github_url || user.github || '' },
-        { label: 'LinkedIn', value: user.linkedin_url || user.linkedin || '', url: user.linkedin_url || user.linkedin || '' },
-        { label: 'Instagram', value: user.instagram_url || user.instagram || '', url: user.instagram_url || user.instagram || '' },
-        { label: 'Twitter / X', value: user.twitter_url || user.twitter || '', url: user.twitter_url || user.twitter || '' },
-      ].filter((link) => link.value);
+    squadStudentsForCreate() {
+      if (!Array.isArray(this.students)) {
+        return [];
+      }
+
+      return this.students
+        .filter(student => student?.user_id && student?.user?.fullname)
+        .map(student => ({
+          userId: student.user_id,
+          fullname: student.user.fullname,
+        }));
     },
-    formateurLiens() {
-      return Array.isArray(this.user?.liens) ? this.user.liens : [];
-    }
   },
   data() {
     const today = new Date().toISOString().split('T')[0];
@@ -850,6 +972,7 @@ export default {
       activTab: 'profile',
       user: null,
       students: [],
+      squads: [],
       activites:null,
       formateurData: null,
       nom: '',
@@ -866,6 +989,8 @@ export default {
       promotion: '',
       annee: String(new Date().getFullYear()),
       selectedDelegateStudentId: '',
+      squadName: '',
+      selectedSquadStudentUserIds: [],
       activiteStatus: '',
       studentAbsences: [],
       absence_user_id: '',
@@ -884,9 +1009,56 @@ export default {
       applicationtechnique: 0,
       communicationpedagogique: 0,
       GradeResult: 0,
+      formateurProfileForm: {
+        fullname: '',
+        email: '',
+        campus: '',
+        ville: '',
+        link_profile: '',
+      },
     };
   },
   methods: {
+    openFormateurProfileModal() {
+      this.formateurProfileForm = {
+        fullname: this.user?.fullname || '',
+        email: this.user?.email || '',
+        campus: this.user?.campus || '',
+        ville: this.user?.ville || '',
+        link_profile: this.user?.link_profile || '',
+      };
+      this.toggle('EditFormateurProfileModal');
+    },
+    async submitEditFormateurProfile() {
+      try {
+        await api.put('/updateusers', {
+          id: this.user?.id,
+          fullname: this.formateurProfileForm.fullname,
+          email: this.formateurProfileForm.email,
+          role: this.normalizeRole(this.user?.role),
+          campus: this.formateurProfileForm.campus || null,
+          ville: this.formateurProfileForm.ville || null,
+          link_profile: this.formateurProfileForm.link_profile || null,
+          etat: this.user?.etat || 'active',
+        });
+
+        const updatedUser = {
+          ...(this.user || {}),
+          fullname: this.formateurProfileForm.fullname,
+          email: this.formateurProfileForm.email,
+          campus: this.formateurProfileForm.campus || null,
+          ville: this.formateurProfileForm.ville || null,
+          link_profile: this.formateurProfileForm.link_profile || null,
+        };
+
+        this.user = updatedUser;
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        await this.getFormateurData();
+        this.toggle('EditFormateurProfileModal');
+      } catch (error) {
+        console.error('Error updating formateur profile:', error?.response?.data || error);
+      }
+    },
     convertominutes(minutes) {
       const hour = Math.floor(minutes / 60);
       const min = minutes % 60;
@@ -960,9 +1132,55 @@ export default {
         console.log('Absence submitted:', this.absence_user_id, this.absence_jour, dureeRetard);
 
         await this.getStudents();
+        await this.getStudentAbsences();
         this.toggle('AbsenceModal');
       } catch (error) {
         console.error('Error creating absence:', error);
+      }
+    },
+    openCreateSquadModal() {
+      this.squadName = '';
+      this.selectedSquadStudentUserIds = [];
+      this.toggle('CreateSquadModal');
+    },
+    async submitCreateSquad() {
+      try {
+        const classeId = this.formateurData?.classe_id;
+
+        if (!classeId) {
+          console.error('Missing classe_id for squad creation.');
+          return;
+        }
+
+        if (!this.selectedSquadStudentUserIds.length) {
+          console.error('Please select at least one student.');
+          return;
+        }
+
+        if (this.selectedSquadStudentUserIds.length > 5) {
+          console.error('You can select a maximum of 5 students per squad.');
+          return;
+        }
+
+        await api.post('/createsquad', {
+          nom: this.squadName,
+          classe_id: classeId,
+          student_user_ids: this.selectedSquadStudentUserIds,
+        });
+
+        await this.getStudents();
+        await this.getSquads();
+        this.toggle('CreateSquadModal');
+      } catch (error) {
+        console.error('Error creating squad:', error?.response?.data || error);
+      }
+    },
+    async getSquads() {
+      try {
+        const response = await api.get('/squads');
+        this.squads = response.data?.squads || [];
+      } catch (error) {
+        console.error('Error fetching squads:', error?.response?.data || error);
       }
     },
     async getAllStudents() {
@@ -978,11 +1196,17 @@ export default {
       try {
         const response = await api.get('/students');
         this.students = response.data.students || [];
-        this.studentAbsences = response.data.studentAbsences || [];
-        console.log('Fetched student absences:', this.studentAbsences);
         console.log('Fetched students:', this.students);
       } catch (error) {
         console.error('Error fetching students:', error);
+      }
+    },
+    async getStudentAbsences() {
+      try {
+        const response = await api.get('/studentabsences');
+        this.studentAbsences = response.data.studentAbsences || [];
+      } catch (error) {
+        console.error('Error fetching student absences:', error?.response?.data || error);
       }
     },
     async getActivities() {
@@ -997,27 +1221,24 @@ export default {
     async getFormateurData() {
       try {
         const response = await api.get('/formateurdata');
-        const raw = response.data?.formateurData?.[0] || null;
+        const formateur = response.data?.formateurData?.[0] || null;
 
-        if (!raw) {
+        if (!formateur) {
           this.formateurData = null;
           return;
         }
 
-        const currentClass = Array.isArray(raw.classes) ? raw.classes[0] : null;
-        const delegate = Array.isArray(currentClass?.delegate) ? currentClass.delegate[0] : null;
+        const currentClass = formateur.classes || null;
 
-        this.formateurData = {
-          ...raw,
-          formateur_id: raw.id,
-          formateur_name: raw.fullname,
-          classe_id: currentClass?.id || null,
-          classe_name: currentClass?.nom || null,
-          capacite: currentClass?.capacite || null,
-          class_logo: currentClass?.link_logo || null,
-          delegate_name: delegate?.fullname || null,
-          classes: currentClass,
-        };
+        this.formateurData = formateur;
+        this.formateurData.formateur_id = formateur.id;
+        this.formateurData.formateur_name = formateur.fullname;
+        this.formateurData.classes = currentClass;
+        this.formateurData.classe_id = currentClass?.id || null;
+        this.formateurData.classe_name = currentClass?.nom || null;
+        this.formateurData.capacite = currentClass?.capacite || null;
+        this.formateurData.class_logo = currentClass?.link_logo || null;
+        this.formateurData.delegate_name = currentClass?.delegate?.[0]?.fullname || null;
 
         console.log('Fetched formateur data:', this.formateurData);
       } catch (error) {
@@ -1120,6 +1341,8 @@ export default {
     }
 
     this.getStudents();
+    this.getStudentAbsences();
+    this.getSquads();
     this.getAllStudents();
     this.getFormateurData();
     this.getActivities();
