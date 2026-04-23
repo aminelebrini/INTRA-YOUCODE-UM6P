@@ -44,7 +44,7 @@ class DataRepository
     }
     public function getAbsences()
     {
-        return Absence::with('users', 'students','justification')->get();
+        return Absence::with('user', 'student','justification')->get();
     }
     public function getAnnouncements()
     {
@@ -52,7 +52,7 @@ class DataRepository
     }
     public function getAllData()
     {
-        $allData = User::with('students','formateur', 'absences','justifications')->get();
+        $allData = User::with('student','formateur', 'absences','justifications')->get();
         return $allData;
     }
 }
