@@ -793,7 +793,7 @@ export default {
           id: this.user?.id,
           fullname: this.adminProfileForm.fullname,
           email: this.adminProfileForm.email,
-          role: this.normalizeRole(this.user?.role),
+          role: this.user.role,
           campus: this.adminProfileForm.campus || null,
           ville: this.adminProfileForm.ville || null,
           link_profile: this.adminProfileForm.link_profile || null,

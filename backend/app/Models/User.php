@@ -34,7 +34,7 @@ class User extends Authenticatable
         'updated_at',
     ];
 
-        public function students()
+        public function student()
         {
             return $this->hasOne(Student::class, 'user_id', 'id');
         }

@@ -63,7 +63,7 @@
               class="w-full bg-[#1d1d21] border-b-2 border-transparent p-4 text-white focus:border-[#00babc] focus:bg-[#25252a] outline-none transition-all duration-300 placeholder:text-gray-700"
             >
           </div>
-
+          <p class="text-sm" v-if="message" :class="loginStatus === 'success' ? 'text-green-500' : 'text-red-500'">{{ message }}</p>
           <button type="submit" class="w-full bg-[#00babc] text-[#0f0f12] font-black py-5 uppercase tracking-[0.3em] text-xs hover:bg-white hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] transition-all duration-500 transform active:scale-95">
             Authenticate
           </button>
@@ -85,7 +85,10 @@ export default {
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
+      message: '',
+      loginStatus: null
+
     }
   },
   methods: {
@@ -109,17 +112,24 @@ export default {
       
       if(user.etat !== 'abandonned')
       {
-          if (user && user.role === 'admin') {
-            this.$router.push('/admindashboard');
-          } else if(user && user.role === 'formateur') {
-            this.$router.push('/formateurdashboard');
-          }else if(user && user.role === 'etudiant') {
-            this.$router.push('/studentdashboard');
-          }
+        this.message = response.data.message || 'Login successful';
+        this.loginStatus = 'success';
+          setTimeout(() => {
+            if (user.role === 'admin') {
+              this.$router.push('/admindashboard');
+            } else if (user.role === 'formateur') {
+              this.$router.push('/formateurdashboard');
+            } else if (user.role === 'etudiant') {
+              this.$router.push('/studentdashboard');
+            }
+          }, 1500);
+          
       }
     }
   } catch (error) {
     console.error('Erreur de connexion au serveur (502) ou identifiants :', error.message);
+    this.message = 'Identifiants invalides';
+    this.loginStatus = 'error';
   }
 }
     },
