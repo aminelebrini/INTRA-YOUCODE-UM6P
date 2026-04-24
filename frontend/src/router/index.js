@@ -5,37 +5,10 @@ import AdminDashboard from '../views/AdminDashboard.vue'
 import FormateurDash from '../views/FormateurDash.vue'
 import StudentDashboard from '../views/StudentDashboard.vue'
 
-function normalizeRole(role) {
-  return String(role || '').toLowerCase().trim()
-}
-
-function getStoredSession() {
-  const token = localStorage.getItem('token')
-  const rawUser = localStorage.getItem('user')
-
-  if (!token || !rawUser) {
-    return { token: null, user: null }
-  }
-
-  try {
-    return {
-      token,
-      user: JSON.parse(rawUser)
-    }
-  } catch (error) {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-    return { token: null, user: null }
-  }
-}
-
-function getDefaultRouteByRole(role) {
-  const normalizedRole = normalizeRole(role)
-
-  if (normalizedRole === 'admin') return '/admindashboard'
-  if (normalizedRole === 'formateur') return '/formateurdashboard'
-  if (normalizedRole === 'etudiant') return '/studentdashboard'
-
+function redirectByRole(role) {
+  if (role === 'admin') return '/admindashboard'
+  if (role === 'formateur') return '/formateurdashboard'
+  if (role === 'etudiant') return '/studentdashboard'
   return '/'
 }
 
@@ -43,26 +16,22 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home,
-    meta: { public: true }
+    component: Home
   },
   {
     path: '/admindashboard',
     name: 'Dashboard',
-    component: AdminDashboard,
-    meta: { requiresAuth: true, roles: ['admin'] }
+    component: AdminDashboard
   },
   {
     path: '/formateurdashboard',
     name: 'FormateurDashboard',
-    component: FormateurDash,
-    meta: { requiresAuth: true, roles: ['formateur'] }
+    component: FormateurDash
   },
   {
     path: '/studentdashboard',
     name: 'StudentDashboard',
-    component: StudentDashboard,
-    meta: { requiresAuth: true, roles: ['etudiant'] }
+    component: StudentDashboard
   }
 ]
 
@@ -72,21 +41,42 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const { token, user } = getStoredSession()
-  const userRole = normalizeRole(user?.role)
-  const requiresAuth = to.matched.some(route => route.meta.requiresAuth)
-  const allowedRoles = to.meta.roles || []
+  const token = localStorage.getItem('token')
+  const data = localStorage.getItem('user')
 
-  if (requiresAuth && (!token || !user)) {
+  if (!token || !data) {
+    if (to.path !== '/') {
+      return next('/')
+    }
+    return next()
+  }
+
+  let user = null
+
+  try {
+    user = JSON.parse(data)
+  } catch (error) {
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
     return next('/')
   }
 
-  if (requiresAuth && allowedRoles.length > 0 && !allowedRoles.includes(userRole)) {
-    return next(getDefaultRouteByRole(userRole))
+  const role = String(user?.role || '').toLowerCase().trim()
+
+  if (to.path === '/') {
+    return next(redirectByRole(role))
   }
 
-  if (to.path === '/' && token && user) {
-    return next(getDefaultRouteByRole(userRole))
+  if (to.path === '/admindashboard' && role !== 'admin') {
+    return next(redirectByRole(role))
+  }
+
+  if (to.path === '/formateurdashboard' && role !== 'formateur') {
+    return next(redirectByRole(role))
+  }
+
+  if (to.path === '/studentdashboard' && role !== 'etudiant') {
+    return next(redirectByRole(role))
   }
 
   return next()
