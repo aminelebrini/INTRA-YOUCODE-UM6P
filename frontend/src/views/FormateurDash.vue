@@ -366,7 +366,8 @@
                 </div>
               </div>
 
-              <div v-if="activites.length > 0" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
+              <div v-if="activites.length > 0">
+              <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
                 <article
                   v-for="activity in activites"
                   :key="activity.id"
@@ -472,6 +473,7 @@
                 <div v-else class="rounded-xl border border-dashed border-white/10 bg-black/20 p-5 text-center">
                   <p class="text-[11px] text-gray-400 italic tracking-wide">Aucun livrable pour le moment.</p>
                 </div>
+              </div>
               </div>
 
               <div v-else class="mt-10 pt-6 border-t border-white/5 flex items-center justify-between">
