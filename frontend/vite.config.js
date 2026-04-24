@@ -18,5 +18,9 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173,
     strictPort: true,
+    allowedHosts: [
+      'intra-youcode.me',
+      '165.227.153.80'
+    ]
   }
 })
