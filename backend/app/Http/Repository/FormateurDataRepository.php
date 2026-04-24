@@ -7,6 +7,7 @@ use App\Models\Absence;
 use App\Models\Student;
 use App\Models\Activite;
 use App\Models\Squad;
+use App\Models\Livrable;
 
 class FormateurDataRepository
 {
@@ -60,6 +61,21 @@ class FormateurDataRepository
 
         return Squad::with(['students.user'])
             ->where('classe_id', $classeId)
+            ->get();
+    }
+
+    public function getLivrables($formateurId)
+    {
+        $formateur = User::with('classes')->find($formateurId);
+        $classeId = $formateur?->classes?->id;
+
+        if (!$classeId) {
+            return collect();
+        }
+
+        return Livrable::with(['activite', 'student.user'])
+            ->where('classe_id', $classeId)
+            ->latest('date_soumission')
             ->get();
     }
 }

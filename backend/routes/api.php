@@ -52,6 +52,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/studentabsences', [FormateurDataController::class, 'getStudentAbsences']);
         Route::get('/squads', [FormateurDataController::class, 'getSquads']);
         Route::get('/activites', [FormateurDataController::class, 'getActivites']);
+        Route::get('/livrables', [FormateurDataController::class, 'getLivrables']);
         Route::get('/getstudents', [FormateurDataController::class, 'getAllStudents']);
     });
 

@@ -370,7 +370,8 @@
                 <article
                   v-for="activity in activites"
                   :key="activity.id"
-                  class="bg-[#0f0f12] border border-white/10 rounded-xl p-4 hover:border-[#00babc]/50 transition-colors"
+                  class="bg-[#0f0f12] border border-white/10 rounded-xl p-4 hover:border-[#00babc]/50 transition-colors cursor-pointer"
+                  @click="openActivityDetails(activity)"
                 >
                   <div class="flex items-start justify-between gap-3 mb-3">
                     <div class="flex-1 min-w-0">
@@ -413,22 +414,64 @@
                     </div>
                     <div v-if="activity.ressource" class="text-right">
                       <p class="text-[9px] text-gray-600 mb-1">Resource</p>
-                      <a :href="activity.ressource" target="_blank" class="text-[9px] text-[#00babc] hover:text-[#00d1d3] font-bold truncate">
+                      <a :href="activity.ressource" target="_blank" @click.stop class="text-[9px] text-[#00babc] hover:text-[#00d1d3] font-bold truncate">
                         View →
                       </a>
                     </div>
                     <div v-if="activity.type != 'brief'">
                       <div v-if="activity.student_id">
-                        <button @click="toggle('NoteStudentModal', activity.student_id, activity.binome_id)" class="text-[15px] text-[#00babc] hover:text-[#00d1d3] font-bold truncate border border-[#00babc]/30 rounded-lg px-3 py-1 transition-colors">
+                        <button @click.stop="toggle('NoteStudentModal', activity.student_id, activity.binome_id)" class="text-[15px] text-[#00babc] hover:text-[#00d1d3] font-bold truncate border border-[#00babc]/30 rounded-lg px-3 py-1 transition-colors">
                           Noter
                         </button>
                       </div>
                     </div>
                   </div>
-                  <button @click="openEditActivityModal(activity)" class="mt-3 w-full rounded-lg border border-[#00babc]/30 px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-[#00babc] transition-colors hover:bg-[#00babc] hover:text-[#121215]">
+                  <div class="mt-3 grid grid-cols-2 gap-2">
+                  <button @click.stop="openActivityDetails(activity)" class="w-full rounded-lg border border-white/10 px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-gray-300 transition-colors hover:bg-white/10 hover:text-white">
+                    Details
+                  </button>
+                  <button @click.stop="openEditActivityModal(activity)" class="w-full rounded-lg border border-[#00babc]/30 px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-[#00babc] transition-colors hover:bg-[#00babc] hover:text-[#121215]">
                     Edit Activity
                   </button>
+                  </div>
                 </article>
+              </div>
+
+              <div class="mt-8 rounded-2xl border border-white/10 bg-[#101216] p-4 md:p-5">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+                  <div>
+                    <h2 class="text-white font-black uppercase tracking-wider text-sm md:text-base">Livrables</h2>
+                    <p class="text-[10px] md:text-xs text-gray-500 mt-1">Soumissions des etudiants pour les activites</p>
+                  </div>
+                  <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase border border-[#00babc]/30 bg-[#00babc]/10 text-[#00babc]">
+                    {{ livrables.length }} Livrables
+                  </span>
+                </div>
+
+                <div v-if="livrables.length" class="grid grid-cols-1 xl:grid-cols-2 gap-3">
+                  <article
+                    v-for="livrable in livrables"
+                    :key="livrable.id"
+                    class="rounded-xl border border-white/10 bg-[#0f0f12] p-4"
+                  >
+                    <div class="flex items-start justify-between gap-3">
+                      <div>
+                        <p class="text-[9px] uppercase tracking-widest text-[#00babc]">{{ livrable.activite?.nom || 'Activite' }}</p>
+                        <h3 class="mt-1 text-sm font-bold text-white">{{ livrable.student?.user?.fullname || 'Etudiant inconnu' }}</h3>
+                      </div>
+                      <span class="text-[10px] text-gray-400">{{ livrable.date_soumission ? formatDate(livrable.date_soumission) : 'N/A' }}</span>
+                    </div>
+
+                    <div class="mt-3 space-y-2 text-[11px] text-gray-300">
+                      <p v-if="livrable.commentaire"><span class="text-gray-500">Commentaire:</span> {{ livrable.commentaire }}</p>
+                      <p v-if="livrable.lien_github"><span class="text-gray-500">GitHub:</span> <a :href="livrable.lien_github" target="_blank" class="text-[#00babc]" @click.stop>Voir</a></p>
+                      <p v-if="livrable.lien_deploiment"><span class="text-gray-500">Deploiement:</span> <a :href="livrable.lien_deploiment" target="_blank" class="text-[#00babc]" @click.stop>Voir</a></p>
+                    </div>
+                  </article>
+                </div>
+                <div v-else class="rounded-xl border border-dashed border-white/10 bg-black/20 p-5 text-center">
+                  <p class="text-[11px] text-gray-400 italic tracking-wide">Aucun livrable pour le moment.</p>
+                </div>
               </div>
 
               <div v-else class="mt-10 pt-6 border-t border-white/5 flex items-center justify-between">
@@ -1016,6 +1059,67 @@
         </form>
       </div>
     </div>
+
+    <div class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" id="ActivityDetailsModal">
+      <div class="w-full max-w-3xl rounded-xl border border-white/10 bg-[#121215] p-5 md:p-6 max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between mb-5">
+          <h2 class="text-sm md:text-base font-black uppercase tracking-widest text-[#00babc]">Activity Details</h2>
+          <button @click="toggle('ActivityDetailsModal')" class="text-gray-400 hover:text-red-400 text-xl leading-none">x</button>
+        </div>
+
+        <div v-if="selectedActivity" class="space-y-5">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="rounded-xl border border-white/10 bg-[#0f0f12] p-4">
+              <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Nom</p>
+              <p class="text-sm font-bold text-white">{{ selectedActivity.nom || 'N/A' }}</p>
+            </div>
+            <div class="rounded-xl border border-white/10 bg-[#0f0f12] p-4">
+              <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Type</p>
+              <p class="text-sm font-bold text-white">{{ selectedActivity.type || 'N/A' }}</p>
+            </div>
+            <div class="rounded-xl border border-white/10 bg-[#0f0f12] p-4">
+              <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Date Debut</p>
+              <p class="text-sm font-bold text-white">{{ selectedActivity.date_debut ? formatDate(selectedActivity.date_debut) : 'N/A' }}</p>
+            </div>
+            <div class="rounded-xl border border-white/10 bg-[#0f0f12] p-4">
+              <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Date Fin</p>
+              <p class="text-sm font-bold text-white">{{ selectedActivity.date_fin ? formatDate(selectedActivity.date_fin) : 'N/A' }}</p>
+            </div>
+            <div class="rounded-xl border border-white/10 bg-[#0f0f12] p-4">
+              <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Etudiant</p>
+              <p class="text-sm font-bold text-white">{{ selectedActivity.student?.fullname || 'N/A' }}</p>
+            </div>
+            <div class="rounded-xl border border-white/10 bg-[#0f0f12] p-4">
+              <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Binome</p>
+              <p class="text-sm font-bold text-white">{{ selectedActivity.binome?.fullname || 'N/A' }}</p>
+            </div>
+          </div>
+
+          <div class="rounded-xl border border-white/10 bg-[#0f0f12] p-4">
+            <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-2">Description</p>
+            <p class="text-sm text-gray-300">{{ selectedActivity.description || 'Aucune description' }}</p>
+          </div>
+
+          <div class="rounded-xl border border-white/10 bg-[#0f0f12] p-4">
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-[9px] uppercase tracking-widest text-gray-500">Livrables Lies</p>
+              <span class="text-[10px] text-[#00babc] font-bold">{{ selectedActivityLivrables.length }}</span>
+            </div>
+            <div v-if="selectedActivityLivrables.length" class="space-y-3">
+              <div v-for="livrable in selectedActivityLivrables" :key="livrable.id" class="rounded-lg border border-white/10 bg-black/20 p-3">
+                <p class="text-sm font-bold text-white">{{ livrable.student?.user?.fullname || 'Etudiant' }}</p>
+                <p v-if="livrable.commentaire" class="mt-2 text-[11px] text-gray-300">{{ livrable.commentaire }}</p>
+                <div class="mt-2 flex flex-wrap gap-3 text-[11px]">
+                  <a v-if="livrable.lien_github" :href="livrable.lien_github" target="_blank" class="text-[#00babc]">GitHub</a>
+                  <a v-if="livrable.lien_deploiment" :href="livrable.lien_deploiment" target="_blank" class="text-[#00babc]">Deploiement</a>
+                </div>
+              </div>
+            </div>
+            <p v-else class="text-[11px] text-gray-400 italic">Aucun livrable pour cette activite.</p>
+          </div>
+        </div>
+      </div>
+    </div>
 </template>
 
 <script>
@@ -1035,6 +1139,13 @@ export default {
           fullname: student.user.fullname,
         }));
     },
+    selectedActivityLivrables() {
+      if (!this.selectedActivity?.id || !Array.isArray(this.livrables)) {
+        return [];
+      }
+
+      return this.livrables.filter(livrable => livrable.activite_id === this.selectedActivity.id);
+    },
   },
   data() {
     const today = new Date().toISOString().split('T')[0];
@@ -1044,7 +1155,9 @@ export default {
       user: null,
       students: [],
       squads: [],
+      livrables: [],
       activites:null,
+      selectedActivity: null,
       formateurData: null,
       nom: '',
       description: '',
@@ -1161,6 +1274,10 @@ export default {
       const grade = Math.floor(avg) + 10;
       this.GradeResult = grade;
 
+    },
+    openActivityDetails(activity) {
+      this.selectedActivity = activity || null;
+      this.toggle('ActivityDetailsModal');
     },
     openEditActivityModal(activity) {
       this.editActivityForm = {
@@ -1305,6 +1422,14 @@ export default {
         this.squads = response.data?.squads || [];
       } catch (error) {
         console.error('Error fetching squads:', error?.response?.data || error);
+      }
+    },
+    async getLivrables() {
+      try {
+        const response = await api.get('/livrables');
+        this.livrables = response.data?.livrables || [];
+      } catch (error) {
+        console.error('Error fetching livrables:', error?.response?.data || error);
       }
     },
     async getAllStudents() {
@@ -1467,6 +1592,7 @@ export default {
     this.getStudents();
     this.getStudentAbsences();
     this.getSquads();
+    this.getLivrables();
     this.getAllStudents();
     this.getFormateurData();
     this.getActivities();

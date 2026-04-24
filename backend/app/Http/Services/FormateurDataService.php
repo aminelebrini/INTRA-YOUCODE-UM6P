@@ -38,5 +38,10 @@ class FormateurDataService
         return $this->FormateurDataRepository->getSquads($formateurId);
     }
 
+    public function getLivrables($formateurId)
+    {
+        return $this->FormateurDataRepository->getLivrables($formateurId);
+    }
+
 }
 ?>

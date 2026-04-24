@@ -77,4 +77,12 @@ class FormateurDataController extends Controller
 
         return response()->json(['squads' => $squads], 200);
     }
+
+    public function getLivrables()
+    {
+        $user = Auth::user();
+        $livrables = $this->FormateurDataService->getLivrables($user->id);
+
+        return response()->json(['livrables' => $livrables], 200);
+    }
 }
