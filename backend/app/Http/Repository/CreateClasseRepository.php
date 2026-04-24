@@ -16,5 +16,20 @@ class CreateClasseRepository
             'updated_at' => now(),
         ]);
     }
+
+    public function update($id, $name, $capacity, $promo, $link_logo, $campus)
+    {
+        $classe = Classe::findOrFail($id);
+        $classe->update([
+            'nom' => $name,
+            'capacite' => $capacity,
+            'promo' => $promo,
+            'link_logo' => $link_logo,
+            'campus' => $campus,
+            'updated_at' => now(),
+        ]);
+
+        return $classe;
+    }
 }
 ?>

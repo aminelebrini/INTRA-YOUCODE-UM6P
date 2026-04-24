@@ -21,6 +21,18 @@ class CreateClasseService
             $campus
         );
     }
+
+    public function update($id, $name, $capacity, $promo, $link_logo, $campus)
+    {
+        return $this->CreateClasseRepository->update(
+            $id,
+            $name,
+            $capacity,
+            $promo,
+            $link_logo,
+            $campus
+        );
+    }
 }
 
 

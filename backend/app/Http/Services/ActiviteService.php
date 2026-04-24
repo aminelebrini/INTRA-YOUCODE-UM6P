@@ -35,6 +35,34 @@ class ActiviteService
         $date_fin
         );
     }
+
+    public function updateActivite($id,
+        $nom,
+        $description,
+        $type,
+        $formateur_id,
+        $student_id,
+        $binome_id,
+        $classe_id,
+        $ressource,
+        $etat,
+        $date_debut,
+        $date_fin)
+    {
+        return $this->activiteRepository->updateActivite($id,
+        $nom,
+        $description,
+        $type,
+        $formateur_id,
+        $student_id,
+        $binome_id,
+        $classe_id,
+        $ressource,
+        $etat,
+        $date_debut,
+        $date_fin
+        );
+    }
 }
 
 

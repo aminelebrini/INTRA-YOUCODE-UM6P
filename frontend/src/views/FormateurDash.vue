@@ -425,6 +425,9 @@
                       </div>
                     </div>
                   </div>
+                  <button @click="openEditActivityModal(activity)" class="mt-3 w-full rounded-lg border border-[#00babc]/30 px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-[#00babc] transition-colors hover:bg-[#00babc] hover:text-[#121215]">
+                    Edit Activity
+                  </button>
                 </article>
               </div>
 
@@ -708,6 +711,74 @@
           </div>
           <button type="submit" class="md:col-span-2 bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold px-4 py-2 rounded text-xs uppercase tracking-widest">
             Create Activity
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" id="EditActivityModal">
+      <div class="w-full max-w-2xl rounded-xl border border-white/10 bg-[#121215] p-5 md:p-6 max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between mb-5">
+          <h2 class="text-sm md:text-base font-black uppercase tracking-widest text-[#00babc]">Edit Activity</h2>
+          <button @click="toggle('EditActivityModal')" class="text-gray-400 hover:text-red-400 text-xl leading-none">x</button>
+        </div>
+
+        <form @submit.prevent="submitEditActivity" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="md:col-span-2">
+            <label class="text-[10px] uppercase tracking-widest text-gray-400">Activity Name</label>
+            <input v-model="editActivityForm.nom" type="text" required class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
+          </div>
+
+          <div>
+            <label class="text-[10px] uppercase tracking-widest text-gray-400">Type</label>
+            <select v-model="editActivityForm.type" required class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
+              <option value="brief">Briefs</option>
+              <option value="live-coding">Live Coding</option>
+              <option value="workshop">Workshop</option>
+              <option value="veille">Veille</option>
+              <option value="debriefing">Debriefing</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[10px] uppercase tracking-widest text-gray-400">Student</label>
+            <select v-model="editActivityForm.student_id" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
+              <option value="">Select Student</option>
+              <option v-for="student in students" :key="student.user_id || student.id" :value="student.user_id || student.id">
+                {{ student.user?.fullname || student.student_name || 'Unknown Student' }}
+              </option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[10px] uppercase tracking-widest text-gray-400">Binome</label>
+            <select v-model="editActivityForm.binome_id" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
+              <option value="">Select Student</option>
+              <option v-for="student in students" :key="student.user_id || student.id" :value="student.user_id || student.id">
+                {{ student.user?.fullname || student.student_name || 'Unknown Student' }}
+              </option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-[10px] uppercase tracking-widest text-gray-400">Start Date</label>
+            <input v-model="editActivityForm.date_debut" type="date" required class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
+          </div>
+
+          <div>
+            <label class="text-[10px] uppercase tracking-widest text-gray-400">End Date</label>
+            <input v-model="editActivityForm.date_fin" type="date" required class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="text-[10px] uppercase tracking-widest text-gray-400">Resource</label>
+            <input v-model="editActivityForm.ressource" type="text" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]">
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="text-[10px] uppercase tracking-widest text-gray-400">Description</label>
+            <textarea v-model="editActivityForm.description" rows="4" class="w-full mt-1 bg-[#0f0f12] border border-white/10 rounded p-2.5 text-sm text-white outline-none focus:border-[#00babc]"></textarea>
+          </div>
+          <button type="submit" class="md:col-span-2 bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold px-4 py-2 rounded text-xs uppercase tracking-widest">
+            Save Activity
           </button>
         </form>
       </div>
@@ -1016,6 +1087,18 @@ export default {
         ville: '',
         link_profile: '',
       },
+      editActivityForm: {
+        id: null,
+        nom: '',
+        description: '',
+        type: 'brief',
+        ressource: '',
+        etat: 'pending',
+        date_debut: '',
+        date_fin: '',
+        student_id: '',
+        binome_id: '',
+      },
     };
   },
   methods: {
@@ -1079,6 +1162,21 @@ export default {
       this.GradeResult = grade;
 
     },
+    openEditActivityModal(activity) {
+      this.editActivityForm = {
+        id: activity?.id || null,
+        nom: activity?.nom || '',
+        description: activity?.description || '',
+        type: activity?.type === 'diebrifing' ? 'debriefing' : (activity?.type || 'brief'),
+        ressource: activity?.ressource || '',
+        etat: activity?.etat || 'pending',
+        date_debut: activity?.date_debut || '',
+        date_fin: activity?.date_fin || '',
+        student_id: activity?.student_id || '',
+        binome_id: activity?.binome_id || '',
+      };
+      this.toggle('EditActivityModal');
+    },
     async submitCreateActivity() {
       const classeId = this.formateurData?.classe_id || this.formateurData?.id;
       const formateurId = this.formateurData?.formateur_id || this.user?.id;
@@ -1103,6 +1201,32 @@ export default {
         this.toggle('CreateActivityModal');
       } catch (error) {
         console.error('Error creating activity:', error);
+      }
+    },
+    async submitEditActivity() {
+      const classeId = this.formateurData?.classe_id || this.formateurData?.id;
+      const formateurId = this.formateurData?.formateur_id || this.user?.id;
+
+      try {
+        await api.put('/updateactivite', {
+          id: this.editActivityForm.id,
+          nom: this.editActivityForm.nom,
+          description: this.editActivityForm.description,
+          type: this.editActivityForm.type,
+          formateur_id: formateurId,
+          student_id: this.editActivityForm.student_id || null,
+          binome_id: this.editActivityForm.binome_id || null,
+          classe_id: classeId,
+          ressource: this.editActivityForm.ressource || '',
+          etat: this.editActivityForm.etat || 'pending',
+          date_debut: this.editActivityForm.date_debut,
+          date_fin: this.editActivityForm.date_fin,
+        });
+
+        await this.getActivities();
+        this.toggle('EditActivityModal');
+      } catch (error) {
+        console.error('Error updating activity:', error?.response?.data || error);
       }
     },
     resetActivityForm() {

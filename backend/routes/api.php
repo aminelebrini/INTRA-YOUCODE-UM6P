@@ -30,9 +30,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/updateusers', [UpdateUserController::class, 'update']);
         Route::post('/send-lien', [UpdateUserController::class, 'SendLien']);
         Route::post('/createclasse', [CreateClasseController::class, 'create']);
+        Route::put('/updateclasse', [CreateClasseController::class, 'update']);
         Route::post('/assignformateurclasse', [AssignFormateurClasseController::class, 'assign']);
         Route::post('/validateabsence', [ValidateAbsenceController::class, 'validateAbsence']);
         Route::post('/createannouncement', [AnnouncementController::class, 'createAnnouncement']);
+        Route::put('/updateannouncement', [AnnouncementController::class, 'updateAnnouncement']);
         Route::get('/data', [DataController::class, 'data']);
         Route::get('/alldata', [DataController::class, 'allData']);
     });
@@ -41,6 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/assignstudentclasse', [AssignStudentClasseController::class, 'assign']);
         Route::post('/assigndelegate', [AssignDelegateController::class, 'assign']);
         Route::post('/createactivites', [ActiviteController::class, 'activites']);
+        Route::put('/updateactivite', [ActiviteController::class, 'update']);
         Route::post('/absences', [AbsenceController::class, 'dedicateAbsence']);
         Route::post('/createsquad', [CreateSquadController::class, 'create']);
         Route::post('/gradestudent', [GradeStudentController::class, 'gradeStudent']);
@@ -59,4 +62,3 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/leaderboard', [StudentDataController::class, 'Leaderboard']);
     });
 });
-

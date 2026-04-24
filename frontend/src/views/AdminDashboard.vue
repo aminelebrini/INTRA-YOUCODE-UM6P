@@ -324,6 +324,11 @@
                   <span class="text-gray-600 text-xs">Created</span>
                   <span class="text-gray-500 text-xs">{{ formatDate(classe.created_at) }}</span>
                 </div>
+                <div class="pt-2">
+                  <button @click="openEditClassModal(classe)" class="w-full rounded border border-[#00babc]/40 px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-[#00babc] transition-colors hover:bg-[#00babc] hover:text-[#121215]">
+                    Edit Class
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -441,6 +446,9 @@
                     <span class="text-gray-500">Posted:</span>
                     <span class="text-gray-400">{{ formatDate(annance.created_at) }}</span>
                   </div>
+                  <button @click="openEditAnnouncementModal(annance)" class="mt-3 w-full rounded border border-[#00babc]/40 px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-[#00babc] transition-colors hover:bg-[#00babc] hover:text-[#121215]">
+                    Edit Annance
+                  </button>
                 </div>
               </div>
             </div>
@@ -597,6 +605,32 @@
     </div>
   </div>
 
+  <div class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4" id="EditClassModal">
+    <div class="bg-[#121215] border border-white/10 p-8 rounded-lg w-[100%] max-w-md shadow-2xl overflow-y-auto max-h-[90vh]">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-[#00babc] font-black uppercase tracking-widest text-sm">Edit Class</h2>
+        <button @click="oppenToggle('EditClassModal')" class="text-[#00babc] hover:text-red-500 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+      <form @submit.prevent="submitEditClass" class="flex flex-col justify-center items-start gap-4 w-[100%]">
+        <label class="text-[#00babc] text-[11px] uppercase tracking-widest">Class Name</label>
+        <input type="text" v-model="editClassForm.nom" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]" required>
+        <label class="text-[#00babc] text-[11px] uppercase tracking-widest">Capacity</label>
+        <input type="number" v-model="editClassForm.capacite" min="1" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]" required>
+        <label class="text-[#00babc] text-[11px] uppercase tracking-widest">Promo</label>
+        <input type="text" v-model="editClassForm.promo" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]" required>
+        <label class="text-[#00babc] text-[11px] uppercase tracking-widest">Campus</label>
+        <input type="text" v-model="editClassForm.campus" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]" required>
+        <label class="text-[#00babc] text-[11px] uppercase tracking-widest">Logo Link</label>
+        <input type="url" v-model="editClassForm.link_logo" class="bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm w-[100%]" required>
+        <button type="submit" class="w-full bg-[#00babc] text-[#121215] font-bold py-3 rounded mt-2 hover:bg-[#00d1d3] transition-all uppercase tracking-widest text-xs">
+          Save Changes
+        </button>
+      </form>
+    </div>
+  </div>
+
   <div class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4" id="createAnnanceModal">
     <div class="bg-[#121215] border border-white/10 p-8 rounded-lg w-[100%] max-w-2xl shadow-2xl overflow-y-auto max-h-[90vh]">
       <div class="flex justify-between items-center mb-6">
@@ -649,6 +683,59 @@
           </button>
           <button type="submit" class="w-full sm:w-auto bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] text-[11px] font-bold uppercase tracking-widest py-3 px-6 rounded-lg transition-all duration-300">
             Create Annance
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4" id="EditAnnanceModal">
+    <div class="bg-[#121215] border border-white/10 p-8 rounded-lg w-[100%] max-w-2xl shadow-2xl overflow-y-auto max-h-[90vh]">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-[#00babc] font-black uppercase tracking-widest text-sm">Edit Annance</h2>
+        <button @click="oppenToggle('EditAnnanceModal')" class="text-[#00babc] hover:text-red-500 transition-colors">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <form @submit.prevent="submitEditAnnouncement" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="md:col-span-2">
+          <label class="text-[#00babc] text-[11px] uppercase tracking-widest font-bold">Title</label>
+          <input type="text" v-model="editAnnouncementForm.titre" class="mt-2 w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required>
+        </div>
+        <div class="md:col-span-2">
+          <label class="text-[#00babc] text-[11px] uppercase tracking-widest font-bold">Description</label>
+          <textarea v-model="editAnnouncementForm.description" rows="5" class="mt-2 w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required></textarea>
+        </div>
+        <div>
+          <label class="text-[#00babc] text-[11px] uppercase tracking-widest font-bold">Status</label>
+          <select v-model="editAnnouncementForm.status" class="mt-2 w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required>
+            <option value="active">active</option>
+            <option value="pending">pending</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-[#00babc] text-[11px] uppercase tracking-widest font-bold">Category</label>
+          <select v-model="editAnnouncementForm.categorie" class="mt-2 w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required>
+            <option value="information">information</option>
+            <option value="cme">cme</option>
+            <option value="workshop">workshop</option>
+            <option value="evenement">evenement</option>
+          </select>
+        </div>
+        <div class="md:col-span-2">
+          <label class="text-[#00babc] text-[11px] uppercase tracking-widest font-bold">Target Audience</label>
+          <select v-model="editAnnouncementForm.cible" class="mt-2 w-full bg-[#0f0f12] border border-white/10 p-3 text-white rounded focus:border-[#00babc] outline-none text-sm" required>
+            <option value="tout">All Students</option>
+            <option value="A1">A1</option>
+            <option value="A2">A2</option>
+          </select>
+        </div>
+        <div class="md:col-span-2 flex justify-end gap-2">
+          <button type="button" @click="oppenToggle('EditAnnanceModal')" class="w-full sm:w-auto bg-gray-700 hover:bg-gray-600 text-white text-[11px] font-bold uppercase tracking-widest py-3 px-6 rounded-lg transition-all duration-300">
+            Cancel
+          </button>
+          <button type="submit" class="w-full sm:w-auto bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] text-[11px] font-bold uppercase tracking-widest py-3 px-6 rounded-lg transition-all duration-300">
+            Save Annance
           </button>
         </div>
       </form>
@@ -766,8 +853,29 @@ export default {
         ville: '',
         link_profile: '',
       },
+      editClassForm: {
+        id: null,
+        nom: '',
+        capacite: '',
+        promo: '',
+        campus: '',
+        link_logo: '',
+      },
+      editAnnouncementForm: {
+        id: null,
+        titre: '',
+        description: '',
+        status: 'active',
+        categorie: 'information',
+        cible: 'tout',
+      },
       absence_jour: today,
       announcements: [],
+      announcementTitre: '',
+      announcementDescription: '',
+      announcementStatus: 'active',
+      announcementCategorie: 'information',
+      announcementCible: 'tout',
       absence_user_id: '',
       absence_heure_debut: '',
       absence_duree_minute_retard: '',
@@ -777,6 +885,62 @@ export default {
     };
   },
   methods: {
+    openEditClassModal(classe) {
+      this.editClassForm = {
+        id: classe?.id || null,
+        nom: classe?.nom || '',
+        capacite: classe?.capacite || '',
+        promo: classe?.promo || '',
+        campus: classe?.campus || '',
+        link_logo: classe?.link_logo || '',
+      };
+      this.oppenToggle('EditClassModal');
+    },
+    async submitEditClass() {
+      try {
+        await api.put('/updateclasse', {
+          id: this.editClassForm.id,
+          nom: this.editClassForm.nom,
+          capacite: Number(this.editClassForm.capacite),
+          promo: this.editClassForm.promo,
+          link_logo: this.editClassForm.link_logo,
+          campus: this.editClassForm.campus,
+        });
+
+        await this.Data();
+        this.oppenToggle('EditClassModal');
+      } catch (error) {
+        console.error('Error updating class:', error?.response?.data || error);
+      }
+    },
+    openEditAnnouncementModal(annance) {
+      this.editAnnouncementForm = {
+        id: annance?.id || null,
+        titre: annance?.titre || '',
+        description: annance?.description || '',
+        status: annance?.status || 'active',
+        categorie: annance?.categorie || 'information',
+        cible: annance?.cible || 'tout',
+      };
+      this.oppenToggle('EditAnnanceModal');
+    },
+    async submitEditAnnouncement() {
+      try {
+        await api.put('/updateannouncement', {
+          id: this.editAnnouncementForm.id,
+          titre: this.editAnnouncementForm.titre,
+          description: this.editAnnouncementForm.description,
+          status: this.editAnnouncementForm.status,
+          categorie: this.editAnnouncementForm.categorie,
+          cible: this.editAnnouncementForm.cible,
+        });
+
+        await this.getAnnouncements();
+        this.oppenToggle('EditAnnanceModal');
+      } catch (error) {
+        console.error('Error updating announcement:', error?.response?.data || error);
+      }
+    },
     openAdminProfileModal() {
       this.adminProfileForm = {
         fullname: this.user?.fullname || '',
@@ -930,6 +1094,8 @@ export default {
         this.announcementStatus = 'active';
         this.announcementCategorie = 'information';
         this.announcementCible = 'tout';
+        await this.getAnnouncements();
+        this.oppenToggle('createAnnanceModal');
       } catch (error) {
         console.error('Error creating announcement:', error?.response?.data || error);
       }

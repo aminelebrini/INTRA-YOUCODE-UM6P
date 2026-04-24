@@ -19,6 +19,20 @@ class AnnouncementRepository
     {
         return Announcement::all();
     }
+
+    public function updateAnnouncement($id, $titre, $description, $status, $categorie, $cible)
+    {
+        $announcement = Announcement::findOrFail($id);
+        $announcement->update([
+            'titre' => $titre,
+            'description' => $description,
+            'status' => $status,
+            'categorie' => $categorie,
+            'cible' => $cible,
+        ]);
+
+        return $announcement;
+    }
 }
 
 ?>

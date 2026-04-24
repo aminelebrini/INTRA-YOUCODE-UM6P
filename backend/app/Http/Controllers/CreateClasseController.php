@@ -38,4 +38,31 @@ class CreateClasseController extends Controller
             return response()->json(['message' => 'Failed to create class'], 500);
         }
     }
+
+    public function update(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer|exists:classes,id',
+            'nom' => 'required|string|max:255',
+            'capacite' => 'required|integer',
+            'promo' => 'required|string',
+            'link_logo' => 'required|url',
+            'campus' => 'required|string',
+        ]);
+
+        $classe = $this->CreateClasseService->update(
+            $request->id,
+            $request->nom,
+            $request->capacite,
+            $request->promo,
+            $request->link_logo,
+            $request->campus
+        );
+
+        if ($classe) {
+            return response()->json(['message' => 'Class updated successfully', 'class' => $classe], 200);
+        }
+
+        return response()->json(['message' => 'Failed to update class'], 500);
+    }
 }
