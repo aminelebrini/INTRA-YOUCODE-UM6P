@@ -419,7 +419,7 @@
 									</div>
 
 									<div class="mt-4 flex items-center justify-end">
-										<button type="button" v-if="!absence.status" @click="toggle('JustificateModal', absence.id)" class="rounded-xl border border-[#00babc]/30 bg-[#00babc]/10 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#00babc] transition-colors hover:bg-[#00babc]/20">Justify</button>
+										<button type="button" v-if="absence.status === 'pending'" @click="toggle('JustificateModal', absence.id)" class="rounded-xl border border-[#00babc]/30 bg-[#00babc]/10 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#00babc] transition-colors hover:bg-[#00babc]/20">Justify</button>
 									</div>
 								</div>
 							</div>

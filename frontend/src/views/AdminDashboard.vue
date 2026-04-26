@@ -360,7 +360,7 @@
                 </p>
                 <span
                   class="rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider"
-                  :class="absence.status ? 'bg-red-500 text-white' : 'bg-yellow-500/20 text-yellow-400'">
+                  :class="absence.status === 'pending' ? 'bg-red-400 text-white' : 'bg-green-500/20 text-white'">
                   {{ absence.status || 'Pending' }}
                 </span>
               </div>
@@ -394,14 +394,14 @@
 
               <div class="mt-4 flex flex-wrap items-center justify-end gap-2">
                 <button
-                  type="button"
+                  type="button" v-if="absence.status !== 'justifie'"
                   class="rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-emerald-300 transition-colors hover:bg-emerald-400/20 disabled:cursor-not-allowed disabled:opacity-40"
                   @click="AbsenceStatus(absence.id, 'justifie',absence.type_document)"
                 >
                 Justified
                 </button>
                 <button
-                  type="button"
+                  type="button" v-if="absence.status === 'pending'"
                   class="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-red-300 transition-colors hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-40"
                   @click="AbsenceStatus(absence.id, 'not_justifie', absence.type_document)"
                 >
