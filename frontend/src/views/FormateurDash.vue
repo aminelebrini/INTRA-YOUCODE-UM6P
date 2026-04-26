@@ -1446,7 +1446,7 @@ export default {
     async getStudents() {
       try {
         const response = await api.get('/students');
-        this.students = response.data.students || [];
+        this.students = response.data.students.filter(s=>s.classe_id === this.formateurData.classe_id) || [];
         console.log('Fetched students:', this.students);
       } catch (error) {
         console.error('Error fetching students:', error);
