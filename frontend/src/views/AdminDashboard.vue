@@ -356,7 +356,7 @@
             >
               <div class="flex items-start justify-between gap-3">
                 <p class="text-sm font-semibold text-white">
-                  {{ absence.users?.fullname || 'Unknown student' }}
+                  {{ absence.user?.fullname || 'Unknown student' }}
                 </p>
                 <span
                   class="rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider"
@@ -782,7 +782,7 @@
             </select>
           </div>
           <div class="md:col-span-2 flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
-            <button type="button" @click="toggle('AbsenceModal')" class="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-xs font-bold uppercase tracking-[0.22em] text-gray-300 transition-colors hover:bg-white/10 hover:text-white">Cancel</button>
+            <button type="button" @click="toggle('DetectAbsenceModal')" class="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-xs font-bold uppercase tracking-[0.22em] text-gray-300 transition-colors hover:bg-white/10 hover:text-white">Cancel</button>
             <button type="submit" class="rounded-2xl bg-[#00babc] px-5 py-3 text-xs font-bold uppercase tracking-[0.22em] text-[#121215] transition-colors hover:bg-[#00d1d3]">Submit Absence</button>
           </div>
         </form>

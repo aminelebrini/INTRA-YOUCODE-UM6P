@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,18 +18,21 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::updateOrCreate(
-            ['email' => 'amine.lebrini@youcode.ma'],
+            ['email' => 'amine.lebrini@admin.youcode.ma'],
             [
                 'fullname' => 'AMINE LEBRINI',
                 'username' => 'amine.lebrini',
                 'link_profile' => 'https://intranet.youcode.ma/storage/users/profile/thumbnail/0.jpg',
-                'password' => 'Admin@123',
+                'password' => Hash::make('Admin@123'),
                 'role' => 'admin',
-                'ville' => 'Benguerir',
-                'campus' => 'UM6P',
+                'ville' => 'Khouribga',
+                'campus' => 'safi',
                 'status' => 'active',
                 'etat' => 'en_attente',
             ]
         );
+
+        $this->call(FormateurSeeder::class);
+        $this->call(EtudiantSeeder::class);
     }
 }

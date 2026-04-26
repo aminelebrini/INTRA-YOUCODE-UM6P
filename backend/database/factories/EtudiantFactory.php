@@ -4,18 +4,12 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
  */
-class UserFactory extends Factory
+class EtudiantFactory extends Factory
 {
-    /**
-     * The current password being used by the factory.
-     */
-    protected static ?string $password;
-
     /**
      * Define the model's default state.
      *
@@ -28,21 +22,12 @@ class UserFactory extends Factory
             'username' => fake()->unique()->userName(),
             'email' => fake()->username() . '@student.youcode.ma',
             'password' => Hash::make('123456'),
-            'role' => 'etudiant',
+            'role' => 'formateur',
+            'ville' => fake()->city(),
             'campus' => 'Nador',
             'status' => 'active',
             'etat' => 'verified',
             'link_profile' => 'https://intranet.youcode.ma/storage/users/profile/thumbnail/0.jpg',
         ];
-    }
-
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
-        ]);
     }
 }
