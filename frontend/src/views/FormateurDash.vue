@@ -75,45 +75,57 @@
           </div>
 
           <main class="w-full max-w-7xl mx-auto p-2 sm:p-3 md:p-2 pb-8">
-            <header v-if="activTab === 'profile'" class="relative mb-6 p-4 md:p-6 rounded-xl border md:flex md:flex-row md:justify-between md:items-center border-white/10 overflow-hidden w-full min-h-[120px] md:min-h-[200px]">
+            <header v-if="activTab === 'profile'" class="relative mb-6 overflow-hidden rounded-2xl border border-white/10 bg-[#121215] shadow-2xl">
               <div class="absolute inset-0 z-0">
                 <img src="@/assets/formateurbg.avif" class="w-full h-full object-cover object-center" alt="header_bg">
-                <div class="absolute inset-0 bg-gradient-to-r from-black/90 to-black/40 backdrop-blur-[2px]"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/35"></div>
               </div>
 
-              <div class="relative z-10 w-full flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div class="flex items-center gap-4 md:gap-6 min-w-0">
+              <div class="relative z-10 flex min-h-[220px] w-full flex-col justify-between gap-8 p-5 sm:p-6 lg:flex-row lg:items-end lg:p-8">
+                <div class="flex min-w-0 items-center gap-4 sm:gap-5 lg:gap-6">
                   <div class="relative shrink-0">
                     <img
                       :src="user?.link_profile || 'https://intranet.youcode.ma/storage/users/profile/0.jpg'"
                       alt="user_profile"
-                      class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-full border-2 border-[#00babc] object-cover shadow-[0_0_15px_rgba(0,186,188,0.3)]"
+                      class="h-16 w-16 rounded-full border-2 border-[#00babc] object-cover shadow-[0_0_20px_rgba(0,186,188,0.35)] sm:h-20 sm:w-20 lg:h-24 lg:w-24"
                     >
-                    <div class="absolute bottom-1 right-1 w-3 h-3 bg-green-500 border-2 border-black rounded-full"></div>
+                    <div class="absolute bottom-1 right-1 h-3.5 w-3.5 rounded-full border-2 border-black bg-emerald-400"></div>
                   </div>
 
-                  <div class="flex flex-col justify-center min-w-0">
-                    <h2 class="text-white font-black uppercase tracking-tighter text-sm sm:text-xl md:text-3xl leading-tight truncate">
+                  <div class="min-w-0">
+                    <p class="text-[10px] font-black uppercase tracking-[0.3em] text-[#00babc]/80">Formateur Profile</p>
+                    <h2 class="mt-2 truncate text-xl font-black uppercase leading-tight text-white sm:text-2xl lg:text-4xl">
                       {{ user?.fullname || 'FORMATEUR' }}
                     </h2>
-                    <span class="text-[8px] md:text-[10px] text-white/50 font-mono tracking-widest truncate">
-                      ID: {{ user?.username || 'formateur' }}
-                    </span>
+                    <div class="mt-3 flex flex-wrap items-center gap-2 text-[10px] font-mono uppercase tracking-[0.22em] text-white/60">
+                      <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1.5">
+                        ID: {{ user?.username || 'formateur' }}
+                      </span>
+                      <span class="rounded-full border border-[#00babc]/25 bg-[#00babc]/10 px-3 py-1.5 text-[#9cf3f3]">
+                        {{ user?.role || 'FORMATEUR' }}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                <div class="flex flex-col justify-center min-w-0 w-full md:w-auto md:items-end">
-                  <h2 class="text-white font-black uppercase tracking-tighter text-xs sm:text-base md:text-2xl leading-tight break-all md:break-normal md:text-right">
-                    {{ user?.email || 'formateur@youcode.ma' }}
-                  </h2>
-                  <div class="flex flex-row items-center justify-start gap-2 mt-1 md:mt-2">
-                    <span class="text-[8px] md:text-[10px] text-white/50 font-mono tracking-widest truncate">
-                      Role: {{ user?.role || 'FORMATEUR' }}
-                    </span>
+                <div class="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 lg:w-auto lg:min-w-[360px]">
+                  <div class="rounded-2xl border border-white/10 bg-black/25 p-4 backdrop-blur-sm">
+                    <p class="text-[10px] font-black uppercase tracking-[0.26em] text-white/45">Email</p>
+                    <p class="mt-2 break-all text-sm font-bold text-white sm:text-base">
+                      {{ user?.email || 'formateur@youcode.ma' }}
+                    </p>
+                  </div>
+                  <div class="rounded-2xl border border-white/10 bg-black/25 p-4 backdrop-blur-sm">
+                    <p class="text-[10px] font-black uppercase tracking-[0.26em] text-white/45">Campus</p>
+                    <div class="mt-2 flex items-center gap-2">
+                      <span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
+                      <p class="text-sm font-bold text-white sm:text-base">
+                        {{ user?.campus || 'YouCode Campus' }}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-              
             </header>
             <section v-if="activTab === 'profile'" class="flex flex-col gap-6 mt-6">
               <div class="bg-[#121215] border border-white/10 rounded-xl p-6">
@@ -259,6 +271,12 @@
                 </div>
               </div>
 
+              <div class="relative w-full mt-6 rounded-2xl border border-white/10 overflow-hidden bg-[#101216]">
+                <section class="relative p-4 md:p-6">
+                  <ActiviteDiagramme v-if="activiteDiagrammeData.labels.length > 0" :data="activiteDiagrammeData" />
+                </section>
+
+              </div>
               <div class="mt-6 rounded-2xl border border-white/10 bg-[#101216] p-4 md:p-6">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
                   <div>
@@ -1126,8 +1144,11 @@
 
 <script>
 import api from '@/services/api';
-
+import ActiviteDiagramme from '../components/ActiviteDiagramme.vue';
 export default {
+  components: {
+    ActiviteDiagramme
+  },
   computed: {
     squadStudentsForCreate() {
       if (!Array.isArray(this.students)) {
@@ -1214,6 +1235,10 @@ export default {
         student_id: '',
         binome_id: '',
       },
+      activiteDiagrammeData:{
+        labels: [],
+        datasets: []
+      }
     };
   },
   methods: {
@@ -1446,7 +1471,7 @@ export default {
     async getStudents() {
       try {
         const response = await api.get('/students');
-        this.students = response.data.students.filter(s=>s.classe_id === this.formateurData.classe_id) || [];
+        this.students = response.data.students.filter(s=> s.classe_id === this.formateurData?.classe_id) || [];
         console.log('Fetched students:', this.students);
       } catch (error) {
         console.error('Error fetching students:', error);
@@ -1464,6 +1489,27 @@ export default {
       try {
         const response = await api.get('/activites');
         this.activites = response.data.activites || [];
+        const briefs = this.activites.filter(act => act.type === 'brief').length;
+        const debriefs = this.activites.filter(act => act.type === 'diebrifing').length;
+        const livecoding = this.activites.filter(act => act.type === 'live-coding').length;
+        const workshop = this.activites.filter(act => act.type === 'workshop').length;
+        const veille = this.activites.filter(act => act.type === 'veille').length;
+        const standup = this.activites.filter(act => act.type === 'daily-standup').length;
+        this.activiteDiagrammeData = {
+          labels: ['Brief', 'Diebriefing', 'Live-coding', 'Workshop', 'Veille', 'Standup'],
+          datasets: [
+            {
+              label: 'Activities',
+              data: [briefs, debriefs, livecoding, workshop, veille, standup],
+              borderColor: '#00babc',
+              backgroundColor: 'rgba(0, 186, 188, 0.18)',
+              pointBackgroundColor: '#00babc',
+              pointBorderColor: '#00babc',
+              tension: 0.35,
+              fill: true,
+            }
+          ],
+        }
         console.log('Fetched activities:', this.activites);
       } catch (error) {
         console.error('Error fetching activities:', error);

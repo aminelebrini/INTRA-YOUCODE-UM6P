@@ -27,6 +27,9 @@ class AbsenceRepository
             'date_depot' => $dateDepot
         ]);
     }
+
+    
+
 }
 
 ?>

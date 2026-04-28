@@ -76,40 +76,53 @@
       </div>
 
       <main class="w-full max-w-7xl mx-auto p-2 sm:p-3 md:p-2 pb-8">
-        <header v-if="activTab === 'profile'" class="relative mb-6 p-4 md:p-6 rounded-xl border md:flex md:flex-row md:justify-between md:items-center border-white/10 overflow-hidden w-full min-h-[120px] md:min-h-[200px]">
+        <header v-if="activTab === 'profile'" class="relative mb-6 overflow-hidden rounded-2xl border border-white/10 bg-[#121215] shadow-2xl">
           <div class="absolute inset-0 z-0">
             <img src="@/assets/bg.jpg" class="w-full h-full object-cover object-center" alt="header_bg">
-            <div class="absolute inset-0 bg-gradient-to-r from-black/90 to-black/40 backdrop-blur-[2px]"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/35"></div>
           </div>
 
-          <div class="relative z-10 w-full flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div class="flex items-center gap-4 md:gap-6 min-w-0">
+          <div class="relative z-10 flex min-h-[220px] w-full flex-col justify-between gap-8 p-5 sm:p-6 lg:flex-row lg:items-end lg:p-8">
+            <div class="flex min-w-0 items-center gap-4 sm:gap-5 lg:gap-6">
               <div class="relative shrink-0">
                 <img 
                     :src="user?.link_profile || 'https://intranet.youcode.ma/storage/users/profile/0.jpg'" 
                     alt="user_profile" 
-                    class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-full border-2 border-[#00babc] object-cover shadow-[0_0_15px_rgba(0,186,188,0.3)]">
-                <div class="absolute bottom-1 right-1 w-3 h-3 bg-green-500 border-2 border-black rounded-full"></div>
+                    class="h-16 w-16 rounded-full border-2 border-[#00babc] object-cover shadow-[0_0_20px_rgba(0,186,188,0.35)] sm:h-20 sm:w-20 lg:h-24 lg:w-24">
+                <div class="absolute bottom-1 right-1 h-3.5 w-3.5 rounded-full border-2 border-black bg-emerald-400"></div>
               </div>
 
-              <div class="flex flex-col justify-center min-w-0">
-                <h2 class="text-white font-black uppercase tracking-tighter text-sm sm:text-xl md:text-3xl leading-tight truncate">
+              <div class="min-w-0">
+                <p class="text-[10px] font-black uppercase tracking-[0.3em] text-[#00babc]/80">Admin Profile</p>
+                <h2 class="mt-2 truncate text-xl font-black uppercase leading-tight text-white sm:text-2xl lg:text-4xl">
                   {{ user?.fullname || 'AMINE LEBRINI' }}
                 </h2>
-                <span class="text-[8px] md:text-[10px] text-white/50 font-mono tracking-widest truncate">
+                <div class="mt-3 flex flex-wrap items-center gap-2 text-[10px] font-mono uppercase tracking-[0.22em] text-white/60">
+                  <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1.5">
                     ID: {{ user?.username || 'aminelebrini' }}
                   </span>
+                  <span class="rounded-full border border-[#00babc]/25 bg-[#00babc]/10 px-3 py-1.5 text-[#9cf3f3]">
+                    {{ user?.role || 'ADMIN' }}
+                  </span>
+                </div>
               </div>
             </div>
 
-            <div class="flex flex-col justify-center min-w-0 w-full md:w-auto md:items-end">
-              <h2 class="text-white font-black uppercase tracking-tighter text-xs sm:text-base md:text-2xl leading-tight break-all md:break-normal md:text-right">
-                {{ user?.email || 'a.lebrini@staff.youcode.ma' }}
-              </h2>
-              <div class="flex flex-row items-center justify-start gap-2 mt-1 md:mt-2">
-                <span class="text-[8px] md:text-[10px] text-white/50 font-mono tracking-widest truncate">
-                    Role: {{ user?.role || 'ADMIN' }}
-                  </span>
+            <div class="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 lg:w-auto lg:min-w-[360px]">
+              <div class="rounded-2xl border border-white/10 bg-black/25 p-4 backdrop-blur-sm">
+                <p class="text-[10px] font-black uppercase tracking-[0.26em] text-white/45">Email</p>
+                <p class="mt-2 break-all text-sm font-bold text-white sm:text-base">
+                  {{ user?.email || 'a.lebrini@staff.youcode.ma' }}
+                </p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-black/25 p-4 backdrop-blur-sm">
+                <p class="text-[10px] font-black uppercase tracking-[0.26em] text-white/45">Workspace</p>
+                <div class="mt-2 flex items-center gap-2">
+                  <span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
+                  <p class="text-sm font-bold text-white sm:text-base">
+                    {{ user?.campus || 'YouCode Campus' }}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -271,7 +284,17 @@
                 <p class="text-4xl font-black text-white leading-none">{{ totalAbandonedStudents }}</p>
               </div>
           </div>
-
+          <section class="mt-10 grid grid-cols-1 gap-6 xl:grid-cols-3">
+            <section class="w-full min-w-0">
+                <MyDiagramms v-if="diagramData.labels.length" :data="diagramData" />
+            </section>
+            <section class="w-full min-w-0">
+                <AbsenceDiagramme v-if="absenceDiagramData.labels.length" :data="absenceDiagramData" />
+            </section>
+            <section class="w-full min-w-0">
+                <AbsenceStatus v-if="justifiedUnjustifiedData.labels.length" :data="justifiedUnjustifiedData" />
+            </section>
+          </section>
         </section>
 
         <section v-if="activTab === 'classes'" class="bg-[#121215] border border-white/5 p-4 sm:p-6 md:p-8 rounded-lg mt-6">
@@ -360,7 +383,7 @@
                 </p>
                 <span
                   class="rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider"
-                  :class="absence.status === 'pending' ? 'bg-red-400 text-white' : 'bg-green-500/20 text-white'">
+                  :class="absence.status === 'pending' ? 'bg-red-400 text-white' : (absence.status === 'justifie' ? 'bg-green-400 text-white' : 'bg-red-600 text-white')">
                   {{ absence.status || 'Pending' }}
                 </span>
               </div>
@@ -394,7 +417,7 @@
 
               <div class="mt-4 flex flex-wrap items-center justify-end gap-2">
                 <button
-                  type="button" v-if="absence.status !== 'justifie'"
+                  type="button" v-if="absence.status === 'pending'"
                   class="rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-emerald-300 transition-colors hover:bg-emerald-400/20 disabled:cursor-not-allowed disabled:opacity-40"
                   @click="AbsenceStatus(absence.id, 'justifie',absence.type_document)"
                 >
@@ -453,7 +476,7 @@
               </div>
             </div>
             <div v-else class="rounded-2xl border border-dashed border-white/10 bg-white/5 p-6 text-center">
-              <p class="text-[11px] text-gray-400">📢 No annance found yet.</p>
+              <p class="text-[11px] text-gray-400">No annance found yet.</p>
             </div>
           </div>
 
@@ -748,7 +771,7 @@
             <div>
               <h2 class="mt-2 text-xl font-black uppercase tracking-wider text-white md:text-2xl">Detect Absence</h2>
             </div>
-            <button type="button" @click="toggle('DetectAbsenceModal')" class="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-lg font-bold text-gray-300 transition-colors hover:border-red-400/40 hover:bg-red-500/10 hover:text-red-300">×</button>
+            <button type="button" @click="oppenToggle('DetectAbsenceModal')" class="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-lg font-bold text-gray-300 transition-colors hover:border-red-400/40 hover:bg-red-500/10 hover:text-red-300">×</button>
           </div>
         </div>
 
@@ -792,10 +815,15 @@
 
 <script>
 import api from '@/services/api';
-
+import MyDiagramms from '../components/MyDiagramms.vue';
+import AbsenceDiagramme from '../components/AbsenceDiagramme.vue';
+import AbsenceStatus from '../components/AbsenceStatus.vue';
 export default {
   name: 'AdminDashboard',
   components: {
+    MyDiagramms,
+    AbsenceDiagramme,
+    AbsenceStatus
   },
   computed: {
     totalUsers() {
@@ -882,6 +910,14 @@ export default {
       absence_duree_heure_retard: '',
       absence_duree_retard: '',
       absence_status: 'late',
+      diagramData: {
+        labels: [],
+        datasets: [],
+      },
+      absenceDiagramData:{
+        labels: [],
+        datasets:[]
+      }
     };
   },
   methods: {
@@ -1126,13 +1162,41 @@ export default {
         this.assignformateurs = data.assignformateurs;
         this.assignclasses = data.assignclasses;
 
+        const StudentAbsence = this.absences.filter(absence => absence.user && absence.user.role === 'etudiant').length;
+        const FormateurAbsence = this.absences.filter(absence => absence.user && absence.user.role === 'formateur').length;
+        const cmeAbsence = this.absences.filter(absence => absence.categorie === 'cme').length;
+        const justifiedAbsence = this.absences.filter(absence => absence.status === 'justifie').length;
+        const unjustifiedAbsence = this.absences.filter(absence => absence.status === 'not_justifie').length;
+        this.absenceDiagramData = {
+          labels: ['Étudiants', 'Formateurs', 'CME'],
+          datasets: [
+            {
+              label: 'Absences by role',
+              data: [StudentAbsence, FormateurAbsence, cmeAbsence],
+              backgroundColor: ['#00babc', '#ff9f40', '#36a2eb'],
+              borderWidth: 0,
+            },
+          ],
+        };
+        this.justifiedUnjustifiedData = {
+          labels: ['Justified', 'Unjustified'],
+          datasets: [
+            {
+              label: 'Absences by justification',
+              data: [justifiedAbsence, unjustifiedAbsence],
+              backgroundColor: ['#4caf50', '#f44336'],
+              borderWidth: 0,
+            },
+          ],
+        };
         console.log('Fetched Data:', {
           users: this.users,
           classes: this.classes,
           absences: this.absences,
           assignformateurs: this.assignformateurs,
-          assignclasses: this.assignclasses
+          assignclasses: this.assignclasses,
         });
+        console.log("Justified:", justifiedAbsence, "Unjustified:", unjustifiedAbsence);
       } catch (error) {
         console.error('Error fetching users:', error);
       }
@@ -1140,8 +1204,24 @@ export default {
     async allData() {
       try {
         const response = await api.get('/alldata');
-        const Data = response.data;
-        console.log('All Data:', Data); 
+        const users = Array.isArray(response.data) ? response.data : [];
+        const adminCount = users.filter(user => user.role === 'admin').length;
+        const formateurCount = users.filter(user => user.role === 'formateur').length;
+        const studentCount = users.filter(user => user.role === 'etudiant').length;
+        const cmeCount = users.filter(user => user.role === 'cme').length;
+        this.diagramData = {
+          labels: ['Admins', 'Formateurs', 'Students', 'CME'],
+          datasets: [
+            {
+              label: 'Users by role',
+              data: [adminCount, formateurCount, studentCount, cmeCount],
+              backgroundColor: ['#00babc', '#ff9f40', '#36a2eb', '#9966ff'],
+              borderWidth: 0,
+            },
+          ],
+        };
+
+        console.log('All Data:', users); 
       } catch (error) {
         console.error('Error fetching all data:', error);
       }
