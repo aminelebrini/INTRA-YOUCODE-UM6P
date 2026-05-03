@@ -1,4 +1,6 @@
 <template>
+  <!-- ...existing code... -->
+  <!-- No gold color (e.g. #FFD700, gold, rgb(255,215,0)) found. If any, remove or replace. -->
   <div class="flex items-start min-h-screen w-full bg-[#0f0f12] text-white font-sans overflow-x-hidden">
     
     <aside 
@@ -76,51 +78,68 @@
       </div>
 
       <main class="w-full max-w-7xl mx-auto p-2 sm:p-3 md:p-2 pb-8">
-        <header v-if="activTab === 'profile'" class="relative mb-6 overflow-hidden rounded-2xl border border-white/10 bg-[#121215] shadow-2xl">
-          <div class="absolute inset-0 z-0">
-            <img src="@/assets/bg.jpg" class="w-full h-full object-cover object-center" alt="header_bg">
-            <div class="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/35"></div>
+        <header v-if="activTab === 'profile'" class="relative mb-8 overflow-hidden rounded-sm border border-white/10 bg-[#101116] shadow-2xl">
+          <div class="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(0,186,188,.12)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.06)_1px,transparent_1px)] [background-size:56px_56px]"></div>
+          <div class="relative h-48 sm:h-56 lg:h-64">
+            <img src="@/assets/bg.jpg" class="h-full w-full object-cover object-center" alt="header_bg">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#101116] via-black/65 to-[#071315]/25"></div>
+            <div class="absolute bottom-0 left-0 flex h-1 w-full">
+              <div class="h-full w-1/2 bg-[#00babc] shadow-[0_0_24px_rgba(0,186,188,.45)]"></div>
+              <div class="h-full w-1/2 bg-white/25"></div>
+            </div>
+            <div class="absolute left-4 top-4 border border-white/10 bg-black/45 px-4 py-2 text-[10px] font-black uppercase tracking-[0.28em] text-white/70 backdrop-blur">
+              Root Control Center
+            </div>
+            <button
+              type="button"
+              @click="openAdminProfileModal"
+              class="absolute right-4 top-4 border border-[#00babc]/45 bg-[#071315]/80 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-[#00e2e4] backdrop-blur transition-colors hover:bg-[#00babc] hover:text-[#101116]"
+            >
+              <i class="fas fa-edit mr-2"></i>
+              Edit Profile
+            </button>
           </div>
 
-          <div class="relative z-10 flex min-h-[220px] w-full flex-col justify-between gap-8 p-5 sm:p-6 lg:flex-row lg:items-end lg:p-8">
-            <div class="flex min-w-0 items-center gap-4 sm:gap-5 lg:gap-6">
-              <div class="relative shrink-0">
-                <img 
-                    :src="user?.link_profile || 'https://intranet.youcode.ma/storage/users/profile/0.jpg'" 
-                    alt="user_profile" 
-                    class="h-16 w-16 rounded-full border-2 border-[#00babc] object-cover shadow-[0_0_20px_rgba(0,186,188,0.35)] sm:h-20 sm:w-20 lg:h-24 lg:w-24">
-                <div class="absolute bottom-1 right-1 h-3.5 w-3.5 rounded-full border-2 border-black bg-emerald-400"></div>
-              </div>
+          <div class="relative px-5 pb-6 sm:px-7 lg:px-8">
+            <div class="-mt-16 grid gap-5 lg:-mt-20 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-end">
+              <div class="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-end">
+                <div class="relative h-32 w-32 shrink-0 border-4 border-[#101116] bg-[#0b0d10] p-1 shadow-[0_18px_50px_rgba(0,0,0,.45)] sm:h-36 sm:w-36">
+                  <img
+                    :src="user?.link_profile || 'https://intranet.youcode.ma/storage/users/profile/0.jpg'"
+                    alt="user_profile"
+                    class="h-full w-full object-cover"
+                  >
+                  <span class="absolute -right-2 top-0 bg-[#00babc] px-2 py-1 text-[9px] font-black uppercase tracking-widest text-[#101116]">Admin</span>
+                  <span class="absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-[#101116] bg-emerald-400"></span>
+                </div>
 
-              <div class="min-w-0">
-                <p class="text-[10px] font-black uppercase tracking-[0.3em] text-[#00babc]/80">Admin Profile</p>
-                <h2 class="mt-2 truncate text-xl font-black uppercase leading-tight text-white sm:text-2xl lg:text-4xl">
-                  {{ user?.fullname || 'AMINE LEBRINI' }}
-                </h2>
-                <div class="mt-3 flex flex-wrap items-center gap-2 text-[10px] font-mono uppercase tracking-[0.22em] text-white/60">
-                  <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1.5">
-                    ID: {{ user?.username || 'aminelebrini' }}
-                  </span>
-                  <span class="rounded-full border border-[#00babc]/25 bg-[#00babc]/10 px-3 py-1.5 text-[#9cf3f3]">
-                    {{ user?.role || 'ADMIN' }}
-                  </span>
+                <div class="min-w-0 pb-1">
+                  <p class="text-[10px] font-black uppercase tracking-[0.38em] text-[#00babc]">Admin Authority</p>
+                  <h2 class="mt-2 truncate text-2xl font-black uppercase leading-tight text-white sm:text-4xl">
+                    {{ user?.fullname || 'AMINE LEBRINI' }}
+                  </h2>
+                  <div class="mt-3 flex flex-wrap items-center gap-2 text-[10px] font-mono uppercase tracking-[0.2em] text-white/60">
+                    <span class="border border-white/10 bg-white/5 px-3 py-1.5">login: {{ user?.username || 'aminelebrini' }}</span>
+                    <span class="border border-[#00babc]/30 bg-[#00babc]/10 px-3 py-1.5 text-[#9cf3f3]">{{ user?.role || 'ADMIN' }}</span>
+                  </div>
+                  <div class="mt-5 max-w-xl border-l-2 border-[#00babc] bg-black/25 px-4 py-3">
+                    <p class="text-xs font-mono leading-relaxed text-white/55">
+                      {{ user?.email || 'a.lebrini@staff.youcode.ma' }}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div class="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 lg:w-auto lg:min-w-[360px]">
-              <div class="rounded-2xl border border-white/10 bg-black/25 p-4 backdrop-blur-sm">
-                <p class="text-[10px] font-black uppercase tracking-[0.26em] text-white/45">Email</p>
-                <p class="mt-2 break-all text-sm font-bold text-white sm:text-base">
-                  {{ user?.email || 'a.lebrini@staff.youcode.ma' }}
-                </p>
-              </div>
-              <div class="rounded-2xl border border-white/10 bg-black/25 p-4 backdrop-blur-sm">
-                <p class="text-[10px] font-black uppercase tracking-[0.26em] text-white/45">Workspace</p>
-                <div class="mt-2 flex items-center gap-2">
-                  <span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
-                  <p class="text-sm font-bold text-white sm:text-base">
-                    {{ user?.campus || 'YouCode Campus' }}
+              <div class="grid gap-3 sm:grid-cols-2">
+                <div class="border border-white/10 bg-black/35 p-4 backdrop-blur">
+                  <p class="text-[10px] font-black uppercase tracking-[0.24em] text-white/40">Campus</p>
+                  <p class="mt-2 break-all text-sm font-bold text-white">{{ user?.campus || 'YouCode Campus' }}</p>
+                </div>
+                <div class="border border-white/10 bg-black/35 p-4 backdrop-blur">
+                  <p class="text-[10px] font-black uppercase tracking-[0.24em] text-white/40">Status</p>
+                  <p class="mt-2 flex items-center gap-2 text-sm font-bold text-white">
+                    <span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
+                    {{ user?.status || user?.etat || 'Active' }}
                   </p>
                 </div>
               </div>
@@ -134,9 +153,9 @@
             <button
               type="button"
               @click="openAdminProfileModal"
-              class="bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold py-2 px-4 rounded-lg text-[10px] uppercase tracking-widest transition-colors flex items-center gap-2"
+              class="border border-[#00babc]/45 bg-[#071315]/80 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-[#00e2e4] backdrop-blur transition-colors hover:bg-[#00babc] hover:text-[#101116]"
             >
-              <i class="fas fa-edit"></i>
+              <i class="fas fa-edit mr-2"></i>
               Edit Profile
             </button>
           </div>
@@ -989,11 +1008,11 @@ export default {
     },
     async submitEditAdminProfile() {
       try {
-        await api.put('/updateusers', {
+        await api.put('/update', {
           id: this.user?.id,
           fullname: this.adminProfileForm.fullname,
           email: this.adminProfileForm.email,
-          role: this.user.role,
+          role: this.user?.role,
           campus: this.adminProfileForm.campus || null,
           ville: this.adminProfileForm.ville || null,
           link_profile: this.adminProfileForm.link_profile || null,

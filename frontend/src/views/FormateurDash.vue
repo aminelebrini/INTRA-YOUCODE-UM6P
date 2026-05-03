@@ -75,52 +75,65 @@
           </div>
 
           <main class="w-full max-w-7xl mx-auto p-2 sm:p-3 md:p-2 pb-8">
-            <header v-if="activTab === 'profile'" class="relative mb-6 overflow-hidden rounded-2xl border border-white/10 bg-[#121215] shadow-2xl">
-              <div class="absolute inset-0 z-0">
-                <img src="@/assets/formateurbg.avif" class="w-full h-full object-cover object-center" alt="header_bg">
-                <div class="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/35"></div>
+            <header v-if="activTab === 'profile'" class="relative mb-8 overflow-hidden rounded-sm border border-white/10 bg-[#111216] shadow-2xl">
+              <div class="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(0,186,188,.12)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.06)_1px,transparent_1px)] [background-size:48px_48px]"></div>
+              <div class="relative h-48 sm:h-56 lg:h-64">
+                <img src="@/assets/formateurbg.avif" class="h-full w-full object-cover object-center" alt="header_bg">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#111216] via-black/55 to-[#071315]/20"></div>
+                <div class="absolute bottom-0 left-0 flex h-1 w-full">
+                  <div class="h-full w-1/2 bg-[#00babc] shadow-[0_0_24px_rgba(0,186,188,.45)]"></div>
+                  <div class="h-full w-1/2 bg-white/25"></div>
+                </div>
+                <button
+                  type="button"
+                  @click="openFormateurProfileModal"
+                  class="absolute right-4 top-4 border border-[#00babc]/45 bg-[#071315]/80 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-[#00e2e4] backdrop-blur transition-colors hover:bg-[#00babc] hover:text-[#111216]"
+                >
+                  <i class="fas fa-edit mr-2"></i>
+                  Edit Profile
+                </button>
               </div>
 
-              <div class="relative z-10 flex min-h-[220px] w-full flex-col justify-between gap-8 p-5 sm:p-6 lg:flex-row lg:items-end lg:p-8">
-                <div class="flex min-w-0 items-center gap-4 sm:gap-5 lg:gap-6">
-                  <div class="relative shrink-0">
-                    <img
-                      :src="user?.link_profile || 'https://intranet.youcode.ma/storage/users/profile/0.jpg'"
-                      alt="user_profile"
-                      class="h-16 w-16 rounded-full border-2 border-[#00babc] object-cover shadow-[0_0_20px_rgba(0,186,188,0.35)] sm:h-20 sm:w-20 lg:h-24 lg:w-24"
-                    >
-                    <div class="absolute bottom-1 right-1 h-3.5 w-3.5 rounded-full border-2 border-black bg-emerald-400"></div>
-                  </div>
+              <div class="relative px-5 pb-6 sm:px-7 lg:px-8">
+                <div class="-mt-16 grid gap-5 lg:-mt-20 lg:grid-cols-[minmax(0,1fr)_460px] lg:items-end">
+                  <div class="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-end">
+                    <div class="relative h-32 w-32 shrink-0 border-4 border-[#111216] bg-[#0b0d10] p-1 shadow-[0_18px_50px_rgba(0,0,0,.45)] sm:h-36 sm:w-36">
+                      <img
+                        :src="user?.link_profile || 'https://intranet.youcode.ma/storage/users/profile/0.jpg'"
+                        alt="user_profile"
+                        class="h-full w-full object-cover"
+                      >
+                      <span class="absolute -right-2 top-0 bg-[#00babc] px-2 py-1 text-[9px] font-black uppercase tracking-widest text-[#111216]">Formator</span>
+                      <span class="absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-[#111216] bg-emerald-400"></span>
+                    </div>
 
-                  <div class="min-w-0">
-                    <p class="text-[10px] font-black uppercase tracking-[0.3em] text-[#00babc]/80">Formateur Profile</p>
-                    <h2 class="mt-2 truncate text-xl font-black uppercase leading-tight text-white sm:text-2xl lg:text-4xl">
-                      {{ user?.fullname || 'FORMATEUR' }}
-                    </h2>
-                    <div class="mt-3 flex flex-wrap items-center gap-2 text-[10px] font-mono uppercase tracking-[0.22em] text-white/60">
-                      <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1.5">
-                        ID: {{ user?.username || 'formateur' }}
-                      </span>
-                      <span class="rounded-full border border-[#00babc]/25 bg-[#00babc]/10 px-3 py-1.5 text-[#9cf3f3]">
-                        {{ user?.role || 'FORMATEUR' }}
-                      </span>
+                    <div class="min-w-0 pb-1">
+                      <p class="text-[10px] font-black uppercase tracking-[0.38em] text-[#00babc]">Pedagogy Lead</p>
+                      <h2 class="mt-2 truncate text-2xl font-black uppercase leading-tight text-white sm:text-4xl">
+                        {{ user?.fullname || 'FORMATEUR' }}
+                      </h2>
+                      <div class="mt-3 flex flex-wrap items-center gap-2 text-[10px] font-mono uppercase tracking-[0.2em] text-white/60">
+                        <span class="border border-white/10 bg-white/5 px-3 py-1.5">{{ user?.username || 'formateur' }}</span>
+                        <span class="border border-[#00babc]/30 bg-[#00babc]/10 px-3 py-1.5 text-[#9cf3f3]">{{ user?.role || 'FORMATEUR' }}</span>
+                      </div>
+                      <div class="mt-5 max-w-xl border-l-2 border-[#00babc] bg-black/25 px-4 py-3">
+                        <p class="text-xs font-mono leading-relaxed text-white/55">
+                          {{ user?.email || 'formateur@youcode.ma' }}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div class="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 lg:w-auto lg:min-w-[360px]">
-                  <div class="rounded-2xl border border-white/10 bg-black/25 p-4 backdrop-blur-sm">
-                    <p class="text-[10px] font-black uppercase tracking-[0.26em] text-white/45">Email</p>
-                    <p class="mt-2 break-all text-sm font-bold text-white sm:text-base">
-                      {{ user?.email || 'formateur@youcode.ma' }}
-                    </p>
-                  </div>
-                  <div class="rounded-2xl border border-white/10 bg-black/25 p-4 backdrop-blur-sm">
-                    <p class="text-[10px] font-black uppercase tracking-[0.26em] text-white/45">Campus</p>
-                    <div class="mt-2 flex items-center gap-2">
-                      <span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
-                      <p class="text-sm font-bold text-white sm:text-base">
-                        {{ user?.campus || 'YouCode Campus' }}
+                  <div class="grid gap-3 sm:grid-cols-2">
+                    <div class="border border-white/10 bg-black/35 p-4 backdrop-blur">
+                      <p class="text-[10px] font-black uppercase tracking-[0.24em] text-white/40">Classroom</p>
+                      <p class="mt-2 break-all text-sm font-bold text-white">{{ formateurData?.classe_name || 'No Class Assigned' }}</p>
+                    </div>
+                    <div class="border border-white/10 bg-black/35 p-4 backdrop-blur">
+                      <p class="text-[10px] font-black uppercase tracking-[0.24em] text-white/40">Status</p>
+                      <p class="mt-2 flex items-center gap-2 text-sm font-bold text-white">
+                        <span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
+                        {{ user?.status || user?.etat || 'Active' }}
                       </p>
                     </div>
                   </div>
@@ -131,9 +144,13 @@
               <div class="bg-[#121215] border border-white/10 rounded-xl p-6">
                 <div class="flex items-center justify-between mb-6">
                   <h3 class="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Personal Information</h3>
-                  <button @click="openFormateurProfileModal" class="bg-[#00babc] hover:bg-[#00d1d3] text-[#121215] font-bold py-2 px-4 rounded-lg text-[10px] uppercase tracking-widest transition-colors flex items-center gap-2">
-                    <i class="fas fa-edit"></i>
-                    Edit Profile
+                  <button
+                    type="button"
+                    @click="openAdminProfileModal"
+                    class="border border-[#00babc]/45 bg-[#071315]/80 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-[#00e2e4] backdrop-blur transition-colors hover:bg-[#00babc] hover:text-[#101116]"
+                  >
+                  <i class="fas fa-edit mr-2"></i>
+                  Edit Profile
                   </button>
                 </div>
                 
@@ -421,14 +438,10 @@
                     <div>
                       <p class="text-[9px] text-gray-600 mb-1">Status</p>
                       <span 
-                        :class="{
-                          'bg-green-500/20 text-green-400': activity.date_debut < today ? activiteStatus = 'pending': activiteStatus = 'à venir',
-                          'bg-amber-500/20 text-amber-400': activity.date_fin > today && activity.date_debut < today ? activiteStatus = 'en cours': activiteStatus = 'à venir',
-                          'bg-gray-500/20 text-gray-400': activity.date_fin < today ? activiteStatus = 'terminé': activiteStatus = 'à venir',
-                        }"
+                        :class="getStatusClass(activity)"
                         class="inline-block text-[9px] px-2 py-1 rounded border border-current/25 font-bold"
                       >
-                       {{ activiteStatus }}
+                        {{ getActivityStatus(activity) }}
                       </span>
                     </div>
                     <div v-if="activity.ressource" class="text-right">
@@ -642,10 +655,10 @@
                     <div
                       v-for="squad in squads"
                       :key="`class-tab-squad-${squad.id}`"
-                      class="rounded-lg border border-amber-300/25 bg-amber-400/10 p-3"
+                      class="rounded-lg border border-[#00babc]/40 bg-[#00babc]/10 p-3"
                     >
                       <div class="flex items-center justify-between mb-2">
-                        <p class="text-[11px] text-amber-300 uppercase tracking-widest font-bold">{{ squad.nom }}</p>
+                        <p class="text-[11px] text-[#00babc] uppercase tracking-widest font-bold">{{ squad.nom }}</p>
                         <span class="text-[10px] text-gray-300">{{ squad.students?.length || 0 }} students</span>
                       </div>
                       <div v-if="squad.students?.length" class="flex flex-wrap gap-2">
@@ -681,7 +694,7 @@
                       <p class="text-[9px] uppercase tracking-[0.25em] text-gray-500">Absence #{{ Absences.id }}</p>
                       <h3 class="mt-1 text-sm font-bold text-white">{{ Absences.jour ? formatDate(Absences.jour) : 'N/A' }}</h3>
                     </div>
-                    <span class="rounded-full border border-amber-400/25 bg-amber-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-amber-300">{{ Absences.status || 'pending' }}</span>
+                    <span class="rounded-full border border-amber-400/25 bg-[#00babc]/20 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white-500">{{ Absences.status || 'pending' }}</span>
                   </div>
 
                   <div class="space-y-2 text-[11px] text-gray-300">
@@ -1105,13 +1118,13 @@
               <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Date Fin</p>
               <p class="text-sm font-bold text-white">{{ selectedActivity.date_fin ? formatDate(selectedActivity.date_fin) : 'N/A' }}</p>
             </div>
-            <div class="rounded-xl border border-white/10 bg-[#0f0f12] p-4">
+            <div v-if="selectedActivity.student?.fullname" class="rounded-xl border border-white/10 bg-[#0f0f12] p-4">
               <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Etudiant</p>
-              <p class="text-sm font-bold text-white">{{ selectedActivity.student?.fullname || 'N/A' }}</p>
+              <p class="text-sm font-bold text-white">{{ selectedActivity.student?.fullname || 'Assigned for All Students' }}</p>
             </div>
-            <div class="rounded-xl border border-white/10 bg-[#0f0f12] p-4">
+            <div v-if="selectedActivity.binome?.fullname" class="rounded-xl border border-white/10 bg-[#0f0f12] p-4">
               <p class="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Binome</p>
-              <p class="text-sm font-bold text-white">{{ selectedActivity.binome?.fullname || 'N/A' }}</p>
+              <p class="text-sm font-bold text-white">{{ selectedActivity.binome?.fullname || 'Assigned for All Students' }}</p>
             </div>
           </div>
 
@@ -1200,6 +1213,7 @@ export default {
       selectedSquadStudentUserIds: [],
       activiteStatus: '',
       studentAbsences: [],
+      classeid: null,
       absence_user_id: '',
       absence_heure_debut: '',
       absence_duree_minute_retard: '',
@@ -1258,7 +1272,7 @@ export default {
           id: this.user?.id,
           fullname: this.formateurProfileForm.fullname,
           email: this.formateurProfileForm.email,
-          role: this.normalizeRole(this.user?.role),
+          role: this.user?.role || 'formateur',
           campus: this.formateurProfileForm.campus || null,
           ville: this.formateurProfileForm.ville || null,
           link_profile: this.formateurProfileForm.link_profile || null,
@@ -1286,6 +1300,38 @@ export default {
       const hour = Math.floor(minutes / 60);
       const min = minutes % 60;
       return `${String(hour).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+    },
+    getStatusClass(activity) {
+      const now = new Date();
+      const start = new Date(activity.date_debut);
+      const end = new Date(activity.date_fin);
+
+      if (activity.etat === 'completed') {
+        return 'bg-green-500/20 text-green-400';
+      } else if (now < start) {
+        return 'bg-blue-500/20 text-blue-400';
+      } else if (now >= start && now <= end) {
+        return 'bg-yellow-500/20 text-yellow-400';
+      } else if (now > end) {
+        return 'bg-red-500/20 text-red-400';
+      }
+      return 'bg-gray-500/20 text-gray-400';
+    },
+    getActivityStatus(activity) {
+      const now = new Date();
+      const start = new Date(activity.date_debut);
+      const end = new Date(activity.date_fin);
+
+      if (activity.etat === 'completed') {
+        return 'terminé';
+      } else if (now < start) {
+        return 'à venir';
+      } else if (now >= start && now <= end) {
+        return 'en cours';
+      } else if (now > end) {
+        return 'terminé';
+      }
+      return 'inconnu';
     },
     handleResize() {
       this.isDesktop = window.innerWidth >= 768;
@@ -1471,8 +1517,9 @@ export default {
     async getStudents() {
       try {
         const response = await api.get('/students');
-        this.students = response.data.students.filter(s=> s.classe_id === this.formateurData?.classe_id) || [];
-        console.log('Fetched students:', this.students);
+        this.students = response.data.students.filter(s=> s.classe_id === this.classeid) || [];
+        
+        console.log('Fetched students:', this.classeid);
       } catch (error) {
         console.error('Error fetching students:', error);
       }
@@ -1536,6 +1583,7 @@ export default {
         this.formateurData.capacite = currentClass?.capacite || null;
         this.formateurData.class_logo = currentClass?.link_logo || null;
         this.formateurData.delegate_name = currentClass?.delegate?.[0]?.fullname || null;
+        this.classeid = currentClass?.id || null;
 
         console.log('Fetched formateur data:', this.formateurData);
       } catch (error) {

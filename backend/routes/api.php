@@ -27,7 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('role:admin')->group(function () {
         Route::post('/createuser', [CreateStudentController::class, 'create']);
         Route::post('/detectabsence', [AbsenceController::class, 'dedicateAbsence']);
-        Route::put('/updateusers', [UpdateUserController::class, 'update']);
+        Route::put('/update', [UpdateUserController::class, 'update']);
         Route::post('/send-lien', [UpdateUserController::class, 'SendLien']);
         Route::post('/createclasse', [CreateClasseController::class, 'create']);
         Route::put('/updateclasse', [CreateClasseController::class, 'update']);
@@ -54,6 +54,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/activites', [FormateurDataController::class, 'getActivites']);
         Route::get('/livrables', [FormateurDataController::class, 'getLivrables']);
         Route::get('/getstudents', [FormateurDataController::class, 'getAllStudents']);
+        Route::put('/updateusers', [UpdateUserController::class, 'update']);
+
     });
 
     Route::middleware('role:etudiant')->group(function () {
